@@ -1,0 +1,13 @@
+# Test outputs (rebuilt by tests/run-all.sh)
+tests/node_modules/
+tests/preview-mock*.html
+tests/test-shot.png
+tests/*.png
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Secrets: never commit these
+.env
+.env.*

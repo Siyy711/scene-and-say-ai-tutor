@@ -1,0 +1,189 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}[hidden]{display:none!important}</style></head><body><script>
+window.__prompts=[];
+window.__mockdb=function(){ try{ return JSON.parse(localStorage.getItem("__mockdb")||"{}"); }catch(e){ return {}; } };
+function __dbSave(o){ localStorage.setItem("__mockdb",JSON.stringify(o)); }
+function __coll(path){
+  function docs(){ var all=window.__mockdb(), out=[]; for(var k in all) if(k.indexOf(path+"/")===0 && k.slice(path.length+1).indexOf("/")<0) out.push({id:k.slice(path.length+1),body:all[k]}); return out; }
+  var q={orderBy:function(){return q;},limit:function(){return q;},
+    get:function(){ if(localStorage.getItem("__mockReadFail")) return Promise.reject({code:"unavailable"}); return Promise.resolve({docs:docs().map(function(d){ var fb=Object.freeze(d.body); return {id:d.id,exists:true,data:function(){return fb;}}; })}); },
+    onSnapshot:function(next){
+      var prev=null;
+      function tick(){
+        if(localStorage.getItem("__mockReadFail")) return;
+        var cur={}; docs().forEach(function(d){ cur[d.id]=d.body; });
+        var ch=[];
+        Object.keys(cur).forEach(function(id){
+          var body=Object.freeze(cur[id]);
+          if(!prev||!(id in prev)) ch.push({type:"added",doc:{id:id,exists:true,data:function(){return body;}}});
+          else if(JSON.stringify(prev[id])!==JSON.stringify(cur[id])) ch.push({type:"modified",doc:{id:id,exists:true,data:function(){return body;}}});
+        });
+        if(prev) Object.keys(prev).forEach(function(id){ if(!(id in cur)) ch.push({type:"removed",doc:{id:id,exists:false,data:function(){return undefined;}}}); });
+        var first=!prev; prev=JSON.parse(JSON.stringify(cur));
+        if(first||ch.length) next({docs:[],size:0,empty:false,docChanges:function(){ return ch; }});
+      }
+      setTimeout(tick,0); var h=setInterval(tick,250);
+      return function(){ clearInterval(h); };
+    },
+    doc:function(id){ var key=path+"/"+id; return {
+      set:function(b){ var all=window.__mockdb(); all[key]=JSON.parse(JSON.stringify(b)); __dbSave(all); return Promise.resolve(); },
+      update:function(p){ var all=window.__mockdb(); if(!all[key]) return Promise.reject({code:"not_found"}); for(var k in p) all[key][k]=p[k]; __dbSave(all); return Promise.resolve(); },
+      delete:function(){ var all=window.__mockdb(); delete all[key]; __dbSave(all); return Promise.resolve(); },
+      get:function(){ var all=window.__mockdb(); var b=all[key]; if(b) Object.freeze(b); return Promise.resolve({exists:!!b,data:function(){return b;}}); } }; } };
+  return q;
+}
+window.claude={use:function(name){
+  if(location.hash==="#db" && name==="db") return Promise.resolve({doc:function(p){ return {collection:function(c){ return __coll(p+"/"+c); }}; }});
+  if(location.hash==="#db" && name==="user") return Promise.resolve({id:function(){ return "u_test"; }});
+  if(name!=="sample") return Promise.resolve(null);
+  var f=function(input){ return Promise.resolve({text:"Sure.",truncated:false,modelTierApplied:"quick"}); };
+  f.json=function(input){
+    var s=typeof input==="string"?input:JSON.stringify(input);
+    window.__prompts.push(s);
+    if(s.indexOf("You write short, specific speaking-practice scenes")>=0){
+      return Promise.resolve({title:"The plumber's second visit",setting:"Saturday morning in your condo kitchen.",youAre:"the tenant",partnerRole:"the plumber",
+        whatsHappening:"The sink is leaking again. The plumber wants to replace a part.",visualDetails:["a bucket under the sink","wet towels","a toolbox","the smell of rust","water on the tiles"],
+        usefulLanguage:[{phrase:"It's been dripping since…",note:"to say how long"},{phrase:"How long will it take?",note:"asking time"},{phrase:"Is it covered by the landlord?",note:"cost"},{phrase:"Could you show me?",note:"asking to see"},{phrase:"That's a relief",note:"reacting"}],
+        themeName: s.indexOf("practise using these expressions")>=0 ? "Home & Neighbours" : undefined,
+        firstLine:"Morning! So it's leaking again, is it?",
+        task: s.indexOf('"task": "the exact piece')>=0 ? "Write the abstract for your conference paper, 120–150 words." : undefined});
+    }
+    if(s.indexOf("COMPARE — FIND PAIRS")>=0){
+      /* Like the real Claude: works only from the bank it is sent, honours AVOID lists, sometimes invents a word. */
+      var bank=(s.split("WORD BANK (expression — meaning as saved):\n")[1]||"").split("\n\n")[0].split("\n").map(function(l){ return (l.match(/^\d+\. (.*?) — /)||[])[1]; }).filter(Boolean);
+      var rej=((s.match(/REJECTED BY THE LEARNER[^:]*: ([^\n]*)/)||[])[1]||"");
+      var have=((s.match(/ALREADY COMPARED[^:]*: ([^\n]*)/)||[])[1]||"")+" / "+((s.match(/ALREADY SHOWN[^:]*: ([^\n]*)/)||[])[1]||"");
+      var focus=((s.match(/\nFOCUS: (.*?) — /)||[])[1]||"");
+      var bad=function(a,b){ return rej.indexOf(a+" + "+b)>=0||rej.indexOf(b+" + "+a)>=0||have.indexOf(a+" · "+b)>=0||have.indexOf(b+" · "+a)>=0; };
+      var sets=[];
+      if(focus){
+        var other=bank.filter(function(x){ return x!==focus; });
+        if(other[0]) sets.push({words:[focus,other[0]],notInBank:[],reason:"Both are about "+focus+"."});
+        sets.push({words:[focus,"integrate"],notInBank:["integrate"],reason:"integrate means fully joined."});
+        if(other[1]&&other[2]) sets.push({words:[other[1],other[2]],notInBank:[],reason:"no focus word here"});
+      } else {
+        /* like the real Claude can: one too-broad set of 4, and one that overlaps a pair */
+        if(bank.length>=5) sets.push({words:bank.slice(0,4),notInBank:[],reason:"all about problems"});
+        for(var i=0;i+1<bank.length && sets.length<7;i+=2) if(!bad(bank[i],bank[i+1])) sets.push({words:[bank[i],bank[i+1]],notInBank:[],reason:"Both are about "+bank[i]+"."});
+        if(bank.length>=5) sets.push({words:[bank[0],bank[1],bank[4]],notInBank:[],reason:"overlapping set"});
+        if(bank[0]) sets.push({words:["a made-up phrase",bank[0]],notInBank:[],reason:"invented"});
+      }
+      return Promise.resolve({sets:sets});
+    }
+    if(s.indexOf("COMPARE — SITUATIONS")>=0){
+      var ws2=((s.match(/WORDS: ([^\n]*)/)||[])[1]||"").split(" · ").map(function(x){ return x.replace(/"/g,""); });
+      if(ws2.indexOf("brokenset")>=0){ window.__brokenSet=(window.__brokenSet||0)+1; if(window.__brokenSet===1) return Promise.reject({code:"invalid_json",message:"cut short"}); }
+      var st=((s.match(/SETTING to use: ([^\n]*)/)||[])[1]||"").trim(), av=/AVOID — /.test(s);
+      return Promise.resolve({summary: av ? "new scene in "+st : "twin scene in "+st,
+        situations: ws2.map(function(w,i){ return {text:(av?"A NEW situation":"The usual situation")+" in "+st+", case "+(i+1)+(w==="park"?". Maybe we should park it.":".")+" Tell your colleague.", answer:w, detail:"detail for "+w}; })});
+    }
+    if(s.indexOf("COMPARE — CHECK")>=0){
+      var setw=((s.match(/choose between these words: ([^\n(]*)/)||[])[1]||"").split(" · ").map(function(x){ return x.replace(/"/g,"").trim(); });
+      var blocks2=s.split(/\nSITUATION \d+: /).slice(1);
+      return Promise.resolve({results:blocks2.map(function(b){
+        var best=((b.match(/BEST WORD: (.*?) — because/)||[])[1]||"").trim();
+        var rep=((b.match(/REPLY: """([\s\S]*?)"""/)||[])[1]||"").toLowerCase();
+        var anyForm=s.indexOf("ANY natural form")>=0;   /* like the real Claude: other forms count only if the request says so */
+        var chosen=""; setw.slice().sort(function(x,y){ return y.length-x.length; }).forEach(function(w){ if(!chosen && new RegExp("\\b"+w.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+(anyForm?"":"\\b")).test(rep) && (anyForm || !/\bon hold\b/.test(rep) || w!=="hold")) chosen=w; });
+        var ok=chosen===best;
+        return {chosen:chosen, ok:ok, feedback: ok ? "Right — the detail for "+best+" decides it." : "Here "+best+" fits better: look at the detail.", better:"A natural line with "+best+"."};
+      })});
+    }
+    if(s.indexOf("COMPARE — EXPLAIN")>=0){
+      var ws=((s.match(/WORDS: ([^\n]*)/)||[])[1]||"").split(" · ").map(function(x){ return x.replace(/"/g,""); });
+      if(ws.indexOf("brokenword")>=0){ window.__brokenEx=(window.__brokenEx||0)+1; if(window.__brokenEx===1) return Promise.reject({code:"invalid_json",message:"cut short"}); }
+      return Promise.resolve({core:"“"+ws[0]+"” is for one case; “"+ws[1]+"” is for another.",
+        uses:ws.map(function(w){ return {word:w,when:"Use "+w+" when the detail fits.",example:"We used "+w+" at work today."}; })});
+    }
+    if(s.indexOf("SPOT IT — SITUATIONS")>=0 && /ITEM \d+: broken —/.test(s)){
+      /* a word whose first request breaks, like a cut-off reply */
+      window.__broken=(window.__broken||0)+1;
+      if(window.__broken===1) return Promise.reject({code:"invalid_json",message:"cut short"});
+    }
+    if(s.indexOf("SPOT IT — SITUATIONS")>=0){
+      /* Like the real Claude: the SAME inputs give the same scene, unless it is told what to avoid. */
+      var blocks=s.split(/\nITEM \d+: /).slice(1);
+      return Promise.resolve({items:blocks.map(function(b){
+        var term=b.split(" — ")[0];
+        var setting=((b.match(/SETTING to use: ([^\n]*)/)||[])[1]||"").trim();
+        var avoid=/AVOID — /.test(b);
+        var sit = avoid ? "In "+setting+", a new thing happens about "+term.length+" items. What now?"
+                        : "Your colleague Mei says the team just "+(term==="bolt"?"bolted":"used")+" a new tool onto the old planning system. She asks what you think.";
+        var hint = term==="bolt" ? "Your sentence: Existing factories do bolt AI onto old layouts."
+                 : term==="synonym" ? "You saved this from a chat."
+                 : term==="loop in" ? "" : term==="fire away" ? "In Suits, Harvey says fire away to a client." : "Think of the time you met it.";
+        return {situation:sit, replyType: term==="synonym"?"feedback":(term==="loop in"?"message":"say"), hint:hint,
+                bridge:"Both situations are about adding something on top instead of rebuilding.",
+                summary: avoid ? "scene in "+setting : "Mei asks about the planning tool"};
+      })});
+    }
+    if(s.indexOf("SPOT IT — CHECK")>=0){
+      var tgt=((s.match(/TARGET EXPRESSION: ([^\n]*)/)||[])[1]||"").split(" — ")[0].toLowerCase();
+      var rep=((s.match(/REPLY: """([\s\S]*?)"""/)||[])[1]||"").toLowerCase();
+      var used=tgt && rep.indexOf(tgt.split(/[\s-]/)[0].slice(0,4))>=0;
+      var eq=(!used && rep.indexOf("tack on")>=0) ? "tack on" : "";
+      return Promise.resolve({used:!!used, equivalent:eq, feedback: used?"Natural use of it.":(eq?"Good alternative.":"Not quite — you didn't use "+tgt+", which fits here."),
+        modelReply:"Honestly, I think we just "+tgt+"ed it on; we should redesign the process."});
+    }
+    if(s.indexOf("file an expression they met outside")>=0){
+      /* Answers depend on the request, like the real Claude: no fixed reply. */
+      var ex=(s.match(/EXPRESSION: (.*)/)||[])[1]||"", sent=(s.match(/THEIR EXAMPLE SENTENCE: (.*)/)||[])[1]||"";
+      var hasS=sent.indexOf("(not given)")<0, low=sent.toLowerCase();
+      var term=/cracks/.test(ex)?"slip through the cracks":ex.trim();
+      var saved=s.indexOf("ALREADY SAVED")>=0 ? s.split("ALREADY SAVED")[1].split("JSON shape")[0] : "";
+      var sameAs=-1;
+      var isForm=/^bolt-on$/i.test(ex.trim());
+      if(saved && (/onto/.test(low)||isForm)){ var mm=saved.match(/(\d+)\. [^\n]*existing system/); if(mm) sameAs=Number(mm[1]); }
+      var r={term:term,kind:"word",usage:"Neutral.",theme:"At Work",check:"",pattern:"",sameAs:sameAs,addForm:(sameAs>=0&&isForm)?"bolt-on (adj.)":"",
+        situation:/Suits/.test(s)?"Suits S2E3 — Harvey, when a client's file goes missing.":""};
+      if(/cracks/.test(ex)){ r.kind="idiom"; r.meaning="be missed or forgotten by mistake"; r.usage="Neutral; common at work."; r.check="The usual form is 'slip through the cracks'."; }
+      if(hasS){
+        if(/onto/.test(low)){ r.meaning="to add something to an existing system without redesigning it"; r.usual="a metal fastener"; r.pattern="bolt something onto something · bolt-on (adj.)"; r.example2="They bolted a chatbot onto the old website."; }
+        else if(/door/.test(low)){ r.meaning="to lock a door with a sliding metal bar"; r.usual="a metal fastener"; r.example2="She bolted the gate before dark."; }
+        else { r.meaning=r.meaning||"the meaning in the sentence"; r.usual=""; r.example2="Another sentence with the same meaning."; }
+        r.example="";
+      } else {
+        r.meaning=r.meaning||"the most common meaning of "+term;
+        r.example=/cracks/.test(ex)?"Small tasks often slip through the cracks.":"A common sentence with "+term+".";
+        r.alsoUsed={meaning:"a less obvious use of "+term,example:"An example of that use."};
+      }
+      return Promise.resolve(r);
+    }
+    if(s.indexOf("careful lexicographer")>=0){
+      var rare=s.indexOf("ENTRY: on the blink")>=0;
+      return Promise.resolve({summary:"It means something was missed.",register:"Neutral.",collocations:["let something"],confusedWith:[{other:"fall apart",difference:"breaks, not missed"}],
+        contexts:[{setting:"a work email",sentence:"Let's make sure nothing slips through the cracks."}],citations:[],
+        atWork: rare ? "" : "Can we add a checklist so the handover doesn't slip through the cracks?"});
+    }
+    if(s.indexOf("showing a worked example")>=0){
+      var tw2=s.indexOf("target expressions")>=0;
+      return Promise.resolve({
+        modelStory: tw2 ? "The sink had been [[playing up]] all week.\nSo on Saturday I asked the plumber to [[take a look at]] it." : "The sink had been leaking all week.",
+        // v27: like the real Claude, only return the fields the request asks for.
+        whyThisWorks: s.indexOf('"whyThisWorks"')>=0 ? (tw2 ? ["[[playing up]] fits a machine that works badly.","[[take a look at]] is a polite way to ask for a check."] : ["Past tense throughout."]) : undefined,
+        moves: s.indexOf('"moves"')>=0 ? [{name:"Lead with the problem",type:"order",native:"The sink had been leaking all week.",why:"Readers want to know what went wrong first."},{name:"Time links",type:"links",native:"So on Saturday",why:"Time words carry the story forward."}] : undefined,
+        highlights:[{term:"playing up",kind:"idiom",meaning:"not working",usage:"x",example:"x"},{term:"all week",kind:"phrase",meaning:"for the whole week",usage:"x",example:"x"}]
+      });
+    }
+    if(s.indexOf("phrase list for one kind of everyday situation")>=0){
+      return Promise.resolve({groups:[
+        {purpose:"explaining the problem",items:[{term:"it keeps dripping",kind:"phrase",meaning:"it drips again and again",usage:"Everyday.",example:"The tap keeps dripping at night."},{term:"on the blink",kind:"idiom",meaning:"not working properly",usage:"Informal, British.",example:"The boiler's on the blink again."}]},
+        {purpose:"asking about cost",items:[{term:"ballpark figure",kind:"idiom",meaning:"a rough price",usage:"Neutral.",example:"Can you give me a ballpark figure?"}]}]});
+    }
+    var re=s.indexOf("PRACTICE NUMBER")>=0, tw=s.indexOf("TARGET EXPRESSIONS")>=0, cvq=s.indexOf('"convo"')>=0;
+    return Promise.resolve({
+      convo: cvq ? {summary:"You asked the plumber about the leak. He offered to replace a part.",goal:{reached:"partly",note:"You learned the cause, but never asked about the cost."},
+        cameAcross:"Polite but a little abrupt: 'Fix it now.'",skills:["Ask one follow-up question, e.g. 'How long will that take?'","React before you answer: 'Oh, really?'"]} : undefined,
+      strengths:["Clear order of events."],
+      corrections:[{original:"he fix",fixed:"he fixed",why:"Past tense.",type:"grammar"}],
+      modelStory:"The plumber came round again on Saturday.",
+      moves: s.indexOf('"moves"')>=0 ? [{name:"Lead with the point",type:"order",you:"You started with the weather.",native:"The plumber came round again",why:"English stories usually open with what happened."},{name:"One detail, not five",type:"development",you:"You listed every step.",native:"again on Saturday",why:"Zooming in on one moment keeps the reader with you."},{name:"Time links",type:"links",you:"\"and then... and then\"",native:"on Saturday",why:"Varied time links sound natural."}] : undefined,
+      highlights:[{term:"came round",kind:"phrase",meaning:"visited",usage:"Casual.",example:"She came round for tea."}],
+      levelCheck:{sitsAt:"B1",meetsTarget:true,note:"Mostly consistent.",readyFor:null},
+      progress: re ? "You used the target phrase this time." : undefined,
+      wordUse: tw ? [{term:"take a look at",verdict:"good",note:"'Could you take a look at the pipe?' — natural."},{term:"playing up",verdict:"missing",note:"Try: 'The sink has been playing up all week.'"}] : undefined,
+      nextTip:"Use 'playing up' next time."
+    });
+  };
+  return Promise.resolve(f);
+}};
+</script>

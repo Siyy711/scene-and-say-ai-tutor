@@ -1,0 +1,11 @@
+{
+  "name": "scene-and-say-tests",
+  "private": true,
+  "description": "Browser tests for Scene & Say, run against a stand-in for Claude and the database.",
+  "scripts": {
+    "test": "./run-all.sh"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.0"
+  }
+}
