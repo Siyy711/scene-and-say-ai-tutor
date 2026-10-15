@@ -151,7 +151,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .lvl span{display:block;font-size:12px;color:var(--ink-2);margin-top:1px}
 .lvl[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .lvl[aria-pressed="true"] span{color:color-mix(in srgb,var(--accent-ink) 82%,transparent)}
-input[type="text"],input[type="search"],textarea,select{width:100%;background:var(--surface);border:1px solid var(--field);border-radius:0;padding:10px 12px;font-size:15px;line-height:1.4;color:var(--ink)}
+input[type="text"],input[type="search"],input[type="password"],textarea,select{width:100%;background:var(--surface);border:1px solid var(--field);border-radius:0;padding:10px 12px;font-size:15px;line-height:1.4;color:var(--ink)}
 input[type="search"]{-webkit-appearance:none;appearance:none}
 input[type="text"]:focus-visible,input[type="search"]:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
 input::placeholder,textarea::placeholder{color:var(--ink-3)}
@@ -568,6 +568,17 @@ body.has-wordbar .wrap{padding-bottom:150px}
 .say svg{width:13px;height:13px}
 .notice{background:var(--fix-soft);border:1px solid color-mix(in srgb,var(--fix) 45%,transparent);color:var(--fix);border-radius:0;padding:11px 14px;font-size:14px;line-height:1.5}
 .notice.quiet{background:var(--surface-2);border-color:var(--line);color:var(--ink-2)}
+.ownkey-title{font-family:var(--f-display);font-size:24px;font-weight:500;margin:0 0 6px}
+.ownkey-field{margin-top:12px}
+.ownkey-msg{margin-top:12px}
+.ownkey-help a,.ownkey-guide a{color:var(--ink)}
+#own-help{margin:12px 0}
+.datarow{margin-bottom:16px}
+.datarow .data-title{display:block;font-size:14px;margin-bottom:6px;color:var(--ink)}
+.datarow .data-when{margin:0}
+.datarow .data-msg{margin:6px 0 0}
+#backupnag{margin-top:20px;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.backupnag-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;font-size:14.5px;color:var(--ink-2)}
 .status{display:flex;gap:8px;align-items:baseline;font-size:13px;color:var(--ink-2);margin-bottom:14px}
 .dot{width:8px;height:8px;background:var(--good);flex:0 0 8px;position:relative;top:-1px}
 .dot.warn{background:var(--fix)}
@@ -655,6 +666,7 @@ body.has-wordbar .wrap{padding-bottom:150px}
 
     <div class="section" id="spotdue" hidden></div>
 
+    <div class="section" id="backupnag" hidden></div>
     <div class="section" id="blocked" hidden></div>
     <div class="section" id="chatnews" hidden></div>
 
@@ -737,10 +749,12 @@ body.has-wordbar .wrap{padding-bottom:150px}
     </div>
 
     <div class="section footnote">
+      <div class="datarow" id="data-row"></div>
       <details class="card pad" id="help-box">
         <summary>Help and known limits</summary>
         <div class="notice quiet"><b>Known limit:</b> speaking into the page is blocked here — this kind of page can't get microphone permission. Reading aloud works; recording your voice needs its own server.</div>
         <p class="hint"><b>Something not working? Run a check.</b> This reports exactly what the page can and can't reach, in its own words. Screenshot it if you need to ask why something failed.</p>
+        <div id="own-help" hidden></div>
         <div class="diag" id="diag"></div>
         <div class="row" style="margin-top:12px"><button class="btn ghost small" id="btn-diag">Run a live test</button></div>
         <div id="diag-out"></div>
@@ -1048,15 +1062,22 @@ function errCopy(code){
   switch(code){
     case "not_granted": case "sampling_disabled": case "not_declared":
     case "capability_disabled": case "capability_removed":
+      if(OWNKEY) return "Connect your AI service first, at the top of the Practice page.";
       return "This view isn't allowed to ask Claude, so practice can't run here.";
-    case "rate_limited": return "That's a lot of practice in a short time — Claude has paused you. Give it a few minutes.";
+    case "rate_limited": return "That's a lot of practice in a short time — "+aiName()+" has paused you. Give it a few minutes.";
+    case "bad_key": return "Your AI service didn't accept the key. Check that you copied all of it, or make a new one.";
+    case "no_credit": return "Your AI service account is out of credit. Top it up, then try again.";
+    case "model_not_found": return "Your AI service doesn't know that model name. Check the spelling on the service's model page.";
+    case "network": return "Couldn't reach your AI service. Check your internet. If it keeps happening, this service may not accept requests from web pages.";
+    case "timeout": return "Your AI service took too long to answer. Try again.";
+    case "service_error": return "Your AI service had a problem with that request. Try again in a moment.";
     case "session_expired": return "Your Claude session expired. Reload the page and sign in again.";
-    case "refused": return "Claude declined that one. Try a different scene or rephrase what you wrote.";
+    case "refused": return (OWNKEY?"The AI":"Claude")+" declined that one. Try a different scene or rephrase what you wrote.";
     case "invalid_json": return "The reply came back malformed. Try again — it usually works second time.";
     case "prompt_too_large": return "That's too long to send in one go. Shorten it and try again.";
     case "empty_completion": return "Nothing came back. Try again with a bit less text.";
     case "cancelled": return "";
-    default: return "Something went wrong reaching Claude. Try again in a moment.";
+    default: return "Something went wrong reaching "+aiName()+". Try again in a moment.";
   }
 }
 function showError(host,e){ var c=errCopy(e&&e.code); clear(host); if(c) host.appendChild(el("div","notice",c)); }
@@ -1719,7 +1740,7 @@ function backLabel(){
 /* ---------- diagnostics ---------- */
 function renderDiag(){
   var h=$("diag"); clear(h);
-  var rows=[["Page runtime",DIAG.runtime],["Ask Claude (sample)",DIAG.sample],["Storage (db)",DIAG.db],["Account (user)",DIAG.user],["Your account id",DIAG.uid],["Live test call",DIAG.live]];
+  var rows=[["Page runtime",DIAG.runtime],[OWNKEY?"Ask the AI":"Ask Claude (sample)",DIAG.sample],["Storage (db)",DIAG.db],["Account (user)",DIAG.user],["Your account id",DIAG.uid],["Live test call",DIAG.live]];
   rows.forEach(function(r){
     var d=el("div"); d.appendChild(el("b",null,r[0])); d.appendChild(el("span",null,String(r[1]))); h.appendChild(d);
   });
@@ -1728,6 +1749,7 @@ function runDiag(){
   var out=$("diag-out"); clear(out);
   if(!SAMPLE){
     DIAG.live="cannot run — sample unavailable"; renderDiag();
+    if(OWNKEY){ out.appendChild(el("div","notice quiet","No AI service is connected yet, so there's nothing to test. Connect one at the top of this page.")); return; }
     out.appendChild(el("div","notice quiet","The page can't reach Claude at all in this view, so there's nothing to test. The most common reason: you were invited to this artifact from outside the owner's organisation, and Claude-powered parts of an artifact don't work for outside guests."));
     return;
   }
@@ -1736,7 +1758,7 @@ function runDiag(){
   SAMPLE("Reply with the single word: ok",{modelTier:"quick",cache:false}).then(function(r){
     DIAG.live="ok — replied “"+String(r.text).trim().slice(0,20)+"”"; renderDiag();
     $("btn-diag").disabled=false;
-    clear(out); out.appendChild(el("div","notice quiet","Claude is reachable from this view. If something still fails, it's in the feature itself, not the connection."));
+    clear(out); out.appendChild(el("div","notice quiet",(OWNKEY?"Your AI service":"Claude")+" is reachable from this view. If something still fails, it's in the feature itself, not the connection."));
   }).catch(function(e){
     DIAG.live="failed — "+((e&&e.code)||"unknown"); renderDiag();
     $("btn-diag").disabled=false;
@@ -1747,6 +1769,7 @@ function renderBlocked(){
   var h=$("blocked");
   if(SAMPLE){ h.hidden=true; clear(h); return; }
   h.hidden=false; clear(h);
+  if(OWNKEY){ renderOwnSetup(h,false); return; }
   var box=el("div","notice");
   box.appendChild(el("div",null,"This page can't ask Claude in this view, so new scenes and feedback can't be generated. Anything already saved is still readable under Words and Cards."));
   var p=el("div"); p.style.marginTop="8px"; p.style.fontWeight="600";
@@ -2141,7 +2164,7 @@ function deepView(t, host){
   if(!d){
     var b=el("button","btn ghost small","Go deeper");
     b.addEventListener("click",function(){
-      if(!SAMPLE){ host.appendChild(el("div","notice quiet","Needs Claude, which isn't available in this view.")); b.disabled=true; return; }
+      if(!SAMPLE){ host.appendChild(el("div","notice quiet",needsAI("This"))); b.disabled=true; return; }
       b.disabled=true; b.textContent="Looking it up…";
       SAMPLE.json(deepPrompt(t),{modelTier:"default",cache:{gcTime:86400000}}).then(function(r){
         if(!r||typeof r!=="object") throw {code:"invalid_json"};
@@ -2383,7 +2406,7 @@ function renderNoteBox(){
   var cancel=el("button","btn ghost small","Cancel");
   act.appendChild(go); act.appendChild(cancel); f.appendChild(act);
   var msg=el("p","hint"); msg.id="note-msg"; f.appendChild(msg);
-  if(!SAMPLE){ go.disabled=true; msg.textContent="Adding a note needs Claude, which isn't available in this view."; }
+  if(!SAMPLE){ go.disabled=true; msg.textContent=needsAI("Adding a note"); }
   host.appendChild(f);
 
   open.addEventListener("click",function(){ f.hidden=false; open.hidden=true; sp.hidden=true; term.focus(); });
@@ -3645,7 +3668,7 @@ function runFindPairs(){
     CMP.msg = n ? n+" new — up to "+FIND_PER_PRESS+" each time. Press Find pairs again for more." : "No more new pairs right now. As your word bank grows, try again.";
   }).catch(function(e){
     var n=add(confusedSuggestions());
-    CMP.msg="Claude's search didn't come back properly"+(e&&e.code?" ("+e.code+")":"")+". Press Find pairs to try again."+(n?" Below: pairs from your “Don't confuse it with” lists.":"");
+    CMP.msg=(OWNKEY?"The AI's":"Claude's")+" search didn't come back properly"+(e&&e.code?" ("+e.code+")":"")+". Press Find pairs to try again."+(n?" Below: pairs from your “Don't confuse it with” lists.":"");
   }).then(function(){ CMP.finding=false; renderCompare(); });
 }
 
@@ -3660,7 +3683,7 @@ function renderCompare(){
   tools.appendChild(pr);
   var pc=el("span","spotcount"); pc.id="cmp-count"; pr.appendChild(pc);
   var fb=el("button","btn ghost small",CMP.finding?"Looking…":"Find pairs"); fb.id="cmp-find"; fb.type="button";
-  fb.disabled=!SAMPLE||CMP.finding; fb.title="Claude looks through your word bank for expressions you could mix up";
+  fb.disabled=!SAMPLE||CMP.finding; fb.title=(OWNKEY?"The AI":"Claude")+" looks through your word bank for expressions you could mix up";
   fb.addEventListener("click",runFindPairs);
   var nb=el("button","btn ghost small","+ New set"); nb.id="cmp-new-open"; nb.type="button";
   tools.appendChild(fb); tools.appendChild(nb);
@@ -4297,7 +4320,7 @@ function sceneExprBlock(o){
   btn.type="button";
   btn.addEventListener("click",function(){
     if(o.get()){ open=!open; draw(); return; }
-    if(!SAMPLE){ btn.disabled=true; btn.textContent="Needs Claude, which isn't available here"; return; }
+    if(!SAMPLE){ btn.disabled=true; btn.textContent=OWNKEY?"Needs your AI service":"Needs Claude, which isn't available here"; return; }
     btn.disabled=true; btn.textContent="Finding them…";
     var ex=arr(o.exclude).concat(arr(o.sc&&o.sc.usefulLanguage).map(function(u){ return str(u&&u.phrase); }))
       .concat(S.terms.slice(0,40).map(function(t){ return str(t.term); })).filter(Boolean);
@@ -4568,7 +4591,7 @@ function attemptView(a,c){
   if(c.attempts.length>=MAX_ATTEMPTS){
     r.appendChild(el("span","hint","This card holds "+MAX_ATTEMPTS+" practices, which is its limit. Start a fresh one from the themes."));
   } else if(!SAMPLE){
-    r.appendChild(el("span","hint","Practising again needs Claude, which isn't available in this view."));
+    r.appendChild(el("span","hint",needsAI("Practising again")));
   } else {
     var b1=el("button","btn small",a.nextTip?"Tell it again with this in mind":"Tell it again");
     b1.addEventListener("click",function(){ startReattempt(c,"story",a); });
@@ -4769,20 +4792,456 @@ $("btn-diag").addEventListener("click",runDiag);
 $("chat-text").addEventListener("input",function(){ this.style.height="auto"; this.style.height=Math.min(this.scrollHeight,160)+"px"; });
 $("chat-text").addEventListener("keydown",function(e){ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); sendChat(); } });
 
+/* ---------- backup and restore (S1 slice 2) ----------
+   Back up: everything in one JSON file the learner keeps. Restore: reads that file back.
+   Restore only ADDS and UPDATES (the newer copy wins); it never deletes anything (pitfall 9).
+   On claude.ai the file goes through the platform's "downloads" capability, which asks the viewer first;
+   off claude.ai, the browser saves it directly. */
+var DL=null;                       /* the downloads namespace, or null */
+var LS_BACKUP="ss.lastBackup";     /* {at} — when this browser last made a backup */
+var LS_BACKUPHIDE="ss.backupHidden";
+var BK_KINDS=["cards","terms","sets","pics","meta"], BK_VERSION=1;
+function bkCopy(o){ return JSON.parse(JSON.stringify(o)); }
+function bkBody(x){ var b=bkCopy(x); delete b.id; return b; }
+function lastBackupAt(){ var b=lsJSON(LS_BACKUP,null); return b&&Number(b.at)||0; }
+function bkDate(t){ var d=new Date(t); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function daysAgo(t){ var n=Math.floor((Date.now()-t)/86400000); return n<=0?"today":n===1?"yesterday":n+" days ago"; }
+
+/* Everything, from the database when it can be read, plus anything on this page it doesn't have yet. */
+function backupData(){
+  return Promise.all(BK_KINDS.map(function(k){
+    var ref=docRef(k); if(!ref) return Promise.resolve(null);
+    return ref.get().then(function(s){ var o={}; s.docs.forEach(function(d){ o[d.id]=bkCopy(d.data()||{}); }); return o; })
+      .catch(function(){ return null; });
+  })).then(function(r){
+    var data={}, counts={};
+    BK_KINDS.forEach(function(k,i){
+      var o=r[i]||{};
+      if(k==="cards"||k==="terms"||k==="sets") listOf(k).forEach(function(x){ if(x&&x.id&&!o[x.id]) o[x.id]=bkBody(x); });
+      if(k==="meta"&&!o.notpairs&&S.notPairs.length) o.notpairs={keys:S.notPairs.slice(-400)};
+      data[k]=o; counts[k]=Object.keys(o).length;
+    });
+    return {app:"Scene & Say", kind:"backup", version:BK_VERSION, createdAt:Date.now(), from: OWNKEY?"own key":"claude.ai", counts:counts, data:data};
+  });
+}
+function backUp(btn,msg){
+  if(!DL){ msg.textContent="Saving a file isn't allowed in this view."; return; }
+  btn.disabled=true; msg.textContent="Packing everything up…";
+  backupData().then(function(b){
+    var name="scene-and-say-backup-"+bkDate(b.createdAt)+".json";
+    return DL.save({filename:name, data:JSON.stringify(b)}).then(function(){
+      lsPut(LS_BACKUP,{at:b.createdAt});
+      btn.disabled=false;
+      msg.textContent="Saved "+name+": "+b.counts.cards+" cards, "+b.counts.terms+" words, "+b.counts.sets+" Compare sets"+(b.counts.pics?", "+b.counts.pics+" pictures":"")+". Keep it somewhere safe, like your Documents folder.";
+      renderDataRow(true); renderBackupNag();
+    });
+  }).catch(function(e){
+    btn.disabled=false;
+    msg.textContent = e&&e.code==="declined" ? "Not saved: the download was cancelled." : "That didn't save ("+((e&&e.code)||"unknown")+"). Try once more.";
+  });
+}
+
+/* One item back into its list, this page's copy and the database. */
+function restoreItem(kind,id,body){
+  var obj=bkCopy(body); obj.id=id;
+  var list=listOf(kind), hit=false;
+  for(var i=0;i<list.length;i++) if(list[i].id===id){ list[i]=obj; hit=true; break; }
+  if(!hit) list.push(obj);
+  list.sort(byRecent);
+  lsPut(lsKeyOf(kind),list);
+  var ref=docRef(kind); if(!ref) return Promise.resolve();
+  return ref.doc(id).set(bkCopy(body));
+}
+function restoreFrom(text){
+  var b=null; try{ b=JSON.parse(text); }catch(e){}
+  if(!b||b.kind!=="backup"||b.app!=="Scene & Say"||!b.data||typeof b.data!=="object") return Promise.reject({msg:"This doesn't look like a Scene & Say backup file."});
+  if(Number(b.version)>BK_VERSION) return Promise.reject({msg:"This backup comes from a newer Scene & Say. Update this page first, then restore."});
+  var added=0, updated=0, jobs=[];
+  ["cards","terms","sets"].forEach(function(k){
+    var src=b.data[k]||{};
+    Object.keys(src).forEach(function(id){
+      var body=src[id]; if(!body||typeof body!=="object") return;
+      var have=listOf(k).filter(function(x){ return x.id===id; })[0];
+      if(!have){ added++; jobs.push(restoreItem(k,id,body)); }
+      else if(recentOf(body)>recentOf(have)){ updated++; jobs.push(restoreItem(k,id,body)); }   /* the newer copy wins */
+    });
+  });
+  /* pictures never change: add the ones that are missing */
+  var pics=b.data.pics||{}, pref=docRef("pics");
+  if(pref) Object.keys(pics).forEach(function(id){
+    jobs.push(pref.doc(id).get().then(function(s){ if(s&&s.exists) return; added++; return pref.doc(id).set(bkCopy(pics[id])); }));
+  });
+  /* "Not a pair" choices: keep both lists */
+  var np=b.data.meta&&b.data.meta.notpairs&&b.data.meta.notpairs.keys;
+  if(np&&np.length){
+    np.forEach(function(k){ if(S.notPairs.indexOf(k)<0) S.notPairs.push(k); });
+    lsPut(LS_NOTPAIRS,S.notPairs);
+    var mref=docRef("meta"); if(mref) jobs.push(mref.doc("notpairs").set({keys:S.notPairs.slice(-400)}));
+  }
+  return Promise.all(jobs.map(function(j){ return Promise.resolve(j).catch(function(e){ return {failed:e}; }); })).then(function(rs){
+    var failed=rs.filter(function(r){ return r&&r.failed; }).length;
+    renderCards(); renderWords(); renderCompare(); renderSpotDue(); renderBackupNag();
+    return {added:added, updated:updated, failed:failed};
+  });
+}
+
+/* "Your data" row, above Help: Back up · Restore · Last backup. */
+function renderDataRow(keepMsg){
+  var h=$("data-row"); if(!h) return;
+  var oldMsg=$("data-msg"), m=keepMsg&&oldMsg?oldMsg.textContent:"";
+  clear(h);
+  h.appendChild(el("b","data-title","Your data"));
+  var bk=el("button","btn ghost small","Back up"); bk.type="button"; bk.id="btn-backup";
+  var rs=el("button","btn ghost small","Restore"); rs.type="button"; rs.id="btn-restore";
+  var file=el("input"); file.type="file"; file.accept=".json,application/json"; file.id="data-file"; file.hidden=true;
+  var last=lastBackupAt();
+  var when=el("span","hint data-when", last ? "Last backup: "+daysAgo(last) : "Last backup: never");
+  var row=el("div","row"); row.appendChild(bk); row.appendChild(rs); row.appendChild(when);
+  h.appendChild(row); h.appendChild(file);
+  var msg=el("p","hint data-msg",m); msg.id="data-msg"; h.appendChild(msg);
+  if(!DL){ bk.disabled=true; bk.title="Saving a file isn't allowed in this view."; }
+  bk.addEventListener("click",function(){ backUp(bk,msg); });
+  rs.addEventListener("click",function(){ file.value=""; file.click(); });
+  file.addEventListener("change",function(){
+    var f=file.files&&file.files[0]; if(!f) return;
+    msg.textContent="Reading "+f.name+"…";
+    var fr=new FileReader();
+    fr.onload=function(){
+      restoreFrom(String(fr.result)).then(function(r){
+        msg.textContent = (!r.added&&!r.updated) ? "Everything in this file is already here." :
+          "Restored: added "+r.added+", updated "+r.updated+". Nothing was deleted."+(r.failed?" "+r.failed+" couldn't be saved; try once more.":"");
+      }).catch(function(e){ msg.textContent=(e&&e.msg)||"That file couldn't be restored."; });
+    };
+    fr.onerror=function(){ msg.textContent="That file couldn't be read."; };
+    fr.readAsText(f);
+  });
+}
+/* The gentle reminder: own-key version only (claude.ai already keeps your data in your account).
+   It shows when the last backup is over 7 days old (or there's none) AND something was saved after it. */
+function renderBackupNag(){
+  var h=$("backupnag"); if(!h) return; clear(h);
+  var items=S.cards.concat(S.terms,S.sets);
+  var last=lastBackupAt(), newest=0, oldest=Infinity;
+  items.forEach(function(x){ var t=recentOf(x); if(t>newest) newest=t; var c=Number(x&&x.createdAt)||t; if(c&&c<oldest) oldest=c; });
+  var since = last || oldest;
+  var due = OWNKEY && DL && items.length && newest>last && (Date.now()-since)>7*86400000 && lsGet(LS_BACKUPHIDE,"")!==dayKey();
+  if(!due){ h.hidden=true; return; }
+  h.hidden=false;
+  var line=el("div","backupnag-line");
+  line.appendChild(el("span",null, last ? "Last backup: "+daysAgo(last)+". Your words and cards live only in this browser. Back up now?"
+                                        : "You haven't made a backup yet. Your words and cards live only in this browser. Back up now?"));
+  var go=el("button","btn ghost small","Back up now"); go.type="button"; go.id="backupnag-go";
+  var no=el("button","btn ghost small","Not now"); no.type="button"; no.id="backupnag-no";
+  var msg=el("span","hint");
+  go.addEventListener("click",function(){ backUp(go,msg); });
+  no.addEventListener("click",function(){ lsSet(LS_BACKUPHIDE,dayKey()); renderBackupNag(); });
+  line.appendChild(go); line.appendChild(no); line.appendChild(msg);
+  h.appendChild(line);
+}
+
+/* ---------- own-key engine (S1) ----------
+   Off claude.ai there is no window.claude. SS then fills the same two doors itself:
+   - the brain door (SAMPLE, SAMPLE.json): the AI service the learner chose, in the OpenAI format, with their own key;
+   - the notebook door (DB.doc(path).collection(name)): the browser's own database (IndexedDB).
+   On claude.ai none of this runs. */
+var OWNKEY=null;   /* set when the own-key engine runs: {cfg}. (Not OWN: that name is the "From your life" theme.) */
+var OWN_LS="ss.own.v1";
+var OWN_SERVICES=[
+  {id:"openai",     name:"OpenAI",        base:"https://api.openai.com/v1",                               model:"gpt-5.4-mini",        keys:"https://platform.openai.com/api-keys",
+   models:[["gpt-5.4-mini","GPT-5.4 mini · cheaper, good for practice"],["gpt-5.4","GPT-5.4 · better, costs more"]]},
+  {id:"deepseek",   name:"DeepSeek",      base:"https://api.deepseek.com",                                model:"deepseek-flash",      keys:"https://platform.deepseek.com/api_keys",
+   models:[["deepseek-flash","DeepSeek Flash · cheapest"],["deepseek-v4-pro","DeepSeek V4 Pro · better, costs more"]]},
+  {id:"gemini",     name:"Google Gemini", base:"https://generativelanguage.googleapis.com/v1beta/openai", model:"gemini-3.8-flash",    keys:"https://aistudio.google.com/apikey",
+   models:[["gemini-3.8-flash","Gemini 3.8 Flash · cheaper, good for practice"]]},
+  {id:"openrouter", name:"OpenRouter",    base:"https://openrouter.ai/api/v1",                            model:"openai/gpt-5.4-mini", keys:"https://openrouter.ai/keys",
+   models:[["openai/gpt-5.4-mini","GPT-5.4 mini · cheaper, good for practice"],["openai/gpt-5.4","GPT-5.4 · better, costs more"]]},
+  {id:"other",      name:"Other (custom address)", base:"", model:"", keys:"", models:[]}
+];
+/* Model names change often (DeepSeek retired "deepseek-chat" in July 2026), so the list is a shortcut, never a limit:
+   "Type another model name…" is always there. */
+var OWN_TYPE="__type";
+function ownService(id){ for(var i=0;i<OWN_SERVICES.length;i++) if(OWN_SERVICES[i].id===id) return OWN_SERVICES[i]; return OWN_SERVICES[0]; }
+function ownCfg(){ var c=lsJSON(OWN_LS,null); return c && c.key && c.base && c.model ? c : null; }
+function aiName(){ return OWNKEY ? "your AI service" : "Claude"; }
+/* "X needs Claude…" on claude.ai; in the own-key version, say what to do instead (S1 slice 3). */
+function needsAI(what){
+  if(!OWNKEY) return (what==="This"?"Needs":what+" needs")+" Claude, which isn't available in this view.";
+  return what+" needs your AI service. Connect it at the top of the Practice page.";
+}
+/* The friend's guide (S1 slice 3), in the public repo next to the page GitHub Pages serves. */
+var OWN_GUIDE="https://github.com/Siyy711/scene-and-say-ai-tutor/blob/main/docs/friend-guide.md";
+
+/* One request in the OpenAI "chat completions" format. Errors come back as {code}, like the platform's. */
+function ownAsk(cfg,input,opts,wantJson,plain){
+  opts=opts||{};
+  var msgs = typeof input==="string" ? [{role:"user",content:input}]
+    : Array.isArray(input) ? input.map(function(m){ return {role:m.role==="assistant"?"assistant":"user", content:String(m.content==null?"":m.content)}; })
+    : [{role:"user",content:JSON.stringify(input)}];
+  if(wantJson) msgs=[{role:"system",content:"Reply with one JSON object only: no markdown, no code fences, no text before or after it."}].concat(msgs);
+  var body={model:cfg.model, messages:msgs};
+  if(wantJson && !plain) body.response_format={type:"json_object"};
+  var ctl=new AbortController(), timer=setTimeout(function(){ ctl.abort("timeout"); },120000);
+  if(opts.signal){ if(opts.signal.aborted) ctl.abort(); else opts.signal.addEventListener("abort",function(){ ctl.abort(); }); }
+  var url=String(cfg.base).replace(/\/+$/,"")+"/chat/completions";
+  return fetch(url,{method:"POST", signal:ctl.signal,
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+cfg.key},
+    body:JSON.stringify(body)
+  }).then(function(r){
+    return r.text().then(function(t){
+      var j=null; try{ j=JSON.parse(t); }catch(e){}
+      if(!r.ok){
+        var msg=str(j&&j.error&&(j.error.message||j.error))||t.slice(0,200);
+        /* Some services don't know "JSON only" mode: ask once more without it. */
+        if(r.status===400 && wantJson && !plain && /response_format|json_object|json mode/i.test(msg)) return {retryPlain:true};
+        var code = r.status===401||r.status===403 ? "bad_key"
+          : r.status===402 ? "no_credit"
+          : r.status===429 ? "rate_limited"
+          : r.status===413 ? "prompt_too_large"
+          : (r.status===404||r.status===400) && /model/i.test(msg) ? "model_not_found"
+          : r.status>=500 ? "service_error" : "service_error";
+        throw {code:code, status:r.status, message:msg};
+      }
+      return {json:j};
+    });
+  },function(e){
+    if(ctl.signal.aborted) throw {code: ctl.signal.reason==="timeout" ? "timeout" : "cancelled"};
+    throw {code:"network", message:String(e&&e.message||e)};
+  }).then(function(res){
+    clearTimeout(timer);
+    if(res.retryPlain) return ownAsk(cfg,input,opts,wantJson,true);
+    var ch=res.json&&res.json.choices&&res.json.choices[0];
+    var text=str(ch&&ch.message&&ch.message.content);
+    var cut=!!(ch&&ch.finish_reason==="length");
+    if(!text.trim()) throw {code:"empty_completion"};
+    if(!wantJson) return {text:text, truncated:cut, modelTierApplied:"own"};
+    var s=text.trim().replace(/^```[a-z]*\s*/i,"").replace(/```\s*$/,"");
+    var a=s.indexOf("{"), b=s.lastIndexOf("}");
+    if(a<0||b<a) throw {code:"invalid_json", message:"no JSON object"};
+    try{ return JSON.parse(s.slice(a,b+1)); }catch(e){ throw {code:"invalid_json", message:cut?"cut short":"malformed"}; }
+  },function(e){ clearTimeout(timer); throw e; });
+}
+function ownSample(cfg){
+  var f=function(input,opts){ return ownAsk(cfg,input,opts,false); };
+  f.json=function(input,opts){ return ownAsk(cfg,input,opts,true); };
+  return f;
+}
+
+/* The notebook: every document lives in IndexedDB under its full path, and in memory while the page is open.
+   Reads hand out FROZEN copies, like the claude.ai database does (pitfall 25). */
+function ownFreeze(o){ if(o&&typeof o==="object"){ Object.freeze(o); Object.keys(o).forEach(function(k){ ownFreeze(o[k]); }); } return o; }
+function ownCopy(o){ return o==null ? o : JSON.parse(JSON.stringify(o)); }
+function ownOpenDB(){
+  return new Promise(function(res,rej){
+    if(!window.indexedDB) return rej({code:"no_storage"});
+    var rq; try{ rq=indexedDB.open("scene-and-say",1); }catch(e){ return rej({code:"no_storage"}); }
+    rq.onupgradeneeded=function(){ rq.result.createObjectStore("docs"); };
+    rq.onerror=function(){ rej({code:"no_storage"}); };
+    rq.onsuccess=function(){
+      var idb=rq.result, mem={};
+      var cur=idb.transaction("docs","readonly").objectStore("docs").openCursor();
+      cur.onerror=function(){ rej({code:"no_storage"}); };
+      cur.onsuccess=function(){ var c=cur.result; if(c){ mem[c.key]=c.value; c.continue(); } else res(ownStore(idb,mem)); };
+    };
+  });
+}
+function ownStore(idb,mem){
+  var subs=[], chan=null;
+  try{ chan=new BroadcastChannel("scene-and-say"); }catch(e){}
+  function notify(){ subs.slice().forEach(function(s){ s.tick(); }); }
+  /* Another tab changed something: read those documents again, then tell the open lists. */
+  if(chan) chan.onmessage=function(ev){
+    var keys=(ev.data&&ev.data.keys)||[], left=keys.length; if(!left) return;
+    var st=idb.transaction("docs","readonly").objectStore("docs");
+    keys.forEach(function(k){ var g=st.get(k); g.onsuccess=function(){ if(g.result===undefined) delete mem[k]; else mem[k]=g.result; if(!--left) notify(); }; });
+  };
+  function write(key,body){
+    return new Promise(function(res,rej){
+      var tx=idb.transaction("docs","readwrite"), st=tx.objectStore("docs");
+      if(body===null) st.delete(key); else st.put(body,key);
+      tx.oncomplete=function(){
+        if(body===null) delete mem[key]; else mem[key]=body;
+        notify(); if(chan) chan.postMessage({keys:[key]}); res();
+      };
+      tx.onerror=tx.onabort=function(){ rej({code: tx.error&&tx.error.name==="QuotaExceededError" ? "storage_full" : "write-failed"}); };
+    });
+  }
+  function snap(id){ var b=mem[id]; var f=ownFreeze(ownCopy(b)); return {id:id.slice(id.lastIndexOf("/")+1), exists:b!==undefined, data:function(){ return f; }}; }
+  function coll(path,order,max){
+    function rows(){
+      var out=[];
+      for(var k in mem) if(k.indexOf(path+"/")===0 && k.slice(path.length+1).indexOf("/")<0) out.push(k);
+      if(order) out.sort(function(a,b){
+        var x=mem[a][order.f], y=mem[b][order.f];
+        var c = x===y ? 0 : x===undefined ? 1 : y===undefined ? -1 : (x<y?-1:1);
+        return order.d==="desc" ? -c : c;
+      });
+      return max ? out.slice(0,max) : out;
+    }
+    var q={
+      orderBy:function(f,d){ return coll(path,{f:f,d:d||"asc"},max); },
+      limit:function(n){ return coll(path,order,n); },
+      get:function(){ var d=rows().map(snap); return Promise.resolve({docs:d,size:d.length,empty:!d.length}); },
+      onSnapshot:function(next){
+        var prev=null, sub={tick:function(){
+          var cur={}; rows().forEach(function(k){ cur[k]=JSON.stringify(mem[k]); });
+          var ch=[];
+          Object.keys(cur).forEach(function(k){
+            if(!prev||!(k in prev)) ch.push({type:"added",doc:snap(k)});
+            else if(prev[k]!==cur[k]) ch.push({type:"modified",doc:snap(k)});
+          });
+          if(prev) Object.keys(prev).forEach(function(k){ if(!(k in cur)) ch.push({type:"removed",doc:snap(k)}); });
+          var first=!prev; prev=cur;
+          if(first||ch.length){ var d=Object.keys(cur).map(snap); next({docs:d,size:d.length,empty:!d.length,docChanges:function(){ return ch; }}); }
+        }};
+        subs.push(sub); setTimeout(sub.tick,0);
+        return function(){ var i=subs.indexOf(sub); if(i>=0) subs.splice(i,1); };
+      },
+      doc:function(id){ var key=path+"/"+id; return {
+        id:id,
+        get:function(){ return Promise.resolve(snap(key)); },
+        set:function(b){ return write(key,ownCopy(b)); },
+        update:function(p){
+          if(mem[key]===undefined) return Promise.reject({code:"not_found"});
+          var b=ownCopy(mem[key]); for(var k in p){ if(p[k]&&p[k].__delete__) delete b[k]; else b[k]=ownCopy(p[k]); }
+          return write(key,b);
+        },
+        delete:function(){ return write(key,null); }
+      }; }
+    };
+    return q;
+  }
+  return {
+    doc:function(p){ return {collection:function(c){ return coll(p+"/"+c); }}; },
+    /* for backup and restore (slice 2) */
+    _all:function(){ return ownCopy(mem); }
+  };
+}
+/* The same shape as window.claude: use("sample" | "db" | "user"). */
+function ownRuntime(){
+  var cfg=ownCfg(), dbp=null;
+  OWNKEY={cfg:cfg};
+  return {use:function(name){
+    if(name==="sample") return Promise.resolve(cfg ? ownSample(cfg) : null);
+    if(name==="db") return dbp || (dbp=ownOpenDB());
+    if(name==="user") return Promise.resolve({id:function(){ return "local"; }});
+    /* Off claude.ai the browser saves the file itself. */
+    if(name==="downloads") return Promise.resolve({save:function(r){
+      try{
+        var blob = r.data instanceof Blob ? r.data : new Blob([r.data],{type:"application/json"});
+        var u=URL.createObjectURL(blob), a=document.createElement("a");
+        a.href=u; a.download=r.filename; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(u); },4000);
+        return Promise.resolve({status:"saved"});
+      }catch(e){ return Promise.reject({code:"unavailable",message:String(e)}); }
+    }});
+    return Promise.resolve(null);
+  }};
+}
+
+/* The first screen off claude.ai: choose a service, paste the key, test it, save it. */
+function renderOwnSetup(h,changing){
+  var cfg=lsJSON(OWN_LS,null)||{}, svc=ownService(cfg.service||"openrouter");
+  var box=el("div","card pad ownkey");
+  box.appendChild(el("div","eyebrow",changing?"Your AI service":"Before you start"));
+  box.appendChild(el("h2","ownkey-title","Connect your AI service"));
+  box.appendChild(el("p","hint","Scene & Say needs an AI to write scenes and mark your stories. It uses your own API key, so the cost goes to your own account. Your key and everything you save stay in this browser on this device."));
+  if(!changing){ var gp=el("p","hint ownkey-guide"), ga=el("a",null,"New here? Read the 5-minute guide"); ga.id="own-guide"; ga.href=OWN_GUIDE; ga.target="_blank"; ga.rel="noopener"; gp.appendChild(ga); gp.appendChild(document.createTextNode(": what it costs, how to get a key, and how to keep your data safe.")); box.appendChild(gp); }
+  function field(label,node,id){ var d=el("div","ownkey-field"); var l=el("label","field-label",label); l.htmlFor=id; node.id=id; d.appendChild(l); d.appendChild(node); box.appendChild(d); return d; }
+  var sel=el("select"); OWN_SERVICES.forEach(function(s){ var o=el("option",null,s.name); o.value=s.id; sel.appendChild(o); }); sel.value=svc.id;
+  field("Service",sel,"own-svc");
+  var base=el("input"); base.type="text"; base.placeholder="https://…/v1"; base.spellcheck=false;
+  var baseRow=field("Address (ends before /chat/completions)",base,"own-base");
+  var pick=el("select");
+  field("Model",pick,"own-model-pick");
+  var model=el("input"); model.type="text"; model.spellcheck=false; model.placeholder="Type the model name, e.g. provider/model";
+  var modelRow=field("Model name",model,"own-model");
+  /* The dropdown writes into the text field; saving always reads the text field. */
+  function fillPick(s,current){
+    clear(pick);
+    (s.models||[]).forEach(function(m){ var o=el("option",null,m[1]); o.value=m[0]; pick.appendChild(o); });
+    var t=el("option",null,"Type another model name…"); t.value=OWN_TYPE; pick.appendChild(t);
+    var known=(s.models||[]).some(function(m){ return m[0]===current; });
+    pick.value = known ? current : OWN_TYPE;
+    model.value = current||"";
+    modelRow.hidden = pick.value!==OWN_TYPE;
+  }
+  pick.addEventListener("change",function(){
+    if(pick.value===OWN_TYPE){ modelRow.hidden=false; model.value=""; model.focus(); }
+    else { modelRow.hidden=true; model.value=pick.value; }
+  });
+  var key=el("input"); key.type="password"; key.autocomplete="off"; key.spellcheck=false; key.placeholder="Paste your API key"; key.value=str(cfg.key);
+  field("API key",key,"own-key");
+  var help=el("p","hint ownkey-help"); box.appendChild(help);
+  function fill(keep){
+    var s=ownService(sel.value);
+    baseRow.hidden = s.id!=="other";
+    if(!keep){ base.value=s.base; fillPick(s,s.model); }
+    clear(help);
+    if(s.keys){ var a=el("a",null,"Where do I get my "+s.name+" key?"); a.href=s.keys; a.target="_blank"; a.rel="noopener"; help.appendChild(a); help.appendChild(document.createTextNode(" ")); }
+    help.appendChild(document.createTextNode("Tip: set a monthly spending limit on that account, so a lost key can only cost a little."));
+  }
+  sel.addEventListener("change",function(){ fill(false); });
+  if(cfg.service){ base.value=str(cfg.base); fillPick(svc,str(cfg.model)); fill(true); } else fill(false);
+  var row=el("div","row"); row.style.marginTop="12px";
+  var go=el("button","btn small","Test and save"); go.type="button"; go.id="own-save"; row.appendChild(go);
+  if(changing){ var back=el("button","btn ghost small","Cancel"); back.type="button"; back.id="own-cancel"; back.addEventListener("click",function(){ renderOwnHelp(); }); row.appendChild(back); }
+  box.appendChild(row);
+  var msg=el("div","ownkey-msg"); msg.id="own-msg"; box.appendChild(msg);
+  go.addEventListener("click",function(){
+    var c={service:sel.value, base:base.value.trim(), model:model.value.trim(), key:key.value.trim()};
+    clear(msg);
+    if(!c.base||!c.model||!c.key){ msg.appendChild(el("div","notice","Fill in "+(!c.key?"your API key":!c.model?"the model name":"the address")+" first.")); return; }
+    go.disabled=true; go.textContent="Testing…";
+    ownAsk(c,"Reply with the single word: ok",{},false).then(function(){
+      lsPut(OWN_LS,c);
+      msg.appendChild(el("div","notice quiet","It works. Starting Scene & Say…"));
+      setTimeout(function(){ location.reload(); },600);
+    }).catch(function(e){
+      go.disabled=false; go.textContent="Test and save";
+      msg.appendChild(el("div","notice",errCopy(e&&e.code)+(e&&e.message?"  ("+String(e.message).slice(0,160)+")":"")));
+    });
+  });
+  h.appendChild(box);
+}
+/* In Help: which service is in use, with Change and Forget my key. */
+function renderOwnHelp(){
+  var h=$("own-help"); if(!h) return; clear(h);
+  if(!OWNKEY){ h.hidden=true; return; }
+  h.hidden=false;
+  var cfg=ownCfg();
+  if(!cfg){ h.appendChild(el("p","hint","No AI service connected yet. Connect one at the top of this page.")); return; }
+  var p=el("p","hint"); p.appendChild(el("b",null,"Your AI service: ")); p.appendChild(document.createTextNode(ownService(cfg.service).name+" · "+cfg.model+". The key is saved in this browser only."));
+  h.appendChild(p);
+  var row=el("div","row");
+  var ch=el("button","btn ghost small","Change"); ch.type="button"; ch.id="own-change";
+  ch.addEventListener("click",function(){ clear(h); renderOwnSetup(h,true); });
+  var fg=el("button","btn ghost small","Forget my key"); fg.type="button"; fg.id="own-forget";
+  fg.addEventListener("click",function(){
+    if(fg.dataset.sure!=="1"){ fg.dataset.sure="1"; fg.textContent="Forget it? Click again"; return; }
+    var c=ownCfg()||{}; delete c.key; lsPut(OWN_LS,c);
+    location.reload();
+  });
+  row.appendChild(ch); row.appendChild(fg); h.appendChild(row);
+}
+
+renderDataRow();
 (function boot(){
   var c=window.claude;
+  /* No Claude runtime: use the learner's own AI service and this browser's database. */
+  if(!c||typeof c.use!=="function") c=ownRuntime();
   if(!c||typeof c.use!=="function"){
     DIAG.runtime="not present (page opened outside a Claude viewer)";
     DIAG.sample="unavailable"; DIAG.db="unavailable"; DIAG.user="unavailable";
     S.store.state="local"; S.store.err="no-runtime";
-    renderDiag(); renderBlocked(); renderThemes(); renderCards(); renderWords();
+    renderDiag(); renderBlocked(); renderThemes(); renderCards(); renderWords(); renderDataRow();
     return;
   }
-  DIAG.runtime="present";
+  DIAG.runtime = OWNKEY ? "own key (this browser)" : "present";
+  c.use("downloads").then(function(d){ DL=d||null; renderDataRow(); renderBackupNag(); }).catch(function(){ DL=null; renderDataRow(); });
   c.use("sample").then(function(s){
     SAMPLE=s||null;
-    DIAG.sample = SAMPLE ? "available" : "not granted to this view";
-    renderDiag(); renderBlocked(); renderThemes(); renderWords(); renderNoteBox(); renderCompare();
+    DIAG.sample = SAMPLE ? (OWNKEY ? "available — "+ownService(OWNKEY.cfg.service).name+" · "+OWNKEY.cfg.model : "available") : (OWNKEY ? "no AI service connected yet" : "not granted to this view");
+    renderDiag(); renderBlocked(); renderOwnHelp(); renderThemes(); renderWords(); renderNoteBox(); renderCompare();
   }).catch(function(){
     DIAG.sample="failed to load"; renderDiag(); renderBlocked(); renderThemes();
   });
@@ -4801,7 +5260,7 @@ $("chat-text").addEventListener("keydown",function(e){ if(e.key==="Enter"&&!e.sh
     DIAG.uid = UID ? String(UID).slice(0,8)+"…" : "none — no private storage";
     return loadAll();
   }).then(function(){
-    renderDiag(); renderCards(); renderWords(); renderCompare();
+    renderDiag(); renderCards(); renderWords(); renderCompare(); renderBackupNag();
     startLive();
     loadNotPairs();
     return checkChatAdditions();

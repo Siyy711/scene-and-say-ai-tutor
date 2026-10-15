@@ -13,7 +13,7 @@ I first built SS for myself, to fix two problems:
 
 SS works on both problems with [three kinds of practice](#what-you-practise). It also fits around your life:
 
-- **Scenes about your own life.** Fill in your profile (your work, and your studies or research if you like), and Claude builds situations you'd really face.
+- **Scenes about your own life.** Fill in your profile (your work, and your studies or research if you like), and the AI builds situations you'd really face.
 - **Five to ten minutes a day.** One round of Spot it or Compare is up to three short exercises.
 - **Words from anywhere.** Save an expression while you work with Claude, or take a screenshot of one you meet in a show or a book. SS brings it back later for practice.
 
@@ -36,17 +36,18 @@ Words come back on a schedule. The better you do, the longer the gap.
 
 **3. Compare: the right word among similar ones.** Synonyms are rarely exact. Compare gives each word in a group an almost identical situation that differs in one detail, and you choose the word that fits. The feedback says which detail decides it.
 
-## Status
+## Two ways to use it
 
-Version **v30**. It runs as a published artifact on claude.ai and uses Claude for the language feedback.
+Version **v31**. SS runs in two places, from the same file:
 
-People outside the owner's Claude account can't use the Claude or storage parts of the owner's page. So each friend makes **their own copy** in their own Claude account, and saving needs Claude Pro or higher. To set up your own copy, see [`docs/pilot-guide.md`](docs/pilot-guide.md).
+1. **As a normal web page, with your own AI service.** Open **https://siyy711.github.io/scene-and-say-ai-tutor/**, pick a service (OpenAI, DeepSeek, Google Gemini, OpenRouter, or any service that speaks the OpenAI format) and paste your own API key. No Claude account needed. Start with the 5-minute guide: [`docs/friend-guide.md`](docs/friend-guide.md).
+2. **On claude.ai, with Claude.** Make **your own copy** in your own Claude account (saving needs Claude Pro or higher): see [`docs/pilot-guide.md`](docs/pilot-guide.md).
 
 ## How it works
 
-- `app/scene-and-say.html` is the whole app: one HTML file with no framework and no build step.
+- `app/scene-and-say.html` is the whole app: one HTML file with no framework and no build step. `index.html` is the same app in a plain web page, for GitHub Pages; the tests rebuild it, so don't edit it by hand.
 - On claude.ai, the page asks Claude for scenes and feedback, and keeps each person's cards and words in private cloud storage.
-- Opened outside claude.ai, the page can't reach Claude or the storage.
+- Anywhere else, the page asks your chosen AI service with your own key, and keeps your cards and words in the browser's own database on that device. Your key stays in that browser and goes only to that service. **Back up** and **Restore** move your data between browsers.
 
 ## Run the tests
 
@@ -59,7 +60,7 @@ npx playwright install chromium
 ./run-all.sh
 ```
 
-Expected: every file passes, **TOTAL PASS: 614**. More in [`tests/README.md`](tests/README.md).
+Expected: every file passes, **TOTAL PASS: 732**. More in [`tests/README.md`](tests/README.md).
 
 ## Working on it with an AI coding tool
 

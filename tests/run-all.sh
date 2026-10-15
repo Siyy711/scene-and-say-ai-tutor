@@ -3,6 +3,10 @@
 cd "$(dirname "$0")"
 # Build the test page from the real app: the stand-in (mock-head.html) + app/scene-and-say.html.
 python3 build_mock.py ../app/scene-and-say.html preview-mock.html || exit 1
+# The own-key page (S1): the same app with no stand-in, as GitHub Pages serves it.
+python3 build_own.py ../app/scene-and-say.html preview-own.html || exit 1
+# In the public repo, index.html (the page GitHub Pages serves) is rebuilt the same way, so it never falls behind the app.
+[ -f ../index.html ] && { python3 build_own.py ../app/scene-and-say.html ../index.html || exit 1; }
 [ -f test-shot.png ] || node make-test-shot.js
 tot=0
 for t in $(ls test*.js | sort -V); do

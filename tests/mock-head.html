@@ -34,6 +34,13 @@ function __coll(path){
 window.claude={use:function(name){
   if(location.hash==="#db" && name==="db") return Promise.resolve({doc:function(p){ return {collection:function(c){ return __coll(p+"/"+c); }}; }});
   if(location.hash==="#db" && name==="user") return Promise.resolve({id:function(){ return "u_test"; }});
+  /* S1: like the real "downloads" capability, only allowed file types, and the viewer may say no (__dlDecline). */
+  if(name==="downloads") return Promise.resolve({save:function(r){
+    if(!/\.(json|txt|csv|md|png|jpg|pdf|zip)$/i.test(String(r.filename||""))) return Promise.reject({code:"rejected_extension",message:"not allowed"});
+    if(localStorage.getItem("__dlDecline")) return Promise.reject({code:"declined",message:"no"});
+    window.__downloads=(window.__downloads||[]).concat([{filename:r.filename,data:typeof r.data==="string"?r.data:""}]);
+    return Promise.resolve({status:"saved"});
+  }});
   if(name!=="sample") return Promise.resolve(null);
   var f=function(input){ return Promise.resolve({text:"Sure.",truncated:false,modelTierApplied:"quick"}); };
   f.json=function(input){
