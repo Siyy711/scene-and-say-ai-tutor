@@ -40,7 +40,7 @@ cd tests && ./run-all.sh
 
 - First time on a new computer: `cd tests && npm install && npx playwright install chromium`.
 - In a Claude cloud session, Playwright is preinstalled: `NODE_PATH=$(npm root -g) ./run-all.sh`.
-- **Expected result at v31: 28 files, TOTAL PASS: 732.** Any FAIL means stop and fix before going on.
+- **Expected result at v32: 29 files, TOTAL PASS: 774.** Any FAIL means stop and fix before going on.
 - Test rules (details in `tests/README.md`): tests only get stricter; a new test must fail on the previous version first; the stand-in must behave like the real platform (it freezes stored data); find items by content, not position.
 - The tests use a fake Claude. They can't judge the quality of real Claude replies. When a prompt to Claude changes, give the person a short "Try this first" list to check by hand.
 

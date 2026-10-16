@@ -38,7 +38,7 @@ Words come back on a schedule. The better you do, the longer the gap.
 
 ## Two ways to use it
 
-Version **v31**. SS runs in two places, from the same file:
+Version **v32** (Pixel Town: a bright, daytime pixel-art look). SS runs in two places, from the same file:
 
 1. **As a normal web page, with your own AI service.** Open **https://siyy711.github.io/scene-and-say-ai-tutor/**, pick a service (OpenAI, DeepSeek, Google Gemini, OpenRouter, or any service that speaks the OpenAI format) and paste your own API key. No Claude account needed. Start with the 5-minute guide: [`docs/friend-guide.md`](docs/friend-guide.md).
 2. **On claude.ai, with Claude.** Make **your own copy** in your own Claude account (saving needs Claude Pro or higher): see [`docs/pilot-guide.md`](docs/pilot-guide.md).
@@ -60,7 +60,7 @@ npx playwright install chromium
 ./run-all.sh
 ```
 
-Expected: every file passes, **TOTAL PASS: 732**. More in [`tests/README.md`](tests/README.md).
+Expected: every file passes, **TOTAL PASS: 774**. More in [`tests/README.md`](tests/README.md).
 
 ## Working on it with an AI coding tool
 

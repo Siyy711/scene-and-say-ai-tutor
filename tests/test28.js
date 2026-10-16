@@ -73,9 +73,12 @@ DB[P+"sets/s1"]={createdAt:NOW-D,updatedAt:NOW-D,words:["for","since"],kind:"pre
     ok("Practice: the review lines are on screen for this check", await p.isVisible('#spotdue-go') && await p.isVisible('#cmpdue-go'));
     const f=await filled("themes");
     ok("Practice: only one filled button ("+f.join(", ")+")", f.length===1 && f[0]==="Build a scene from this");
-    const nav=await p.$eval('#nav-practice',n=>({bg:window.__rgb(getComputedStyle(n).backgroundColor), bar:parseFloat(getComputedStyle(n,'::after').height)||0}));
-    ok("the active tab has no filled pill", nav.bg.length===4 && nav.bg[3]===0);
-    ok("…it is marked by an underline instead", nav.bar>=2);
+    /* v32 (Pixel Town): the active tab changed on purpose. It is now a white plate with an ink edge on the sky (it was an underline).
+       Still never a filled yellow pill, so the one yellow button stays the only filled thing on the page. */
+    const nav=await p.$eval('#nav-practice',n=>{ const cs=getComputedStyle(n), o=getComputedStyle(document.querySelector('#nav-words'));
+      return {bg:cs.backgroundColor, other:o.backgroundColor, edge:/inset/.test(cs.boxShadow), bar:getComputedStyle(n,'::after').display}; });
+    ok("the active tab is a white plate ("+nav.bg+")", nav.bg==="rgb(255, 255, 255)");
+    ok("…with an ink edge, and the other tabs stay on the sky ("+nav.other+")", nav.edge && nav.other!==nav.bg && nav.bar==="none");
     await p.click('#nav-words'); await p.waitForTimeout(300);
     const fw=await filled("words");
     ok("Words: only one filled button ("+fw.join(", ")+")", fw.length===1 && fw[0].startsWith("Spot it"));
@@ -124,12 +127,14 @@ DB[P+"sets/s1"]={createdAt:NOW-D,updatedAt:NOW-D,words:["for","since"],kind:"pre
     }
   });
 
-  await section("Dark mode has its own pixel colours", async()=>{
+  /* v32 (Pixel Town): automatic dark mode was removed on purpose (Siyy, 16 Oct: "night town for later").
+     The old check ("dark mode uses different pixel colours") now checks the opposite: a dark system setting keeps the daytime town. */
+  await section("The town stays in daytime, even when the computer is set to dark", async()=>{
     const lt=await open(1280,800,'light'), dk=await open(1280,800,'dark');
-    const tok=pg=>pg.evaluate(()=>['--px-k','--px-l','--px-a','--paper'].map(k=>getComputedStyle(document.documentElement).getPropertyValue(k).trim()));
+    const tok=pg=>pg.evaluate(()=>['--px-k','--px-y','--paper','--sky'].map(k=>getComputedStyle(document.documentElement).getPropertyValue(k).trim()).concat([getComputedStyle(document.body).backgroundColor]));
     const a=await tok(lt), c=await tok(dk);
-    ok("pixel colours are defined in both themes", a.every(Boolean) && c.every(Boolean));
-    ok("…and dark mode uses different ones (outline "+a[0]+" → "+c[0]+")", a[0]!==c[0] && a[1]!==c[1] && a[3]!==c[3]);
+    ok("pixel and page colours are defined ("+a.join(" ")+")", a.every(Boolean));
+    ok("…and a dark computer setting shows the very same colours", a.join()===c.join());
     await lt.close(); await dk.close();
   });
 
