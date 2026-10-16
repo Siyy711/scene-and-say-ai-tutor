@@ -1,6 +1,6 @@
 # SS test suite: how to run it
 
-These are the automated checks for Scene & Say, v5 to v31: 28 files and 732 checks. They run the real app in a browser against a **stand-in** for Claude and the database (`mock-head.html`). They test the app's logic and screens. They **can't** judge the quality of real Claude replies, so for that, try the app by hand after changing a request to Claude.
+These are the automated checks for Scene & Say, v5 to v32: 29 files and 774 checks. They run the real app in a browser against a **stand-in** for Claude and the database (`mock-head.html`). They test the app's logic and screens. They **can't** judge the quality of real Claude replies, so for that, try the app by hand after changing a request to Claude.
 
 ## Files
 
@@ -10,6 +10,7 @@ These are the automated checks for Scene & Say, v5 to v31: 28 files and 732 chec
 | `test30.js` | S1 slice 1, the own-key version: SS opened as a normal web page (no `window.claude`), with a **fake** AI service that checks the key and the model like a real one. Setup screen, wrong key, wrong model, Check my story, saving in the browser database (IndexedDB), reopening, a second tab, Act it out, Forget my key, a service without JSON mode, a service that refuses web pages. It serves the page over http, because IndexedDB needs a real web address. |
 | `test31.js` | S1 slice 2: backup and restore. Back up makes one JSON file (cards, words, Compare sets, pictures, "Not a pair" choices); Restore adds what's missing and keeps the newer copy, never deletes; bad or newer files are refused; the reminder shows only in the own-key version, after 7 days and only if something is new. Also the claude.ai side, where the file goes through the platform's `downloads` capability. |
 | `test32.js` | S1 slice 3: the page GitHub Pages serves has its title and a description in the head; the setup card links to the friend's guide (new tab); with no AI service connected, the own-key version says "… needs your AI service. Connect it at the top of the Practice page." and never shows "Claude" on any page. The claude.ai stand-in keeps its own wording. |
+| `test33.js` | v32, Pixel Town: drawings use only the 15 palette colours; the Practice page is a street (5 places a row on a laptop, 3 on a phone, a different building for each theme and for your own themes, names only, the description still sent to the AI); sky and grass on every page top; one sun-yellow button per page; feedback headings in the pixel font, sentence case, with a coloured square; a face on every chat line; no sideways scroll on a phone. `test28.js` was updated on purpose for v32: the active tab is a white plate (was an underline), and a dark computer setting now keeps the daytime colours (was: dark mode has its own colours). `test29.js`: the selected chip is filled with ink (was: with the accent colour). |
 | `build_own.py` | Wraps the app in a plain web page with **no** stand-in: `preview-own.html`, the page the tests open. The same script builds `index.html` at the repo root, the page GitHub Pages serves; `run-all.sh` rebuilds it every time. |
 | `mock-head.html` | The stand-in: a fake `window.claude` with scripted, request-dependent replies, plus a fake database in localStorage that freezes data like the real one, and (S1) a fake `downloads` that only accepts allowed file types and can be told the viewer said no. |
 | `build_mock.py` | Glues `mock-head.html` + the app into `preview-mock.html`, the page the tests open. |
@@ -28,7 +29,7 @@ npx playwright install chromium  # once: downloads the browser it drives
 ./run-all.sh
 ```
 
-`run-all.sh` first builds `preview-mock.html` from `../app/scene-and-say.html`, then runs every file. Every file should show "pass", and the total should match the last known number (732 at v31).
+`run-all.sh` first builds `preview-mock.html` from `../app/scene-and-say.html`, then runs every file. Every file should show "pass", and the total should match the last known number (774 at v32).
 
 In a Claude cloud session, Playwright and Chromium are already installed, so you can skip `npm install` and run:
 

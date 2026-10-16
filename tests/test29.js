@@ -81,8 +81,10 @@ const NEWONLY={}; NEWONLY[P+"terms/a"]=W("touch base","At Work"); NEWONLY[P+"set
     const when=(await p.textContent('.saved-head .when')).trim();
     ok("a card from this year shows its date without the year ("+when+")", !/\d{4}/.test(when) && /[A-Za-z]{3}/.test(when));
     await p.click('#nav-words'); await p.waitForTimeout(300);
-    const chip=await p.$eval('#wordlist .chip[aria-pressed="true"]',c=>{ const h=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().replace('#',''); return {bg:getComputedStyle(c).backgroundColor, acc:'rgb('+[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)).join(', ')+')'}; });
-    ok("the selected filter chip is filled ("+chip.bg+")", chip.bg===chip.acc);
+    /* v32 (Pixel Town): sun yellow is kept for the one main button on a page, so the selected chip is filled with ink instead, with white text. */
+    const chip=await p.$eval('#wordlist .chip[aria-pressed="true"]',c=>{ const hex=k=>{ const h=getComputedStyle(document.documentElement).getPropertyValue(k).trim().replace('#',''); return 'rgb('+[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)).join(', ')+')'; };
+      return {bg:getComputedStyle(c).backgroundColor, fg:getComputedStyle(c).color, ink:hex('--ink'), acc:hex('--accent')}; });
+    ok("the selected filter chip is filled with ink, in white text ("+chip.bg+")", chip.bg===chip.ink && chip.fg==="rgb(255, 255, 255)" && chip.bg!==chip.acc);
     await p.close();
   });
 

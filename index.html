@@ -2,28 +2,33 @@
 <title>Scene &amp; Say</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Figtree:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..700&family=Pixelify+Sans:wght@400..700&display=swap">
 
 <style>
 :root{
-  /* Scene & Say design tokens. Layout: one calm reading column; each page opens with a short headline and a small pixel scene. */
-  --paper:#f2eee7; --surface:#fbf9f4; --surface-2:#e9e2d6;
-  --ink:#241f1b; --ink-2:#51483f; --ink-3:#5a5047;
-  --line:#dcd4c8; --line-2:#c4b9aa; --field:#8c8174;
-  --accent:#241f1b; --accent-2:#40372f; --accent-ink:#fbf9f4; --accent-soft:#e9e2d6;
-  --gold:#875d10; --gold-soft:#f1e3c3;
-  --good:#3d6844; --good-soft:#e1eada;
-  --fix:#96462a; --fix-soft:#f3e0d4;
-  --plum:#713f5c; --plum-soft:#efe1e8;
-  --danger:#a3321f; --danger-2:#82271a; --danger-ink:#fbf8f3;
-  --accent-shade:#c4952f; --lift:#c4b9aa;
-  /* pixel-art palette (the illustrations take every colour from here) */
-  --px-k:#3a322b; --px-m:#d6ccbe; --px-l:#f5efe6; --px-w:#ffffff;
-  --px-a:#6d8c70; --px-o:#c99a45; --px-r:#b8664a; --px-p:#8a5b78;
-  --radius:8px; --radius-sm:6px;
-  --f-display:"Newsreader",Georgia,"Times New Roman",serif;
-  --f-body:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-  --f-mono:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  /* Scene & Say design tokens. v32 "Pixel Town": a bright daytime town. Sky on top, grass under the street,
+     ink-blue outlines, and one sun-yellow button per page for the main action. There is no dark mode (a "night town" may come later). */
+  --sky:#8fd3ff; --sky-l:#cdeeff; --grass:#6ccd5c; --grass-2:#3f9e48; --sun:#ffcd3c; --sun-l:#fff3c4;
+  --paper:#fffdf8; --surface:#ffffff; --surface-2:#eef7ff;
+  --ink:#26235a; --ink-2:#4b4880; --ink-3:#5d5a8f;
+  --line:#c9c7dd; --line-2:#8a88aa; --field:#26235a;
+  --accent:#ffcd3c; --accent-2:#ffd95e; --accent-ink:#26235a; --accent-soft:#fff3c4;
+  --gold:#7a5200; --gold-soft:#fff3c4;
+  --good:#2f7a37; --good-soft:#e2f6dc;
+  --fix:#b8282b; --fix-soft:#ffe3e0;
+  --plum:#5a3fc4; --plum-soft:#ece6ff;
+  --danger:#c22f2f; --danger-2:#a32424; --danger-ink:#ffffff;
+  --accent-shade:#ff9f43; --lift:#26235a;
+  /* pixel-art palette: the drawings take every colour from here, one colour per letter */
+  --px-k:#26235a; --px-w:#ffffff; --px-b:#8fd3ff; --px-c:#cdeeff; --px-y:#ffcd3c; --px-o:#ff9f43; --px-r:#ff5d5d; --px-p:#ff9fc2;
+  --px-v:#9b7bff; --px-g:#6ccd5c; --px-gd:#3f9e48; --px-t:#c98a55; --px-s:#e3e8f5; --px-bd:#3d7bff; --px-f:#ffd2a8;
+  --px-m:#e3e8f5; --px-l:#ffffff; --px-a:#3f9e48;
+  --radius:0; --radius-sm:0;
+  /* Pixelify Sans for headings, buttons and labels (the game feel); Lexend for everything you read (easy on the eyes) */
+  --f-pixel:"Pixelify Sans","Lexend",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --f-display:"Lexend",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-body:"Lexend",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-mono:"Lexend",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
   /* one-colour pixel glyphs, drawn on small grids and shown at whole-number sizes */
   --i-chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 7' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h-1zM0 1h2v1h-2zM1 2h2v1h-2zM2 3h2v1h-2zM1 4h2v1h-2zM0 5h2v1h-2zM0 6h1v1h-1z'/%3E%3C/svg%3E"); /* 6x7 */
   --i-check:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M7 1h1v1h-1zM6 2h2v1h-2zM0 3h1v1h-1zM5 3h2v1h-2zM0 4h2v1h-2zM4 4h2v1h-2zM1 5h4v1h-4zM2 6h2v1h-2z'/%3E%3C/svg%3E"); /* 8x8 */
@@ -35,39 +40,6 @@
   --i-eye:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 6' shape-rendering='crispEdges'%3E%3Cpath d='M2 0h4v1h-4zM1 1h1v1h-1zM6 1h1v1h-1zM0 2h1v1h-1zM3 2h2v1h-2zM7 2h1v1h-1zM0 3h1v1h-1zM3 3h2v1h-2zM7 3h1v1h-1zM1 4h1v1h-1zM6 4h1v1h-1zM2 5h4v1h-4z'/%3E%3C/svg%3E"); /* 8x6 */
   --i-scale:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 7' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h2v1h-2zM0 1h8v1h-8zM0 2h1v1h-1zM3 2h2v1h-2zM7 2h1v1h-1zM0 3h1v1h-1zM3 3h2v1h-2zM7 3h1v1h-1zM0 4h2v1h-2zM3 4h2v1h-2zM6 4h2v1h-2zM3 5h2v1h-2zM2 6h4v1h-4z'/%3E%3C/svg%3E"); /* 8x7 */
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#1a1714; --surface:#23201c; --surface-2:#2d2823;
-    --ink:#eee7dc; --ink-2:#c6bbad; --ink-3:#a69a8b;
-    --line:#38312b; --line-2:#4a4139; --field:#7a6f63;
-    --accent:#ece6dc; --accent-2:#ffffff; --accent-ink:#1a1714; --accent-soft:#34302a;
-    --gold:#ddb66e; --gold-soft:#382c16;
-    --good:#8fc59c; --good-soft:#1e3123;
-    --fix:#e39d7b; --fix-soft:#3b2418;
-    --plum:#dba9c7; --plum-soft:#35212d;
-    --danger:#e8866f; --danger-2:#f0a08c; --danger-ink:#1a1714;
-    --accent-shade:#c99a45; --lift:#0c0a09;
-    --px-k:#e6ddd1; --px-m:#4a4139; --px-l:#2f2a25; --px-w:#4a4139;
-    --px-a:#86a98a; --px-o:#d2a65a; --px-r:#cf8366; --px-p:#c08aab;
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --paper:#1a1714; --surface:#23201c; --surface-2:#2d2823;
-  --ink:#eee7dc; --ink-2:#c6bbad; --ink-3:#a69a8b;
-  --line:#38312b; --line-2:#4a4139; --field:#7a6f63;
-  --accent:#ece6dc; --accent-2:#ffffff; --accent-ink:#1a1714; --accent-soft:#34302a;
-  --gold:#ddb66e; --gold-soft:#382c16;
-  --good:#8fc59c; --good-soft:#1e3123;
-  --fix:#e39d7b; --fix-soft:#3b2418;
-  --plum:#dba9c7; --plum-soft:#35212d;
-  --danger:#e8866f; --danger-2:#f0a08c; --danger-ink:#1a1714;
-  --accent-shade:#c99a45; --lift:#0c0a09;
-  --px-k:#e6ddd1; --px-m:#4a4139; --px-l:#2f2a25; --px-w:#4a4139;
-  --px-a:#86a98a; --px-o:#d2a65a; --px-r:#cf8366; --px-p:#c08aab;
-  color-scheme:dark;
-}
-
 *{box-sizing:border-box}
 html,body{min-height:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -78,8 +50,9 @@ h1,h2,h3{margin:0;text-wrap:balance}
 /* pixel art: every sprite is an SVG of 1-unit squares, shown at whole-number scale only */
 .px{display:block;flex:0 0 auto;max-width:100%;height:auto}
 .ticon,.gicon{max-width:none}
-.px-k{fill:var(--px-k)} .px-m{fill:var(--px-m)} .px-l{fill:var(--px-l)} .px-w{fill:var(--px-w)}
-.px-a{fill:var(--px-a)} .px-o{fill:var(--px-o)} .px-r{fill:var(--px-r)} .px-p{fill:var(--px-p)}
+.px-k{fill:var(--px-k)} .px-w{fill:var(--px-w)} .px-b{fill:var(--px-b)} .px-c{fill:var(--px-c)} .px-y{fill:var(--px-y)} .px-o{fill:var(--px-o)}
+.px-r{fill:var(--px-r)} .px-p{fill:var(--px-p)} .px-v{fill:var(--px-v)} .px-g{fill:var(--px-g)} .px-gd{fill:var(--px-gd)} .px-t{fill:var(--px-t)}
+.px-s{fill:var(--px-s)} .px-bd{fill:var(--px-bd)} .px-f{fill:var(--px-f)} .px-m{fill:var(--px-m)} .px-l{fill:var(--px-l)} .px-a{fill:var(--px-a)}
 .glyph{display:inline-block;flex:0 0 auto;width:12px;height:14px;background:currentColor;-webkit-mask:var(--i-chev) center/12px 14px no-repeat;mask:var(--i-chev) center/12px 14px no-repeat}
 
 /* header: logo and tabs on the left, the learner's profile on the right */
@@ -94,7 +67,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .navbtn[aria-current="true"]{color:var(--ink)}
 .navcount{display:inline-block;margin-left:6px;padding:1px 5px;background:var(--px-o);color:#241f1b;font-size:12px;font-weight:700;line-height:1.3;vertical-align:1px;font-variant-numeric:tabular-nums}   /* words or sets due again */
 .navbtn[aria-current="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:4px;background:linear-gradient(var(--accent),var(--accent)) 2px 0/calc(100% - 4px) 2px no-repeat,linear-gradient(var(--accent),var(--accent)) 0 2px/100% 2px no-repeat}   /* a stepped pixel bar */
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 
 /* page openings: headline and one line of help on the left, the page's pixel scene on the right */
 .pagehead{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:32px;align-items:center;margin-top:0;padding-top:36px}
@@ -106,7 +79,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 #v-themes .pagehead .lede{font-size:40px;line-height:1.1}
 .pagehead .sub{grid-column:1;margin-top:10px;font-size:15.5px;color:var(--ink-2);max-width:56ch}
 .pagehead-art{grid-column:2;grid-row:1 / span 3}
-#v-words .pagehead-art,#v-cards .pagehead-art,#v-compare .pagehead-art{display:none}
+#v-compare .pagehead-art{display:none}
 .empty .emptyart{display:block;margin:0 auto 14px}
 
 .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
@@ -118,18 +91,22 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:0}
 .pad{padding:20px}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);padding:8px 18px;border-radius:0;box-shadow:2px 2px 0 var(--lift);font-size:15px;font-weight:600;line-height:1.2;cursor:pointer;transition:background-color .14s ease,border-color .14s ease,transform .1s ease}
-.btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:0 0 0 var(--lift)}
-.btn:hover:not(:disabled){background:var(--accent-2);border-color:var(--accent-2)}
+/* v32 buttons: chunky game buttons. A 3px ink edge and a solid shadow under it; pressing pushes the button down into its shadow.
+   Sun yellow = the one main action on a page. White = everything else. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;background:var(--accent);color:var(--accent-ink);border:3px solid var(--ink);padding:5px 16px;border-radius:0;box-shadow:0 4px 0 var(--ink);font-family:var(--f-pixel);font-size:17px;font-weight:600;line-height:1.2;cursor:pointer;margin-bottom:4px;transition:background-color .14s ease,transform .08s ease}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 0 0 var(--ink)}
+.btn:hover:not(:disabled){background:var(--accent-2)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
-.btn.ghost{background:var(--surface);color:var(--ink);border-color:var(--field)}
-.btn.text,#spotdue .btn.ghost,#cards-select,.btn.ghost.showall{background:transparent;border-color:transparent;color:var(--ink);box-shadow:none;padding-inline:0;text-decoration:underline dotted;text-decoration-thickness:1px;text-underline-offset:4px}
+.btn.ghost{background:var(--surface);color:var(--ink);border-color:var(--ink)}
+.btn.text,#spotdue .btn.ghost,#cards-select,.btn.ghost.showall{background:transparent;border-color:transparent;color:var(--ink);box-shadow:none;padding-inline:0;font-family:var(--f-body);font-size:14.5px;font-weight:500;text-decoration:underline dotted;text-decoration-thickness:2px;text-underline-offset:4px}
 .btn.text:active,#spotdue .btn.ghost:active,#cards-select:active,.btn.ghost.showall:active{transform:none}
 .setup-edit,.footnote details.card > summary{text-decoration:underline dotted;text-decoration-thickness:1px;text-underline-offset:4px}
 .btn.text:hover:not(:disabled),#spotdue .btn.ghost:hover,#cards-select:hover,.btn.ghost.showall:hover:not(:disabled){background:transparent;border-color:transparent;box-shadow:none;text-decoration-style:solid}
-.btn.ghost:hover:not(:disabled){background:var(--surface);border-color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
-.btn.small{min-height:36px;padding:6px 14px;font-size:14px}
-.btn.tiny{min-height:30px;padding:4px 11px;font-size:13px}
+.btn.ghost:hover:not(:disabled){background:var(--sky-l)}
+.btn.small{min-height:38px;padding:3px 12px;font-size:15.5px;box-shadow:0 3px 0 var(--ink)}
+.btn.small:active:not(:disabled){transform:translateY(3px)}
+.btn.tiny{min-height:30px;padding:1px 9px;font-size:14px;border-width:2px;box-shadow:0 2px 0 var(--ink)}
+.btn.tiny:active:not(:disabled){transform:translateY(2px)}
 
 /* profile box */
 .setup{display:grid;gap:22px;padding:6px 20px 20px}
@@ -150,38 +127,38 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .lvl:hover{border-color:var(--field)}
 .lvl b{display:block;font-size:14px;font-weight:700;letter-spacing:.02em}
 .lvl span{display:block;font-size:12px;color:var(--ink-2);margin-top:1px}
-.lvl[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.lvl[aria-pressed="true"] span{color:color-mix(in srgb,var(--accent-ink) 82%,transparent)}
+.lvl[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.lvl[aria-pressed="true"] span{color:#e3e8f5}
 input[type="text"],input[type="search"],input[type="password"],textarea,select{width:100%;background:var(--surface);border:1px solid var(--field);border-radius:0;padding:10px 12px;font-size:15px;line-height:1.4;color:var(--ink)}
 input[type="search"]{-webkit-appearance:none;appearance:none}
-input[type="text"]:focus-visible,input[type="search"]:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+input[type="text"]:focus-visible,input[type="search"]:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--ink);outline-offset:1px;border-color:var(--accent)}
 input::placeholder,textarea::placeholder{color:var(--ink-3)}
 textarea{resize:vertical;min-height:88px;line-height:1.6}
 textarea.tall{min-height:140px}
 input[type="checkbox"]{-webkit-appearance:none;appearance:none;width:20px;height:20px;margin:0;border:2px solid var(--field);background:var(--surface);border-radius:0;display:inline-grid;place-content:center;cursor:pointer;flex:0 0 auto;vertical-align:middle}
 input[type="checkbox"]::before{content:"";width:16px;height:16px;background:var(--accent-ink);-webkit-mask:var(--i-check) center/16px 16px no-repeat;mask:var(--i-check) center/16px 16px no-repeat;visibility:hidden}
-input[type="checkbox"]:checked{background:var(--accent);border-color:var(--accent)}
+input[type="checkbox"]:checked{background:var(--accent);border-color:var(--ink)}
 input[type="checkbox"]:checked::before{visibility:visible}
 input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 .hint{font-size:13px;color:var(--ink-2);margin-top:8px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
-/* Practice: theme tiles. The two personal themes come first, side by side. */
-.grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
-.theme,.surprise{grid-column:span 2;position:relative;text-align:left;cursor:pointer;background:var(--surface);border:1px solid var(--line-2);border-radius:0;box-shadow:2px 2px 0 var(--lift);padding:14px 16px 16px;display:flex;flex-direction:column;gap:3px;transition:border-color .12s ease,box-shadow .12s ease,transform .12s ease}
-.theme:active:not(:disabled),.surprise:active:not(:disabled){transform:translate(2px,2px);box-shadow:0 0 0 var(--ink)}
-.theme:hover,.surprise:hover{border-color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
+/* Practice, v32: the street. Each theme is a place: a building standing on its lot, a strip of grass, and a white sign.
+   Pointing at a place makes the building hop up and the sign turn sun yellow. Five places a row on a laptop, three on a phone. */
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:30px 0}
+.theme,.surprise{position:relative;display:flex;flex-direction:column;text-align:center;cursor:pointer;background:none;border:0;border-radius:0;padding:0;color:var(--ink)}
 .theme:disabled,.surprise:disabled{opacity:.45;cursor:not-allowed}
-.theme:disabled:hover,.surprise:disabled:hover{border-color:var(--line-2);box-shadow:2px 2px 0 var(--lift)}
-.theme .tscene,.surprise .tscene{margin:0 0 12px;max-width:none}
-.theme,.surprise{background:linear-gradient(var(--px-m),var(--px-m)) 0 60px/100% 2px no-repeat,var(--surface)}   /* one floor line across the whole card, level with the drawing's own */
-.theme b,.surprise b{font-size:16.5px;font-weight:650;letter-spacing:-.008em;line-height:1.3}
-.theme .egs:not(.tuned){display:none}   /* the keywords repeat the description; only "tuned to you" stays */
-.theme span,.surprise span{font-size:14.5px;color:var(--ink-2);line-height:1.45}
-.theme .egs{font-size:12.5px;color:var(--ink-3);align-self:end;padding-top:8px}
+.theme .lot,.surprise .lot{position:relative;display:flex;justify-content:center;align-items:flex-end;height:134px}
+.theme .tscene,.surprise .tscene{max-width:none;transition:transform .12s ease}
+.theme .turf,.surprise .turf{display:block;background:var(--grass);border-top:4px solid var(--grass-2);padding:12px 7px 16px}
+.theme .sign,.surprise .sign{display:flex;align-items:center;justify-content:center;min-height:62px;padding:8px 6px;background:#fff;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);font-family:var(--f-pixel);font-size:16px;font-weight:600;line-height:1.2;transition:background-color .12s ease}
+.theme:hover:not(:disabled) .tscene,.surprise:hover:not(:disabled) .tscene,.theme:focus-visible .tscene,.surprise:focus-visible .tscene{transform:translateY(-6px)}
+.theme:hover:not(:disabled) .sign,.surprise:hover:not(:disabled) .sign,.theme:focus-visible .sign,.surprise:focus-visible .sign{background:var(--sun)}
+.theme:active:not(:disabled) .sign,.surprise:active:not(:disabled) .sign{transform:translateY(4px);box-shadow:0 0 0 var(--ink)}
+.theme:focus-visible,.surprise:focus-visible{outline:none}
+.theme .egs:not(.tuned){display:none}   /* the keywords repeat the description; only "For you" stays */
+.theme .egs.tuned{position:absolute;top:0;left:8px;right:8px;z-index:1;padding:1px 6px;background:var(--sun-l);border:2px solid var(--ink);font-family:var(--f-pixel);font-size:13.5px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
 .theme.tuned{order:-1}
-.surprise{border-style:dashed;border-color:var(--field)}   /* not a theme but a choice: the last card, with a dashed edge */
-.theme .egs.tuned{align-self:flex-start;justify-self:start;margin-top:8px;padding:3px 8px;background:var(--gold-soft);color:var(--gold);font-weight:650}
 
 .strip{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:0;padding:20px 22px}
 .ownweek{margin-top:48px}
@@ -202,7 +179,7 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 .scene-title{font-family:var(--f-display);font-size:27px;font-weight:600;line-height:1.24;letter-spacing:-.012em}
 .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .tag{font-size:12px;font-weight:650;letter-spacing:.02em;background:var(--surface-2);border:0;color:var(--ink-2);padding:3px 8px;border-radius:0}
-.tag.on{background:var(--accent-soft);color:var(--accent)}
+.tag.on{background:var(--accent-soft);color:var(--ink)}
 .prose{font-family:var(--f-display);font-size:18px;line-height:1.62;color:var(--ink)}
 .prose p{margin:0 0 10px}
 .prose p:last-child{margin-bottom:0}
@@ -210,7 +187,7 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 .seen{background:var(--surface-2);border-radius:0;padding:16px 18px;margin-top:18px}
 .seen ul{margin:10px 0 0;padding-left:18px;display:grid;gap:6px}
 .seen li{font-size:15px;color:var(--ink-2);line-height:1.5}
-.seen li::marker{color:var(--accent)}
+.seen li::marker{color:var(--ink)}
 .lang{margin-top:10px;display:grid}
 .lang-row{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
 .lang-row:first-child{border-top:0}
@@ -219,19 +196,25 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 
 .modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
 .mode{cursor:pointer;text-align:left;background:var(--surface);border:1px solid var(--line-2);border-radius:0;padding:16px;display:flex;flex-direction:column;gap:5px;transition:border-color .14s ease,background-color .14s ease}
-.mode:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent-soft) 40%,var(--surface))}
+.mode:hover{background:var(--sun-l)}
 .mode b{font-size:16.5px;font-weight:650}
 .mode span{font-size:13.5px;color:var(--ink-2);line-height:1.45}
 .scaffold{margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 14px;border:1px dashed var(--line-2);border-radius:0}
 .scaffold p{margin:0;font-size:13px;color:var(--ink-2);flex:1 1 260px}
 
-.thread{display:grid;gap:12px;margin-top:6px}
-.turn{display:flex;gap:10px;align-items:flex-start}
-.turn.me{flex-direction:row-reverse}
-.who{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);padding-top:10px;white-space:nowrap}
-.bubble{background:var(--surface);border:1px solid var(--line);border-radius:0;padding:11px 14px;max-width:78%;font-size:15.5px;line-height:1.55}
-.turn.me .bubble{background:var(--accent-soft);border-color:var(--accent-soft)}
-.bubble.thinking{color:var(--ink-3);font-style:italic}
+/* chat, v32: a face, then a speech bubble with a name tag sitting on its top edge. Your lines are on the right, in pale yellow. */
+.thread{display:grid;gap:22px;margin-top:6px}
+.turn{display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;align-items:start}
+.turn.me{grid-template-columns:minmax(0,1fr) 62px}
+.turn.me .face{order:2;background:var(--sun-l)}
+.face{width:62px;height:62px;background:var(--sky-l);border:3px solid var(--ink);display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.turn-body{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}
+.turn.me .turn-body{align-items:flex-end}
+.who{position:relative;z-index:1;margin:0 0 -22px 12px;padding:1px 10px;background:var(--ink);color:#fff;font-family:var(--f-pixel);font-size:14px;font-weight:600;line-height:1.4;white-space:nowrap}
+.turn.me .who{margin:0 12px -22px 0;background:#6b5200}
+.bubble{background:var(--surface);border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);border-radius:0;padding:18px 16px 12px;max-width:100%;font-size:16px;line-height:1.55}
+.turn.me .bubble{background:var(--sun-l)}
+.bubble.thinking{color:var(--ink-2);font-style:italic}
 .composer{display:flex;gap:8px;align-items:flex-end;margin-top:16px}
 .composer textarea{min-height:52px;max-height:160px}
 
@@ -310,7 +293,7 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 .term-pattern{font-size:14px;color:var(--ink-2);margin-top:6px}
 .alsoused{font-size:14px;color:var(--ink-2);margin-top:8px}
 .othermean{font-size:13.5px;color:var(--ink-2);margin-top:6px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
-.linkish{background:none;border:0;padding:0;color:var(--accent);cursor:pointer;font-size:13.5px;font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-align:left}
+.linkish{background:none;border:0;padding:0;color:var(--ink);cursor:pointer;font-size:13.5px;font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-align:left}
 .usetag{color:var(--plum);background:var(--plum-soft)}
 .meantag{color:var(--ink-2)}
 .noteform{display:grid;gap:14px;margin-top:14px}
@@ -321,7 +304,7 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 .word-pic{margin-top:8px}
 .term-where{font-size:13.5px;color:var(--ink-2);margin-top:4px}
 .term-where b{font-weight:650;color:var(--ink)}
-.srctag{font-size:12px;font-weight:650;color:var(--accent);background:var(--accent-soft);border-radius:0;padding:2px 6px;white-space:nowrap}
+.srctag{font-size:12px;font-weight:650;color:var(--ink);background:var(--accent-soft);border-radius:0;padding:2px 6px;white-space:nowrap}
 .themesel{width:auto;padding:4px 8px;font-size:13px}
 .trash{display:grid;place-items:center;width:32px;height:32px;background:none;border:1px solid transparent;border-radius:0;color:var(--field);cursor:pointer;padding:0;line-height:0;flex:0 0 auto}
 .trash svg{display:none}
@@ -380,7 +363,7 @@ body.has-cardbar .wrap{padding-bottom:150px}
 .spotdue{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 0;font-size:15px;color:var(--ink-2)}
 .spotdue{padding:6px 0}
 .spotdue > span{display:inline-flex;align-items:center;gap:10px}
-.spotdue > span::before{content:"";width:16px;height:12px;background:var(--accent);-webkit-mask:var(--i-eye) center/16px 12px no-repeat;mask:var(--i-eye) center/16px 12px no-repeat}
+.spotdue > span::before{content:"";width:16px;height:12px;background:var(--ink);-webkit-mask:var(--i-eye) center/16px 12px no-repeat;mask:var(--i-eye) center/16px 12px no-repeat}
 .spotdue.cmpdue > span::before{height:14px;-webkit-mask:var(--i-scale) center/16px 14px no-repeat;mask:var(--i-scale) center/16px 14px no-repeat}
 .spotdue b{color:var(--ink);font-weight:650}
 #spotdue .btn:not(.ghost){background:var(--surface);color:var(--ink);border-color:var(--field);box-shadow:none}
@@ -491,10 +474,10 @@ body.has-cardbar .wrap{padding-bottom:150px}
 .conf{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-left:6px}
 .caveat{font-size:13px;color:var(--fix);background:var(--fix-soft);border-radius:0;padding:8px 11px;line-height:1.45}
 
-.fb-progress{background:var(--accent-soft);border-color:transparent} .fb-progress h3{color:var(--accent)}
+.fb-progress{background:var(--accent-soft);border-color:transparent} .fb-progress h3{color:var(--ink)}
 .focus{background:var(--gold-soft);border-radius:0;padding:12px 15px;font-size:14.5px;color:var(--ink);margin-bottom:14px;line-height:1.5}
 .focus b{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:4px}
-.lvlpath{font-size:12.5px;font-weight:700;color:var(--accent);letter-spacing:.03em;white-space:nowrap}
+.lvlpath{font-size:12.5px;font-weight:700;color:var(--ink);letter-spacing:.03em;white-space:nowrap}
 .attempt-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}
 .attempt-meta{font-size:13px;color:var(--ink-2)}
 .fb-more{background:var(--surface);border:1px dashed var(--line-2)} .fb-more h3{color:var(--plum)}
@@ -502,7 +485,7 @@ body.has-cardbar .wrap{padding-bottom:150px}
 .purpose{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:16px 0 0}
 .purpose:first-child{margin-top:2px}
 .purpose + .term{border-top:0;padding-top:6px}
-.fb-words{background:var(--surface);border:1px solid var(--line)} .fb-words h3{color:var(--accent)}
+.fb-words{background:var(--surface);border:1px solid var(--line)} .fb-words h3{color:var(--ink)}
 .wu{display:grid;gap:3px;padding:10px 0;border-top:1px solid var(--line)}
 .wu:first-of-type{border-top:0}
 .fb-words h3 + .wu{border-top:0;padding-top:0}
@@ -531,7 +514,7 @@ body.has-wordbar .wrap{padding-bottom:150px}
 .tmark{background:var(--plum-soft);color:var(--plum);border-radius:0;padding:0 4px;font-weight:650}
 .tag.wp{background:var(--plum-soft);color:var(--plum)}
 .lvlcheck{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:0;padding:14px 18px}
-.lvlbig{font-size:24px;font-weight:700;letter-spacing:.02em;color:var(--accent)}
+.lvlbig{font-size:24px;font-weight:700;letter-spacing:.02em;color:var(--ink)}
 .lvlcheck .txt{flex:1 1 220px;font-size:14.5px;color:var(--ink-2)}
 .verdict{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:0}
 .verdict.ok{background:var(--good-soft);color:var(--good)}
@@ -553,19 +536,18 @@ body.has-wordbar .wrap{padding-bottom:150px}
 #cards-select{color:var(--ink-2)}
 .saved-body{padding:0 18px 18px;border-top:1px solid var(--line)}
 .groupname{font-family:var(--f-display);font-size:22px;font-weight:500;letter-spacing:-.008em;margin:44px 0 0;padding-bottom:8px;border-bottom:1px solid var(--ink);display:flex;gap:12px;align-items:center}
-.gicon .px-o{fill:var(--px-l)}
 .groupname .gicon{order:-1;margin:-4px 0}   /* shown first, but the theme name stays the first thing in the heading */
 .groupname .count{font-size:13px;font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center}
 .chip{display:inline-flex;align-items:center;gap:6px;min-height:32px;cursor:pointer;background:transparent;border:1px solid var(--line-2);border-radius:0;padding:4px 12px;font-size:13.5px;font-weight:550;color:var(--ink-2)}
 .chip:hover{border-color:var(--field);color:var(--ink)}
-.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:650}   /* the selected filter is filled */
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}   /* the selected filter is filled with ink (yellow is kept for the main button) */
 
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .spread{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .mt{margin-top:18px}
 .say{border:1px solid var(--line-2);background:var(--surface);border-radius:0;padding:4px 10px;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
-.say:hover{border-color:var(--accent);color:var(--accent)}
+.say:hover{background:var(--sky-l);color:var(--ink)}
 .say svg{width:13px;height:13px}
 .notice{background:var(--fix-soft);border:1px solid color-mix(in srgb,var(--fix) 45%,transparent);color:var(--fix);border-radius:0;padding:11px 14px;font-size:14px;line-height:1.5}
 .notice.quiet{background:var(--surface-2);border-color:var(--line);color:var(--ink-2)}
@@ -616,8 +598,6 @@ body.has-wordbar .wrap{padding-bottom:150px}
   .pagehead-art{grid-column:1;grid-row:1;justify-self:start;margin:0 0 18px}
   .pagehead-art .px{width:96px;height:56px}
   .pagehead .lede{font-size:28px}
-  .grid{grid-template-columns:minmax(0,1fr);gap:10px}
-  .theme,.surprise,.theme.work,.grid:not(:has(.theme.work + .theme.work)) .theme.work{grid-column:1 / -1}
   .strip{padding:16px}
   .groupname{flex-wrap:wrap;row-gap:12px}
   .groupname .cmp-tools{margin-left:0;flex:1 1 100%}
@@ -631,7 +611,6 @@ body.has-wordbar .wrap{padding-bottom:150px}
   #v-words > #notebox{grid-column:1;grid-row:2;margin-top:24px}
   #v-words > .wordsearch{grid-column:1;grid-row:3;margin-top:12px}
   #v-words:has(#note-form:not([hidden])) > .wordsearch{grid-row:3}
-  .theme,.surprise{padding-right:36px}
   .pad{padding:16px}
   .groupname{margin-top:32px}
 }
@@ -639,8 +618,153 @@ body.has-wordbar .wrap{padding-bottom:150px}
   .modes,.two{grid-template-columns:1fr}
   .lede{font-size:24px}
   .pagehead .lede{font-size:27px}
-  .bubble{max-width:84%}
   .readout{max-width:120px}
+}
+/* ===== v32 "Pixel Town" =====
+   The layer below sets the town look on top of the shared rules above: sky over every page top, grass under it,
+   pixel font for headings, chunky ink-edged panels. "Full-bleed" sky: border-image with a sideways outset paints the
+   colour out to both screen edges without making the page wider (so nothing scrolls sideways). */
+body{background:var(--paper);font-size:16px}
+.top{background:var(--sky);backdrop-filter:none;border-bottom:0}
+.top-in{min-height:64px;gap:4px}
+.mark{font-family:var(--f-pixel);font-size:23px;font-weight:600;letter-spacing:0}
+.mark em{color:var(--ink)}
+.readout{font-family:var(--f-pixel);font-size:16px;color:var(--ink)}
+.navbtn{height:40px;padding:0 13px;font-family:var(--f-pixel);font-size:17px;font-weight:500;color:var(--ink)}
+.navbtn[aria-current="true"]{background:#fff;box-shadow:inset 0 0 0 3px var(--ink)}   /* the page you're on: a white plate */
+.navbtn[aria-current="true"]::after{display:none}
+.navbtn:hover:not([aria-current="true"]){background:var(--sky-l)}
+.navcount{background:var(--sun);color:var(--ink);border:2px solid var(--ink);font-family:var(--f-pixel);font-size:13px;font-weight:600;padding:0 4px;line-height:16px}
+
+.town,.pagehead{background-color:var(--sky);border-image:conic-gradient(var(--sky) 0 0) fill 0//0 100vmax}
+.pagehead{position:relative;padding-bottom:22px}
+.pagehead::after,.town::after{content:"";position:absolute;left:0;right:0;bottom:0;height:22px;border-image:linear-gradient(var(--grass-2) 0 4px,var(--grass) 4px) fill 0//0 100vmax}
+.town{position:relative;padding-bottom:34px}
+.town::after{display:none}
+.town .pagehead{background:none;border-image:none;padding-bottom:0}
+.town .pagehead::after{display:none}
+.pagehead{align-items:end;padding-top:30px}
+.pagehead .lede{font-family:var(--f-pixel);font-size:40px;line-height:1.1;font-weight:600;letter-spacing:0}
+#v-themes .pagehead .lede{font-size:46px;max-width:19ch}
+.pagehead .sub{color:var(--ink);margin-bottom:28px}
+.town .pagehead .sub{margin-bottom:0}
+.pagehead-art{align-self:end}
+#v-themes .pagehead-art{position:absolute;right:0;top:26px}
+.pagehead-art .px{max-width:none}
+.cloud{position:absolute;pointer-events:none}
+.cloud.c1{right:22%;top:20px}
+.cloud.c2{left:56%;top:250px}
+.lede,.scene-title{font-family:var(--f-pixel);font-weight:600;letter-spacing:0}
+.lede{font-size:34px}
+.eyebrow{font-family:var(--f-pixel);font-size:16px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink-2)}
+.section-head .eyebrow{font-family:var(--f-pixel);font-size:28px;font-weight:600;letter-spacing:0;color:var(--ink)}
+.street{margin-top:40px}
+.street .section-head{justify-content:flex-start;align-items:baseline;flex-wrap:wrap;gap:4px 14px;margin-bottom:18px}
+.street .section-head .hint{margin:0;font-size:15px;color:var(--ink)}
+.town .section{position:relative}
+.town #spotdue,.town #setup-box{margin-top:22px}
+.town .hint{color:var(--ink)}
+
+/* today's reviews: a wooden notice board with paper notes pinned to it */
+#spotdue:not([hidden]){display:block;max-width:560px;background:var(--px-t);border:3px solid var(--ink);box-shadow:0 5px 0 var(--ink);padding:8px 12px 14px}
+#spotdue::before{content:"Today";display:block;font-family:var(--f-pixel);font-size:19px;font-weight:600;color:var(--ink)}
+#spotdue .spotdue{position:relative;background:#fff;border:2px solid var(--ink);padding:10px 12px;margin-top:10px;color:var(--ink-2)}
+#spotdue .spotdue + .spotdue{border-top:2px solid var(--ink)}
+#spotdue .spotdue::after{content:"";position:absolute;top:-6px;left:50%;width:8px;height:8px;background:var(--px-r);border:2px solid var(--ink)}
+#spotdue .spotdue b{font-family:var(--f-pixel);font-size:17px;font-weight:600;color:var(--ink)}
+#spotdue .btn:not(.ghost){background:#fff;border-color:var(--ink);box-shadow:0 3px 0 var(--ink)}
+#spotdue .btn:not(.ghost):hover{background:var(--sky-l)}
+#backupnag,#chatnews,#blocked{border-color:var(--ink)}
+
+/* panels: white, a 3px ink edge and a solid shadow */
+.card,.fb-block,.saved,.strip,.mode,.empty,.lvlcheck,.fb-convo,.fb-words,.fb-more{background:var(--surface);border:3px solid var(--ink);box-shadow:0 5px 0 var(--ink)}
+.fb-more{border-style:dashed;box-shadow:none}
+#setup-box:not([open]){box-shadow:none}
+#setup-box:not([open])>summary{padding:4px 0}
+.footnote details.card,#wordlist > .card.pad,#cmp-list.card.pad,#cmp-suggested{box-shadow:none;border:0}
+.saved:hover{border-color:var(--ink);box-shadow:0 5px 0 var(--ink)}
+.mode{padding:18px}
+.mode b{font-family:var(--f-pixel);font-size:21px;font-weight:600}
+.setup-title,.custombox>summary,.field-label,.modal h3,.groupname,.cr-num,.purpose,.dl dt,.targets .lbl,.ctx-item .where{font-family:var(--f-pixel);letter-spacing:0;text-transform:none}
+.setup-title{font-size:17px;font-weight:600}
+.field-label{font-size:15.5px;font-weight:600}
+.dl dt,.purpose,.cr-num,.targets .lbl,.ctx-item .where{font-size:15px;font-weight:600}
+input[type="text"],input[type="search"],input[type="password"],textarea,select{border:3px solid var(--ink);background:#fff;font-size:16px}
+input[type="checkbox"]{border:3px solid var(--ink)}
+.lvl{border:2px solid var(--ink);font-family:var(--f-body)}
+.lvl b{font-family:var(--f-pixel);font-size:16px;font-weight:600}
+.chip{border:2px solid var(--ink);background:#fff;color:var(--ink);font-family:var(--f-pixel);font-size:15px;font-weight:500;min-height:32px}
+.chip:hover{background:var(--sky-l)}
+.tag{font-family:var(--f-pixel);font-size:14px;font-weight:600;letter-spacing:0;background:#fff;border:2px solid var(--ink);color:var(--ink);padding:1px 9px}
+.tag.on{background:var(--ink);color:#fff}
+.say{border:2px solid var(--ink);background:#fff;color:var(--ink);font-family:var(--f-pixel);font-size:14px;box-shadow:0 2px 0 var(--ink)}
+.notice{border:2px solid var(--fix)}
+.trash{color:var(--ink-3)}
+
+/* the tops of the practice pages: back button and title on the sky, grass under them */
+#v-scene > .section:first-child,#v-story > .section:first-child,#v-chat > .section:first-child,#v-spot > .section:first-child,#v-cround > .section:first-child{margin-top:0;padding-top:22px;background-color:var(--sky);border-image:conic-gradient(var(--sky) 0 0) fill 0//0 100vmax}
+#v-scene > .section:first-child,#v-spot > .section:first-child,#v-cround > .section:first-child{position:relative;padding-bottom:44px}
+#v-story > .section:nth-child(2),#v-chat > .section:nth-child(2){position:relative;margin-top:0;padding:18px 0 44px;background-color:var(--sky);border-image:conic-gradient(var(--sky) 0 0) fill 0//0 100vmax}
+#v-scene > .section:first-child::after,#v-spot > .section:first-child::after,#v-cround > .section:first-child::after,#v-story > .section:nth-child(2)::after,#v-chat > .section:nth-child(2)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:22px;border-image:linear-gradient(var(--grass-2) 0 4px,var(--grass) 4px) fill 0//0 100vmax}
+#v-story .sub,#v-chat .sub{color:var(--ink)}
+#v-story .eyebrow,#v-chat .eyebrow{color:var(--ink)}
+.scene-art{margin:-4px -4px 10px 20px}
+.scene-title{font-size:30px;line-height:1.15}
+.prose{font-size:17.5px}
+.seen{background:var(--sky-l);border:2px solid var(--ink)}
+.lang-row{border-top:2px dotted var(--line)}
+.lang-row b{font-weight:600}
+
+/* feedback headings: pixel font, sentence case, a coloured square that says what kind of note it is */
+.fb-block h3{font-family:var(--f-pixel);font-size:19px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink);gap:10px}
+.fb-block h3::before{width:12px;height:12px;border:2px solid var(--ink);background:var(--sq,var(--sky))}
+.fb-good h3,.fb-fix h3,.fb-model h3,.fb-built h3,.fb-tip h3,.fb-terms h3,.fb-progress h3,.fb-words h3,.fb-more h3{color:var(--ink)}
+.fb-good{--sq:var(--grass)} .fb-fix{--sq:var(--px-r)} .fb-model{--sq:var(--sky)} .fb-built{--sq:var(--px-v)}
+.fb-tip{--sq:var(--sun);background:var(--sun-l);border-color:var(--ink)} .fb-terms{--sq:var(--px-p)} .fb-progress{--sq:var(--sun)} .fb-words{--sq:var(--sun)} .fb-more{--sq:var(--px-p)}
+.ctype{color:var(--fix);font-family:var(--f-pixel);font-size:13.5px;letter-spacing:0;text-transform:none}
+.was{text-decoration-thickness:3px;text-decoration-color:var(--px-r)}
+.now{background:var(--good-soft);padding:0 3px}
+
+/* Words and Cards */
+.groupname{font-size:22px;font-weight:600;border-bottom:3px solid var(--ink);align-items:flex-end}
+.groupname .gicon{margin:0}
+.wordbtn b,.wgroup-head b,.saved-head b{font-weight:600}
+.saved-top .cardscene{margin-top:18px;background:var(--sky-l);border:3px solid var(--ink);padding:10px 8px 0;box-sizing:content-box;box-shadow:inset 0 -8px 0 var(--grass)}
+.saved-head .cardtip{font-style:normal;font-size:15.5px;background:var(--sun-l);border:2px solid var(--ink);padding:4px 10px;flex:0 1 auto}
+.saved-head .cardtip b{color:var(--ink);font-family:var(--f-pixel);font-size:14px;letter-spacing:0;text-transform:none}
+.saved-head .cardtheme{font-family:var(--f-pixel);font-size:15px;font-weight:600;letter-spacing:0;text-transform:none}
+.wordbar{background:var(--surface);border-top:3px solid var(--ink);backdrop-filter:none}
+.undo{background:var(--ink);color:#fff;border:3px solid var(--ink)}
+
+.strip > .strip-icon{margin:-4px 0 0}
+.strip p b{font-family:var(--f-pixel);font-size:20px;font-weight:600}
+.footnote{border-top:3px dotted var(--line)}
+.footnote details.card > summary{font-family:var(--f-pixel);font-size:16px;font-weight:600}
+
+@media (prefers-reduced-motion: reduce){ .theme .tscene,.surprise .tscene{transform:none !important} }
+@media (max-width:640px){
+  .top-in{padding:8px 16px 8px;gap:6px 4px}
+  .mark{font-size:20px}
+  .navbtn{height:36px;padding:0 3px;font-size:15.5px}
+  .navbtn[aria-current="true"]::after{display:none}
+  .pagehead .lede{font-size:30px}
+  #v-themes .pagehead .lede{font-size:28px;padding-right:58px}
+  #v-themes .pagehead-art{top:30px}
+  #v-themes .pagehead-art .px{width:48px;height:48px}
+  .pagehead-art{grid-column:1;grid-row:auto;justify-self:end;margin:0}
+  .pagehead .sub{margin-bottom:6px}
+  .cloud{display:none}
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:20px}
+  .theme .lot,.surprise .lot{height:96px}
+  .theme .tscene,.surprise .tscene{width:102px;height:90px}
+  .theme .turf,.surprise .turf{padding:8px 4px 12px}
+  .theme .sign,.surprise .sign{font-size:13px;min-height:50px;padding:5px 3px;border-width:2px}
+  .theme .egs.tuned{left:2px;right:2px;font-size:12px}
+  .section-head .eyebrow{font-size:24px}
+  .face{width:50px;height:50px}
+  .face .px{width:32px;height:32px}
+  .turn{grid-template-columns:50px minmax(0,1fr);gap:8px}
+  .turn.me{grid-template-columns:minmax(0,1fr) 50px}
 }
 </style>
 
@@ -658,8 +782,11 @@ body.has-wordbar .wrap{padding-bottom:150px}
 <main class="wrap">
 
   <section id="v-themes">
+    <div class="town">   <!-- v32: the sky over the street. Everything from the headline to the places sits in it. -->
+    <span class="cloud c1" data-px="cloud" data-scale="3" aria-hidden="true"></span>
+    <span class="cloud c2" data-px="cloud" data-scale="3" aria-hidden="true"></span>
     <div class="section pagehead">
-      <div class="pagehead-art" data-px="v_street" data-scale="2" aria-hidden="true"></div>
+      <div class="pagehead-art" data-px="sun" data-scale="4" aria-hidden="true"></div>
       <div class="eyebrow">Step one</div>
       <h1 class="lede">Pick a situation you'd actually find yourself in.</h1>
       <p class="sub">The more you tell it about your life under “Your profile”, the less it invents scenes that belong to someone else.</p>
@@ -731,9 +858,10 @@ body.has-wordbar .wrap{padding-bottom:150px}
       </div>
     </details>
 
-    <div class="section">
-      <div class="section-head"><div class="eyebrow">Themes</div></div>
+    <div class="section street">
+      <div class="section-head"><div class="eyebrow">Where to today?</div><span class="hint">Pick a place to get a scene from there.</span></div>
       <div class="grid" id="themegrid"></div>
+    </div>
     </div>
 
     <div class="section ownweek">
@@ -815,7 +943,7 @@ body.has-wordbar .wrap{padding-bottom:150px}
 
   <section id="v-words" hidden>
     <div class="section pagehead">
-      <div class="pagehead-art" data-px="v_words" data-scale="2" aria-hidden="true"></div>
+      <div class="pagehead-art" data-px="v_words" data-scale="4" aria-hidden="true"></div>
       <div class="eyebrow">Word bank</div>
       <h1 class="lede">The expressions worth stealing.</h1>
       <p class="sub">Tap any entry to open it. Tick up to five to practise with them. Spot it gives you a new situation, and you find the right word yourself. Add things you meet elsewhere, like a show or a meeting, with “Add a note”.</p>
@@ -851,7 +979,7 @@ body.has-wordbar .wrap{padding-bottom:150px}
 
   <section id="v-cards" hidden>
     <div class="section pagehead">
-      <div class="pagehead-art" data-px="v_cards" data-scale="2" aria-hidden="true"></div>
+      <div class="pagehead-art" data-px="v_cards" data-scale="4" aria-hidden="true"></div>
       <div class="eyebrow">Your cards</div>
       <h1 class="lede">Everything you've practised, kept.</h1>
       <p class="sub">Coming back to an old card a week later is where the learning sticks.</p>
@@ -963,48 +1091,38 @@ function el(t,c,x){ var n=document.createElement(t); if(c)n.className=c; if(x!=n
 function clear(n){ while(n.firstChild) n.removeChild(n.firstChild); }
 
 /* ---------- pixel art ----------
-   Each picture is a text grid: one character is one pixel. k ink · m shadow · l light fill · w highlight
-   a pine · o ochre · r clay · p plum · "." empty. The colours come from the --px-* tokens, so dark mode works. */
+   Each picture is a text grid: one character is one pixel. "." is empty, "|" starts a new row.
+   v32 (Pixel Town): one fixed palette, and each letter has one colour (the --px-* tokens):
+   k ink · w white · b sky · c pale sky · y sun · o orange · r red · p pink · v violet · g grass · G dark grass
+   t wood · s pale grey · B deep blue · f skin. The older letters still work: m pale grey, l white, a dark grass. */
 var PX={
   logo:".kkkkkkkkkkkk.|kwwwwwwwwwwwwk|kwwwwwwwwoowwk|kwwwwwwwwoowwk|kwwwwwwwwwwwwk|kwwwmmmmmmwwwk|kwmmmmmmmmmmwk|kwwwwwwwwwwwwk|.kkkkkkkkkkkk.|..kkk.........|..kk..........|..k...........|..............",
-  cup:"................|......k...k.....|.....k...k......|......k...k.....|................|...kkkkkkkkkk...|...kwllllllllkk.|...kllllllllk.k.|...kllllllllk.k.|...kllllllllkk..|....kllllllk....|.....kkkkkk.....|..kkkkkkkkkkkk..|...mmmmmmmmmm...|................|................",
-  bag:"................|......kkkk......|.....k....k.....|.....k....k.....|...kkkkkkkkkk...|...kwlllllllk...|...kllllllllk...|...kllmmmmllk...|...kllllllllk...|...kllllllllk...|...kllllllllk...|...kllllllllk...|...kkkkkkkkkk...|....mmmmmmmm....|................|................",
-  train:"................|....kkkkkkkk....|...kwlllllllk...|...klmmmmmmlk...|...klmmmmmmlk...|...klmmmmmmlk...|...kllllllllk...|...kkkkkkkkkk...|...kllllllllk...|...kmkllllkmk...|...kllllllllk...|...kkkkkkkkkk...|....kk....kk....|..mmmmmmmmmmmm..|................|................",
-  house:"................|................|.......kk.......|......kllk......|.....kllllk.....|....kllllllk....|...kllllllllk...|..kllllllllllk..|.kkkkkkkkkkkkkk.|..kllllllllllk..|..kllllllkkkkk..|..kmmkllkllllk..|..kmmkllkllmlk..|..kllllkkllllk..|..kkkkkkkkkkkk..|..mmmmmmmmmmmm..",
-  heart:"................|................|..kkkk....kkkk..|.kllllk..kllllk.|kwwlllllkllllllk|kwllllllllllllmk|kllllllllllllmmk|kllllllllllllmmk|.kllllllllllmmk.|..kllllllllmmk..|...kllllllmmk...|....kllllmmk....|.....kllmmk.....|......kkkk......|................|................",
-  talk:"................|.kkkkkkkkk......|kklllllllk......|kllkllkllk......|kllllllllk......|.kkkkkkkkk......|..kk...kkkkkkkk.|..k...kllllllllk|......kllllllllk|......kllkllkllk|......kllllllllk|.......kkkkkkkk.|.........kk.....|..........k.....|................|................",
-  people:"................|................|....kkk.........|...kllk...kkk...|...kllk..kllk...|....kk...kllk...|...kkkk...kk....|..kllllk.kkkk...|..kllllkkmmmmk..|..kllllkmmmmmmk.|..kllllkmmmmmmk.|..kkkkkkmmmmmmk.|........kkkkkk..|..mmmmmmmmmmmm..|................|................",
-  ticket:"................|................|................|................|.kkkkkkkkkkkkkk.|.kwlllllllklllk.|.kllmmmmllllllk.|..klllllllkllk..|..klmmmllllllk..|.kllllllllklllk.|.kllllllllllllk.|.kkkkkkkkkkkkkk.|..mmmmmmmmmmmm..|................|................|................",
-  book:"................|................|..kkkkk..kkkkk..|.kwllllkkllllwk.|.kllllllkllllllk|.kllkkllkllkkllk|.kllllllkllllllk|.kllkkllkllkkllk|.kllllllkllllllk|.kllkkllkllkkllk|.kllllllkllllllk|.kkkkkkkkkkkkkkk|..kmmmmmkmmmmmk.|...kkkkk.kkkkk..|................|................",
-  laptop:"................|................|...kkkkkkkkkk...|...kmmmmmmmmk...|...kmwmmmmmmk...|...kmmmmmmmmk...|...kmmmmmmmmk...|...kmmmmmmmmk...|...kkkkkkkkkk...|..kllllllllllk..|.kllkkkkkkkkllk.|kkkkkkkkkkkkkkkk|.mmmmmmmmmmmmmm.|................|................|................",
-  receipt:"................|....kkkkkkkk....|....kwllllllk...|....kllllllk....|....kkkkkllk....|....kllllllk....|....kkkkllllk...|....kllllllk....|....kllmmlllk...|....kllmmllk....|....kllllllk....|....kllmmlllk...|....kllllllk....|....kkkkkkkk....|................|................",
-  gift:"................|.....kk..kk.....|....kmmk.kmmk...|.....kkkkkkk....|..kkkkkkkkkkkk..|..kwllllmmllllk.|..kllllmmmlllk..|..kkkkkkkkkkkk..|...kllllmmllk...|...kllllmmllk...|...kllllmmllk...|...kllllmmllk...|...kkkkkkkkkk...|..mmmmmmmmmmmm..|................|................",
-  brief:"................|................|......kkkk......|.....k....k.....|..kkkkkkkkkkkk..|..kwooooooooook.|..koooooooooook.|..koooookkooook.|..kkkkkkkkkkkkk.|..koooookkooook.|..koooooooooook.|..koooooooooook.|..kkkkkkkkkkkkk.|...mmmmmmmmmmm..|................|................",
-  cap:"................|................|.......kk.......|.....kkookk.....|...kkooooookk...|.kkooooooooookk.|kooooooooooooook|.kkooooooooookkk|...kkooooookk.k.|...kkkkkkkkkk.k.|...kllllllllk.k.|...kllllllllk.o.|....kkkkkkkk.ooo|................|................|................",
   pen:"................|............kk..|...........kook.|..........kookk.|.........kookk..|........kookk...|.......kookk....|......kookk.....|.....kookk......|....kllkk.......|...kllkk........|...kkk..........|..kk............|..mmmmmmmmmm....|................|................",
-  star:"................|.......kk.......|......kllk......|......kllk......|.....kllllk.....|kkkkkllllllkkkkk|.kwllllllllllwk.|..kllllllllllk..|...kllllllllk...|...kllllllllk...|..kllllkkllllk..|..kllk....kllk..|.klk........klk.|.kk..........kk.|................|................",
-  v_street:"..........................k...............................................................................................|..........................k...............................................................................................|...kkkkkkkkkkkk...........k................kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.........kkkkkkkkkkkkk......kkkkkkkkkkk....|...kwwwwwkwwwwk...........k................klkkkkllkkkkllkkkkllkkkkllkkkklllllk........klllkkkkkkklllk.....kwwwwwwwwwk....|...kwwwwwkwwwwk.........kkkkk..............klkookllkmmkllkookllkmmkllkooklllllk........klllkkkkkkklllk.....kwmmmmmmmwk....|...kwwwwwkwwwwk........kkoookk.............klkookllkmmkllkookllkmmkllkooklllllk........klllllllllllllk.....kwwwwwwwwwk....|...kwwwwwkwwwwk.........kkkkk..............klkkkkllkkkkllkkkkllkkkkkkkkkklllllk........klkkkkkkkkkkklk.....kkkkkkkkkkk....|...kkkkkkkkkkkk............................kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk........klkwmmmkmmmmklk..........k.........|...kwwwwwkwwwwk...m..............................................kkkkkkk...............klkmmmmkmmmmklk..........k.........|...kmwmwmkmwmwk....m.............................kkkkkkkkk.......kwwwwwk...............klkmmmmkmmmmklk..........k.kkkkk...|...kwmwmwmwmwmk...m..............................kmmmmmmmk.......kwwwwwk...............klkmmmmkmmmmklk..........k.kwkwk...|...kkkkkkkkkkkk..................................kmmmmmmmk.......kwwwwwk...............klkkkkkkkkkkklk..........k.kwkkk...|.................kkkk........kkkk................kmmmmmmmk.......kwwwwwk...............klllllllllllllk..........k.kwwwk...|.................kwlkk.lll...kwlkk...............kkkkkkkkk.......kkkkkkk...............klllllllllllllk..........k.kkkkk...|.................kkkk.kkkkk..kkkk............kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..........klllllllllllllk..........k.........|..............kkkkkkkkkkkkkkkkkkkkkk.........kmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmk..........kloollllllloolk..........k.........|...............mmmmmmmmmmmmmmmmmmmm..........kllllllllllllllllllllllllllllllk..........klllllllllllllk..........k.........|...............k..................k..........kllllllllllllllllllllllllllllllk..........klllkkkkkkklllk..........k.........|...............k..................k..........kllllllllllllllllllllllllllllllk..........klllllllllllllk..........k.........|...............k..................k..........kllllllllllllllllllllllllllllllk..........kkkkkkkkkkkkkkk..........k.........|...............k..................k..........kllllllllllllllllllllllllllllllk.....kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk|...............k..................k..........kllllllllllllllllllllllllllllllk......m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m|...............k..................k..........kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.....m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  v_words:"................................................|................................................|................................................|....................................oo..........|....................................oo..........|....................................oo..........|.....kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkookkkk......|.....kwwwwwwwwwwwwwwwwmkmwwwwwwwwwwwwwwwwk......|.....kwwwwwwwwwwwwwwwwmkmwwwwwwwwwwwwwwwwk......|.....kwwwwwwwwwwwwwwwwmkmwwwwwwwwwwwwwwwwk......|.....kwwkkkkkkmmmmmmwwmkmwwkkkkkmmmmmmmwok......|.....kwwwwwwwwwwwwwwwwmkmwwwwwwwwwwwwwwook......|.....kwwwwwwwwwwwwwwwwmkmwwwwwwwwwwwwwookk......|.....kwwmmmmmmmmmmmmwwmkmwwmmmmmmmmmmokkwk......|.....kwwwwwwwwwwwwwwwwmkmwwwwwwwwwwwokkwwk......|.....kwwwwwwwwwwwwwwwwmkmwwwwwwwwwwokkwwwk......|.....kwwmmmmmmmmmmmmwwmkmwwmmmmmmmokkmmwwk......|.....kwwwwwwwwwwwwwwwwmkmwwwwwwwwokkwwwwwk......|.....kwwwwwwwwwwwwwwwwmkmwwwwwwwokkwwwwwwk......|.....kwwmmmmmmmmmmmmwwmkmwwmmmmokkmmmmmwwk.kkkk.|.....kwwwwwwwwwwwwwwwwmkmwwwwwokkwwwwwwwwk.kwlk.|.....kwwwwwwwwwwwwwwwwmkmwwwkokkwwwwwwwwwk.kllk.|.....kwwwwwwwwwwwwwwwwmkmwwwkkkwwwwwwwwwwk.kllk.|.....kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.kllk.|.....kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkokkkkk.kkkk.|......mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmommmm.......|....................................oo..........|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  v_cards:"..................................kkkkkk........|..................................kmmmmk........|..................kkkkkkkkkkkkkkkkkkkkkkkk......|..................kllllllllllllllllllllllk......|..................kllllllllllllllllllllllk......|..................kooooooooooooooooooooook......|............kkkkkkkkkkkkkkkkkkkkkkkklllllk......|............kllllllllllllllllllllllklllllk......|.........kkkkllllllllllllllllllllllklllllk......|.........k.kkooooooooooooooooooooooklllllk......|......kkkkmkkkkkkkkkkkkkkkkkkklllllklllllk......|......kwwkmkwwwwwwwwwwwwwwwwwklllllklllllk......|......kwwkmkwwwwwwwwwwwwwwwwwklllllklllllk......|......kookokoooooooooooooooooklllllklllllk......|......kwwwkkwwwwwwwwwwwwwwwwwklllllklllllk......|......kwwwwwwwwwwwwwwwwwwwwwwklllllklllllk......|......kwwkkkkkkkkkkmmmmmmmmwwklllllkkkkkkk......|......kwwwwwwwwwwwwwwwwwwwwmwklllllk............|......kwwwwwwwwwwwwwwwwwwwmwwklllllk............|......kwwmmmmmmmmmmmmmmmmmmwwklllllk............|......kwwwwwwwwwwwwwwwwwmwwwwkkkkkkk............|......kwwwwwwwwwwwwwwwwwwwwwwk..................|......kwwmmmmmmmmmmmmmmmmmmwwk..................|......kwwwwwwwwwwwwwwwwwwwwwwk..................|......kkkkkkkkkkkkkkkkkkkkkkkk..................|................................................|................................................|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
   v_compare:"................................................|................................................|......................kkkk......................|.....................kkookk.....................|.....................kkookk...........kkkk......|......................kkkk.....kkkkkkkkkkk......|.......................kkkkkkkkkkkkkkkkkkkk.....|.................kkkkkkkkkkkkkk.....koooook.....|..........kkkkkkkkkkkkkkk...........kwwwwok.....|......kkkkkkkkkkk......kk...........koooook.....|......kkkk.............kk...........kkkkkkk.....|........k..............kk.........kkkkkkkkkkk...|.....kkkkkkk...........kk..........kkkkkkkkk....|.....kmmmmmk...........kk...........mmmmmmm.....|.....kwwwwmk...........kk.......................|.....kmmmmmk...........kk.......................|.....kkkkkkk...........kk.......................|...kkkkkkkkkkk.........kk.......................|....kkkkkkkkk..........kk.......................|.....mmmmmmm...........kk.......................|.......................kk.......................|.......................kk.......................|.......................kk.......................|.......................kk.......................|.................kkkkkkkkkkkkkk.................|.................kllllllllllllk.................|.................kkkkkkkkkkkkkk.................|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_food:"..........................k.............|..........................k.............|...kkkkkkkkkkkk...........k.............|...kwwwwwkwwwwk...........k.............|...kwwwwwkwwwwk.........kkkkk...........|...kwwwwwkwwwwk........kkoookk..........|...kwwwwwkwwwwk.........kkkkk...........|...kkkkkkkkkkkk.........................|...kwwwwwkwwwwk...m.....................|...kmwmwmkmwmwk....m....................|...kwmwmwmwmwmk...m.....................|...kkkkkkkkkkkk.........................|.................kkkk........kkkk.......|.................kwlkk.lll...kwlkk......|.................kkkk.kkkkk..kkkk.......|..............kkkkkkkkkkkkkkkkkkkkkk....|...............mmmmmmmmmmmmmmmmmmmm.....|...............k..................k.....|...............k..................k.....|...............k..................k.....|...............k..................k.....|...............k..................k.....|...............k..................k.....|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_shop:"........................................|........................................|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|..klkkkkllkkkkllkkkkllkkkkllkkkklllllk..|..klkookllkmmkllkookllkmmkllkooklllllk..|..klkookllkmmkllkookllkmmkllkooklllllk..|..klkkkkllkkkkllkkkkllkkkkkkkkkklllllk..|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|........................kkkkkkk.........|........kkkkkkkkk.......kwwwwwk.........|........kmmmmmmmk.......kwwwwwk.........|........kmmmmmmmk.......kwwwwwk.........|........kmmmmmmmk.......kwwwwwk.........|........kkkkkkkkk.......kkkkkkk.........|....kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk....|....kmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmk....|....kllllllllllllllllllllllllllllllk....|....kllllllllllllllllllllllllllllllk....|....kllllllllllllllllllllllllllllllk....|....kllllllllllllllllllllllllllllllk....|....kllllllllllllllllllllllllllllllk....|....kllllllllllllllllllllllllllllllk....|....kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk....|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_travel:"........................................|........................................|......kkkkkkkkkkkkk......kkkkkkkkkkk....|.....klllkkkkkkklllk.....kwwwwwwwwwk....|.....klllkkkkkkklllk.....kwmmmmmmmwk....|.....klllllllllllllk.....kwwwwwwwwwk....|.....klkkkkkkkkkkklk.....kkkkkkkkkkk....|.....klkwmmmkmmmmklk..........k.........|.....klkmmmmkmmmmklk..........k.........|.....klkmmmmkmmmmklk..........k.kkkkk...|.....klkmmmmkmmmmklk..........k.kwkwk...|.....klkkkkkkkkkkklk..........k.kwkkk...|.....klllllllllllllk..........k.kwwwk...|.....klllllllllllllk..........k.kkkkk...|.....klllllllllllllk..........k.........|.....kloollllllloolk..........k.........|.....klllllllllllllk..........k.........|.....klllkkkkkkklllk..........k.........|.....klllllllllllllk..........k.........|.....kkkkkkkkkkkkkkk..........k.........|kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk|.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m|m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.m.|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_home:"........................................|........................................|........................................|...kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk...|....kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk....|....kllllllllllllllllllllllllllllllk....|....kllllllllllllllllllllllllllllllk....|....kllllllllllllllllllllllllllllllk....|....klkkkkkkkllllllllllllllkkkkkkklk....|....klkwwkwwklllkkkkkkkklllkwwkwwklk....|....klkwwkwwklllkmmmmmmklllkwwkwwklk....|....klkkmkmkklllkmkkkkmklllkmkmkmklk....|....klkmwmwmklllkmmmmmmklllkwmkmwklk....|....klkkkkkkklllkmmmmmmklllkkkkkkklk....|....klllllllllllkmmmmmmklllllllllllk....|....klllllllllllkmmmmmmklllllllllllk....|....kllllmlmmlllkmmmmmoklllllllllllk....|....klllllmlllllkmmmmmmklllllllllllk....|....kllllmlmmlllkmmmmmmklllllllllllk....|....klllllmlllllkmmmmmmklllllllllllk....|....kllllkkkklllkmmmmmmklllllllllllk....|....kllllkooklllkmmmmmmklllllllllllk....|....kkkkkkkkkkkooooooooookkkkkkkkkkk....|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_health:"........................................|........................................|...kkkkkkkkkkkkkkkkkkkk.................|...klkkklkkklkkklkkkllk....kkkkkkkkk....|...klkmklkwklkoklkwkllk....kwwmmmwwk....|...klkmklkwklkoklkwkllk....kwwmmmwwk....|...klkkklkkklkkklkkkllk....kmmmmmmmk....|...kkkkkkkkkkkkkkkkkkkk....kmmmmmmmk....|...kllllllllllllllllllk....kmmmmmmmk....|...klkkklkkklkkklkkkllk....kwwmmmwwk....|...klkwklkoklkwklkmkllk....kwwmmmwwk....|...klkwklkoklkwklkmkllk....kkkkkkkkk....|...klkwklkoklkwklkmkllk.................|...klkkklkkklkkklkkkllk.................|...kkkkkkkkkkkkkkkkkkkk.................|........................................|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|..kllllllllllllllllllllllllllllllllllk..|..kllllllllllllllllllllllllllllllllllk..|..kllllllllllllllllllllllllllllllllllk..|..kllllllllllllllllllllllllllllllllllk..|..kllllllllllllllllllllllllllllllllllk..|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_small:"........................................|...............................kkkkk....|...............................koook....|.....kkkkkkkk..................kkkkk....|....kkwwwwwwkk...................k......|....kwmmmmmmwk...................k......|....kwwwwwwwwk....kkkkkkkk.......k......|....kkwwwwwwkk...kkllllllkk......k......|.....kkkkkkkk....klmmmmmllk......k......|......kk.........kllllllllk......k......|......k..........kkllllllkk......k......|..................kkkkkkkk.......k......|...................kk............k......|...................k.............k......|.................................k......|......kkkkkkkkkkkkkkkkkkkk.......k......|........m.m.m.m.m.m.m.m.m........k......|......kkkkkkkkkkkkkkkkkkkk.......k......|........k..............k.........k......|........k..............k.........k......|........k..............k.........k......|........k..............k.........k......|........k..............k.........k......|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_family:"........................................|........................................|........................................|..............kkkkkkkkkk..........kkkkkk|..............kwwwwwwwwk..........kooooo|..............kwwwwowwwk..........kooooo|..............kwmmmmmmwk..........kkkkkk|..............kwmmmmmmwk.............k..|..............kwmmmmmmwk.............k..|..............kkkkkkkkkk.............k..|.....................................k..|.....................................k..|....kkkk......................kkkk...k..|....kook......................kook...k..|....kookkkkkkkkkkkkkkkkkkkkkkkkook...k..|....kookooooooooooooooooooooookook...k..|....kookoololololololololololokook...k..|....kookololololololololololookook...k..|....kookoololololololololololokook...k..|....kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk...k..|........k.....................k......k..|........k.....................k......k..|........k.....................k......k..|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_free:"........................................|....kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk....|....kwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwk....|....kwwlwlwlwlwlwlwlwlwlwlwlwlwlwlwk....|....kwlwlwlwlwlwlwlwlwlwlwlwlwlwlwwk....|....kwwlwlwlwlwlwlwlwlwlwlwlwlwlwlwk....|....kwlwlwlwlwlwlwlwlwlwlwlwlwlwlwwk....|....kwmmmmmmmmmmmmmmmmmmmmmmmmmmmmwk....|....kwmmmmmmmmmmmmmmmmmmmmmmmmmmmmwk....|....kwmmmmmmmmmmmmmmmmmmmmmmmmmmmmwk....|....kwmmmmmmmmmmmmmmmmmmmmmmmmmmmmwk....|....kwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwk....|....kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk....|........................................|........................................|........................................|...kkkkk.kkkkk.kkkkk.kkkkk.kkkkk.kkkkk..|...kmmmk.kmmmk.kmmmk.kmmmk.kmmmk.kmmmk..|...koook.koook.koook.koook.koook.koook..|...koook.koook.koook.koook.koook.koook..|...koook.koook.koook.koook.koook.koook..|...koook.koook.koook.koook.koook.koook..|...kkkkk.kkkkk.kkkkk.kkkkk.kkkkk.kkkkk..|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_learn:"........................................|........................................|........................................|.........................kkkkkk.........|.........................kooook.........|......kkkkkkkkkkkk.......kkkkkkkk.......|......kllllllllllk...........k..........|......kkkkkkkkkkkk...........k..........|.......kkkkkkkkkkk...........k..........|.......klllllllllk...........k..........|.......kkkkkkkkkkk...........k..........|......kkkkkkkkkkkkk..kkkkkkk.k..........|......klllllllllllk..kmmmmwk.k..........|......kkkkkkkkkkkkk..kkkkkkkkkkkk.......|....kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk....|.....mmmmmmmmmmmmmmmmmmmmmmmmmmmmmm.....|.....k............................k.....|.....k............................k.....|.....k............................k.....|.....k............................k.....|.....k............................k.....|.....k............................k.....|.....k............................k.....|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_tech:"........................................|........................................|........................................|..............................mmm.......|.........kkkkkkkkkkkkkkkk....m...m......|.........kmmmmmmmmmmmmmmk......m........|.........kmwmmmmmmmmmmmmk.....m.m.......|.........kmmmmmmmmmmmmmmk...............|.........kmmmmmmmmmmmmmmk...............|.........kmmmmmmmmmmmmmmk....kkkk.......|.........kmmmmmmmmmmmmmmk....kmmk.......|.........kmmmmmmmmmmmmmmk....kkkk.......|.........kmmmmmmmmmmmmmmk....kkkk.......|.........kkkkkkkkkkkkkkkk....kkkk.......|.......kkkkkkkkkkkkkkkkkkkk..kkkk.......|...kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk...|....mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm....|....k..............................k....|....k..............................k....|....k..............................k....|....k..............................k....|....k..............................k....|....k..............................k....|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_fix:"........................................|................................kkkkk...|...............................kkwowkk..|...............................kwwowwk..|...............................kwwowwk..|...............................kwwwwwk..|......................kkkkkkkk.kkwowkk..|......................kwwwwwwk..kkkkk...|......................kmmmmmmk...kk.....|...........kk.........kwwwwwwk...k......|.........kkkkkk.......kmmmmwok..........|.........kooook.......kwwwwwok..........|........kkkkkkkk......kkkkkkkk..........|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|..kmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmk..|..kllllllllllllllllllllllllllllllllllk..|..kllllllllllllllllllllllllllllllllllk..|..kllllllllllllllllllllllllllllllllllk..|..kllllllllllllllllllllllllllllllllllk..|..kllllllllllllllllllllllllllllllllllk..|..kllllllllllllllllllllllllllllllllllk..|..kllllllllllllllllllllllllllllllllllk..|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_occas:"........................................|........................................|kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk|..ooo...ooo...mmo...ooo.o.ooo...mmm.....|..ooo...ooo...mmk...koo.k.ooo...mmm.....|...o.....o.....mk...ko..k..o.....m......|................k...k...k...............|..............kkkkkkkkkkkk..............|..............kwwwwwwwwwwk..............|..............kkkkkkkkkkkk..............|............kkkkkkkkkkkkkkkk............|............kllllllllllllllk............|............oooooooooooooooo............|............kllllllllllllllk............|............kllllllllllllllk............|............kkkkkkkkkkkkkkkk............|......kkkkkkkkkkkkkkkkkkkkkkkkkkkk......|.......mmmmmmmmmmmmmmmmmmmmmmmmmm.......|.......k........................k.......|.......k........................k.......|.......k........................k.......|.......k........................k.......|.......k........................k.......|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_work:"........................................|........................................|..kkkkkkkkkkk...........................|..kwwwwwwwwwk...........................|..kwwwwowwwwk.....kkkkkkkkkkkkkk........|..kwmwwowwwwk.....kwwwwwwwwwwwwk........|..kwmwwowwmwk.....kwwwwwwwwwwwwk........|..kwmwwowwmwk.....kwwwwwwwowwwwk........|..kwmwwowwmwk.....kwwwwowwwwwwwk.m.mm...|..kkkkkkkkkkk.....kwwwwwwwwwwwwk..m.....|..................kwmmmmmmmmmwwk.m.mm...|..................kwwwwwwwwwwwwk..m.....|...........kkkkk..kkkkkkkkkkkkkk.kkkk...|...........koook........k........kook...|...........kkkkk.....kkkkkkk.....kkkk...|........kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|.........mmmmmmmmmmmmmmmmmmmmmmmmmmmm...|.........k..........................k...|.........k..........................k...|.........k..........................k...|.........k..........................k...|.........k..........................k...|.........k..........................k...|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_acad:"........................................|........................................|...kkkkkkkkkkkkkkkkkkkkkkkk.............|...kmmmmmmmmmmmmmmmmmmmmmmk.............|...kmmmmmmmmmmmmmmmmwmmmmmk.............|...kmmwwwwwwmmmmmmmmmmmmmmk.............|...kmmmmmmmmmmmmwmwmmmmmmmk.............|...kmmwwwwmmmmwmmmmmmmmmmmk....kkkkkk...|...kmmmmmmmmmmmmmmmmmmmmmmk....kwwwwk...|...kmmmmmmwmwmmmmmmmmmmmmmk....kkkkkk...|...kmmmmwmmmmmmmmmmmmmmmmmk..kkkkkkkkkk.|...kmmwmmmmmmmmmmmmmmmmmmmk...kooooook..|...kmmmmmmmmmmmmmmmmmmmmmmk...kooooook..|...kmmmmmmmmmmmmmmmmmmmmmmk...kooooook..|...kkkkkkkkkkkkkkkkkkkkkkkk...kooooook..|..............................kooooook..|..............................kooooook..|..............................kooooook..|..............................kooooook..|..............................kooooook..|..............................kooooook..|..............................kooooook..|..............................kkkkkkkk..|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_dice:"........................................|........................................|........................................|........................................|........................................|........................................|........................................|........................................|............................m...........|.......kkkkkkkkkkkkkk.....m...m.........|.......kwwlllllllllmk...................|.......kwkkllllllkkmk...................|.......klkkllllllkkmk...................|.......klllllllllllmk..kkkkkkkkkk.......|.......klllllllllllmk..kwllllllmk.......|.......kllllloollllmk..klkkllllmk.......|.......kllllloollllmk..klkkllllmk.......|.......klllllllllllmk..klllkkllmk.......|.......klllllllllllmk..klllkkllmk.......|.......klkkllllllkkmk..klllllkkmk.......|.......klkkllllllkkmk..klllllkkmk.......|.......kmmmmmmmmmmmmk..kmmmmmmmmk.......|.......kkkkkkkkkkkkkk..kkkkkkkkkk.......|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-  s_own:"........................................|........................................|..........................kkkkkkkkkkk...|..........................kwwwwkwwwwk...|..........................kwwwwkwwwwk...|..........................kwowwkwwwwk...|..........................kokkkkkkkkk...|..........................owwwwkwwwwk...|.........................okmwmwmwmwmk...|........................o.kwmwmkmwmwk...|.......................o..kkkkkkkkkkk...|......................o.................|.......kkkkkkkkkkkkkkkkkkk..............|.......kmmmmmmwwkwmmmmmmwk..............|.......kwwwwwwwwkwwwwwwwwk..............|.......kkkkkkkkkkkkkkkkkkk..............|...kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.......|....mmmmmmmmmmmmmmmmmmmmmmmmmmmm........|....k..........................k........|....k..........................k........|....k..........................k........|....k..........................k........|....k..........................k........|mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"
+  s_food:"..........kkkkkkkkkkkkkk..........|..........kyyyyyyyyyyyyk..........|..........kyyykwwwkkyyyk..........|..........kyyykkkkkkkyyk..........|..........kyyykkkkkyyyyk..........|..........kkkkkkkkkkkkkk..........|.kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.|.krrrwwwrrrwwwrrrwwwrrrwwwrrrwwwk.|.krrrwwwrrrwwwrrrwwwrrrwwwrrrwwwk.|.krrrwwwrrrwwwrrrwwwrrrwwwrrrwwwk.|.krrkrrkrrkrrkrrkrrkrrkrrkrrkrrkk.|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|..kwwwwwwwwwwwwwwwwwwwwwwwwwwwwk..|..kwwwwwwwwwwwwwwwwwwwwwwwwwwwwk..|..kwwkkkkkkkkkkkkkkwwwwwwwwwwwwk..|..kwwkcccccccccccckwwwkkkkkkkkwk..|..kwwkcccccccccccckwwwkttttttkwk..|..kwwkcccccccccccckwwwktkkkktkwk..|..kwwkwwwwwwwwwwwwkwwwktkccktkwk..|..kwwkcccccccccccckwwwktkccktkwk..|..kwwkccckkkkkkccckwwwktkccktkwk..|..kwwkccccckcccccckwwwktkkkktkwk..|..kwwkccccckcccccckwwwkttttttkwk..|..kwwkkkkkkkkkkkkkkwwwkytttttkwk..|..kwwwwwwwwwwwwwwwwwwwkttttttkwk..|..kwwwwwwwwwwwwwwwwwwwkttttttkwk..|..kwwwwwwwwwwwwwwwwwwwkttttttkwk..|..kwwwwwwwwwwwwwwwwwwwkttttttkwk..|..kwwwwwwwwwwwwwwwwwwwkttttttkwk..|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..",
+  s_shop:"..............kkkkkk..............|..............k....k..............|..............k....k..............|...........kkkkkkkkkkkk...........|...........kwwwwwwwwwwk...........|...........kyyyyyyyyyyk...........|...........kyyyykkyyyyk...........|...........kyyyyyyyyyyk...........|...kkkkkkkkkkkkkkkkkkkkkkkkkkkk...|...kppppppppppppppppppppppppppk...|...kppppppppppppppppppppppppppk...|...kkkkkkkkkkkkkkkkkkkkkkkkkkkk...|...kppppppppppppppppppppppppppk...|...kppkkkkkkkkkkkkkkkkkkkkkkppk...|...kppkcccccccccccccccccccckppk...|...kppkcccccckkkkcccccccccckppk...|...kppkckkkkckvvkcccccckkkckppk...|...kppkckookckvvkckkkkckgkckppk...|...kppkckookckvvkckBBkckgkckppk...|...kppkckookckvvkckBBkckgkckppk...|...kppkckookckvvkckBBkckgkckppk...|...kppkkkkkkkkkkkkkkkkkkkkkkppk...|...kppppppppppppppppppppppppppk...|...kppppppppppkkkkkkppppppppppk...|...kppppppppppkwwkwkppppppppppk...|...kppppppppppkwwkwkppppppppppk...|...kppppppppppkwwkwkppppppppppk...|...kppppppppppkwwkwkppppppppppk...|...kppppppppppkwwkwkppppppppppk...|...kkkkkkkkkkkkkkkkkkkkkkkkkkkk...",
+  s_travel:"..................................|..........kssssssssssssk..........|..........kkkkkkkkkkkkkk..........|.......kkkkkkkkkkkkkkkkkkkk.......|......kkBBBBBBBBBBBBBBBBBBkk......|......kBBBBBBBBBBBBBBBBBBBBk......|......kBBkkkkkkkkkkkkkkkkBBk......|......kBBkwwwwwccccccccckBBk......|......kBBkcccccccccccccckBBk......|......kBBkcccccccccccccckBBk......|......kBBkcccccccccccccckBBk......|......kBBkcccccccccccccckBBk......|......kBBkcccccccccccccckBBk......|......kBBkcccccccccccccckBBk......|......kBBkkkkkkkkkkkkkkkkBBk......|......kBBBBBBBBBBBBBBBBBBBBk......|......kBBBBBBBBBBBBBBBBBBBBk......|......kwwwwwwwwwwwwwwwwwwwwk......|......kwwwwwwwwwwwwwwwwwwwwk......|......kBBBBBBBBBBBBBBBBBBBBk......|......kBBkkkkBBkkkkBBkkkkBBk......|......kBBkyykBBkwwkBBkyykBBk......|......kBBkkkkBBkkkkBBkkkkBBk......|......kBBBBBBBBBBBBBBBBBBBBk......|......kBBBBBBBBBBBBBBBBBBBBk......|......kkBBBBBBBBBBBBBBBBBBkk......|.......kkkkkkkkkkkkkkkkkkkk.......|........kkkkkkkkkkkkkkkkkk........|.....kkkkkkkkkkkkkkkkkkkkkkkk.....|.....kkkkkkkkkkkkkkkkkkkkkkkk.....",
+  s_home:"..................................|................kk................|...............kook....kkkk.......|..............kooook...kssk.......|.............kooooook..kssk.......|............kooooooook.kssk.......|...........koookkkkoookkssk.......|..........kooookcckooookssk.......|.........koooookcckoooooksk.......|........kooooookkkkooooookk.......|.......kooooooooooooooooook.......|......kooooooooooooooooooook......|.....kooooooooooooooooooooook.....|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|.....kwwwwwwwwwwwwwwwwwwwwwwk.....|.....kwwwwwwwwwwwwwwwwwwwwwwk.....|.....kwwwwwwwwwwwwwwwwwwwwwwk.....|.....kwwkkkkkkkwwwwwwwwwwwwwk.....|.....kwwkyykyykwwwwkkkkkkkwwk.....|.....kwwkyykyykwwwwkGGGGGkwwk.....|.....kwwkkkkkkkwwwwkGGGGGkwwk.....|.....kwwkyykyykwwwwkGGGGGkwwk.....|.....kwwkkkkkkkwwwwkGGGGGkwwk.....|.....kwwwwwwwwwwwwwkGGGGGkwwk.....|.....kwwwwwwwwwwwwwkGGGGykwwk.....|.....kwwwwwwwwwwwwwkGGGGGkwwk.....|.....kwwwwwwwwwwwwwkGGGGGkwwk.....|.....kwwwwwwwwwwwwwkGGGGGkwwk.....|.....kwwwwwwwwwwwwwkGGGGGkwwk.....|.....kkkkkkkkkkkkkkkkkkkkkkkk.....",
+  s_health:"............kkkkkkkkkk............|............kwwrrrrwwk............|............kwwrrrrwwk............|............krrrrrrrrk............|............krrrrrrrrk............|............krrrrrrrrk............|............krrrrrrrrk............|............kwwrrrrwwk............|............kwwrrrrwwk............|...kkkkkkkkkkkkkkkkkkkkkkkkkkkk...|...kBBBBBBBBBBBBBBBBBBBBBBBBBBk...|...kBBBBBBBBBBBBBBBBBBBBBBBBBBk...|...kBBBBBBBBBBBBBBBBBBBBBBBBBBk...|...kwwwwwwwwwwwwwwwwwwwwwwwwwwk...|...kwwwwwwwwwwwwwwwwwwwwwwwwwwk...|...kwwkkkkkkkwwwwwwwwkkkkkkkwwk...|...kwwkccccckwwwwwwwwkccccckwwk...|...kwwkccccckwwwwwwwwkccccckwwk...|...kwwkccccckwwwwwwwwkccccckwwk...|...kwwkccccckwwwwwwwwkccccckwwk...|...kwwkkkkkkkwwwwwwwwkkkkkkkwwk...|...kwwwwwwwwwkkkkkkkkwwwwwwwwwk...|...kwwwwwwwwwkccckcckwwwwwwwwwk...|...kwwwwwwwwwkccckcckwwwwwwwwwk...|...kwwwwwwwwwkccckcckwwwwwwwwwk...|...kwwwwwwwwwkccckcckwwwwwwwwwk...|...kwwwwwwwwwkccckcckwwwwwwwwwk...|...kwwwwwwwwwkccckcckwwwwwwwwwk...|...kgggggggggkccckcckgggggggggk...|...kkkkkkkkkkkkkkkkkkkkkkkkkkkk...",
+  s_small:"....kkkkkkkk......................|..kggggggggggk....................|.kggwgggggggggk...................|kggggwgggggggggk..................|kgggggggggggggkkkkkkkkkk..........|kgggggggggggggkwwwwwwwwk..........|kGGGGGGGGGGGGGkwwwwwwwwk..........|kGGGGGGGGGGGGGkwkkwkkwwk..........|kGGGGGGGGGGGGGkwwwwwwwwk..........|.kGGGGGGGGGGGGkwwwwwwwwkkkkkkkkkk.|..kGGGGGGGGGGkkkkkkkkkkkyyyyyyyyk.|....kkkkkkkk....kk.....kyyyyyyyyk.|......kkkk......k......kykkykkyyk.|......kttk.............kyyyyyyyyk.|......kttk.............kyyyyyyyyk.|......kttk.............kkkkkkkkkk.|......kttk...................kk...|......kttk....................k...|......kttk........................|......kttk....kkkkkkkkkkkkkkkkkkk.|......kttk....ktttttttttttttttttk.|......kttk....kkkkkkkkkkkkkkkkkkk.|......kttk....kkkkkkkkkkkkkkkkkkk.|......kttk....ktttttttttttttttttk.|......kttk....kkkkkkkkkkkkkkkkkkk.|......kttk.....k...............k..|......kttk.....k...............k..|......kttk.....k...............k..|......kttk.....k...............k..|......kkkk.....k...............k..",
+  s_family:"..................................|..................................|..................................|..................................|.kkk..........................kkk.|.ktkk........................kktk.|.ktk.kk....................kkkkkk.|.ktkkkkkk................kk.kggkk.|.ktkkyyk.kkkk........kkkk...kggkk.|.ktkkyyk..kkkkkkkkkkk.kkkk..kkkkk.|.ktkkkkk..krrk..kkkk..kBBk....ktk.|.ktk......krrk..kppk..kBBk....ktk.|.ktk......kkkk..kppk..kkkk....ktk.|.ktk............kkkk..........ktk.|.ktk..........................ktk.|.ktk........kkkkk.............ktk.|.ktk........kwwwk.kkkk........ktk.|.ktk........kwwwk.kyyk........ktk.|.ktk........kkkkk.kkkk........ktk.|.ktk.....kkkkkkkkkkkkkkkk.....ktk.|.ktk.....kttttttttttttttk.....ktk.|.ktk.....kkkkkkkkkkkkkkkk.....ktk.|.ktk.......kk........kk.......ktk.|.ktkkkkkkk.kk........kk.kkkkkkktk.|.ktkkkkkkk.kk........kk.kkkkkkktk.|.ktk.k..k..kk........kk..k..k.ktk.|.ktk.k..k..kk........kk..k..k.ktk.|.ktk.k..k..kk........kk..k..k.ktk.|.ktk.k..k................k..k.ktk.|.kkk..........................kkk.",
+  s_occas:".kkkk.............................|kwBBBk.......................kkkk.|kBBBBk......................kwvvvk|kBBBBk......................kvvvvk|kBBBBk......................kvvvvk|kBBBBk....kkkkkkk.kkkkkkk...kvvvvk|kkkkkk....kyyyyyk.kyyyyyk...kvvvvk|...k......kyrrrkkkkkrrryk...kkkkkk|...k......kyrrrkyyykrrryk.....k...|...k......kyyyykyyykyyyyk.....k...|...k......kkkkkkkkkkkkkkk.....k...|...kkkkkkkkkkkkkkkkkkkkkkkkkkkk...|...krrrrrrrrrrrkyyykrrrrrrrrrrk...|...kyyyyyyyyyyykyyykyyyyyyyyyyk...|...krrrrrrrrrrrkyyykrrrrrrrrrrk...|...kkkkkkkkkkkkkyyykkkkkkkkkkkk...|.....krrrrrrrrrkyyykrrrrrrrrk.....|.....krrrrrrrrrkyyykrrrrrrrrk.....|.....krrrrrrrrrkyyykrrrrrrrrk.....|.....krrrrrrrrrkyyykrrrrrrrrk.....|.....krrrrrrrrrkyyykrrrrrrrrk.....|.....kyyyyyyyyykyyykyyyyyyyyk.....|.....kyyyyyyyyykyyykyyyyyyyyk.....|.....krrrrrrrrrkyyykrrrrrrrrk.....|.....krrrrrrrrrkyyykrrrrrrrrk.....|.....krrrrrrrrrkyyykrrrrrrrrk.....|.....krrrrrrrrrkyyykrrrrrrrrk.....|.....krrrrrrrrrkyyykrrrrrrrrk.....|.....krrrrrrrrrkyyykrrrrrrrrk.....|.....kkkkkkkkkkkkkkkkkkkkkkkk.....",
+  s_free:"..................................|..................................|.kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.|.kywywywywywywywywywywywywywywywk.|.kwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwk.|.kwwwwkkkkkkkkkkkkkkkkkkkkkkwwwwk.|.kywwwkcckcckcckcckcckcckcckwwwyk.|.kwwwwkkkkkkkkkkkkkkkkkkkkkkwwwwk.|.kwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwk.|.kywywywywywywywywywywywywywywywk.|.kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.|...kkkkkkkkkkkkkkkkkkkkkkkkkkkk...|...kvvvvvvvvvvvvvvvvvvvvvvvvvvk...|...kvvvvvvvvvvvvvvvvvvvvvvvvvvk...|...kvvkkkkkkvvvvvvvvvvkkkkkkvvk...|...kvvkyyyykvvvvvvvvvvkppppkvvk...|...kvvkyrrykvvvvvvvvvvkpBBpkvvk...|...kvvkyrrykvvvvvvvvvvkpBBpkvvk...|...kvvkyrrykvkkkkkkkkvkpBBpkvvk...|...kvvkyyyykvkcckkcckvkpBBpkvvk...|...kvvkyyyykvkcckkcckvkppppkvvk...|...kvvkyyyykvkcckkcckvkppppkvvk...|...kvvkkkkkkvkcckkcckvkkkkkkvvk...|...kvvvvvvvvvkcckkcckvvvvvvvvvk...|...kvvvvvvvvvkcckkcckvvvvvvvvvk...|...kvvvvvvvvvkcckkcckvvvvvvvvvk...|...kvvvvvvvvvkcckkcckvvvvvvvvvk...|...kvvvvvvvvvkcckkcckvvvvvvvvvk...|...kvvvvvvvvvkcckkcckvvvvvvvvvk...|...kkkkkkkkkkkkkkkkkkkkkkkkkkkk...",
+  s_learn:"..................................|................kk................|..............kkwwkk..............|............kkwkkkkwkk............|..........kkwwwkBBkwwwkk..........|........kkwwwwwkBBkwwwwwkk........|......kkwwwwwwwkkkkwwwwwwwkk......|....kkwwwwwwwwwwwwwwwwwwwwwwkk....|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|..kwwwwwwwwwwwwwwwwwwwwwwwwwwwwk..|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|...kckkkkcckkkkcccckkkkcckkkkck...|...kckwskcckwskcccckwskcckwskck...|...kckwskcckwskcccckwskcckwskck...|...kckwskcckwskcccckwskcckwskck...|...kckwskcckwskcccckwskcckwskck...|...kckwskcckwskcccckwskcckwskck...|...kckwskcckwskkkkkkwskcckwskck...|...kckwskcckwsktttkkwskcckwskck...|...kckwskcckwsktttkkwskcckwskck...|...kckwskcckwsktttkkwskcckwskck...|...kckwskcckwsktttkkwskcckwskck...|...kckwskcckwsktttkkwskcckwskck...|...kckwskcckwsktttkkwskcckwskck...|...kckwskcckwsktttkkwskcckwskck...|...kckkkkcckkkkkkkkkkkkcckkkkck...|.kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.|.kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.|kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk|kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
+  s_tech:"..................................|..................................|........kkkkkkkkkkkkkkkkk..BBBBBB.|........kkkkkkkssskkkkkkk.B......B|........kkkkkkkkkkkkkkkkk...BBBB..|........kkccccccccccccckk..B....B.|........kkckkkckkkckkkckk....BB...|........kkckrkckykckgkckk....BB...|........kkckkkckkkckkkckk.........|........kkccccccccccccckk.........|........kkccccccccccccckk.........|........kkckkkckkkckkkckk.........|........kkckBkckpkckvkckk.........|........kkckkkckkkckkkckk.........|........kkccccccccccccckk.........|........kkccccccccccccckk.........|........kkckkkckkkckkkckk.........|........kkckokckBkckgkckk.........|........kkckkkckkkckkkckk.........|........kkccccccccccccckk.........|........kkccccccccccccckk.........|........kkckkkckkkckkkckk.........|........kkckrkckrkckykckk.........|........kkckkkckkkckkkckk.........|........kkccccccccccccckk.........|........kkkkkkkkkkkkkkkkk.........|........kkkkkkkkkkkkkkkkk.........|........kkkkkkwwwwwkkkkkk.........|........kkkkkkkkkkkkkkkkk.........|........kkkkkkkkkkkkkkkkk.........",
+  s_fix:"......................kkkkkkkkkkk.|......................kyyyyyyyyyk.|......................kyyyykkyyyk.|......................kyyyykkyyyk.|......................kyyyykkyyyk.|......................kyyyykkyyyk.|........kkkkk.........kyyyykkyyyk.|........k...k.........kyyyyyyyyyk.|.....kkkkkkkkkkk......kyyyykkyyyk.|.....kvvvvvvvvvk......kyyyykkyyyk.|.....kvvvvvvvvvk......kkkkkkkkkkk.|.....kvvvvvvvvvk..........kkk.....|.....kvvvvvvvvvk..........ktk.....|.....kkkkkkkkkkk..........ktk.....|.......k....k.............ktk.....|.......k....k.............ktk.....|..kkkkkkkkkkkkkkkk........ktk.....|..kooooooooooooook...kkkkkktk.....|..kooooooooooooook...k....ktk.....|..kooooooooooooook...k....kkk.....|..kooooooooooooookkkkkkkkkkkkkk...|..kooooooooooooookkBBBBBwBBBBBk...|..kkkkkkkkkkkkkkkkkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkk...",
+  s_work:"..........kkkkkkkkkkkkkkkkk.......|..........kBBBBBBBBBBBBBBBk.......|..........kBccBBccBBccBBcck.......|..........kBccBBccBBccBBcck.......|..........kBBBBBBBBBBBBBBBk.......|..........kBBBBBBBBBBBBBBBk.......|..........kBccBBccBBccBBcck.......|..........kBccBBccBBccBBcck.......|..........kBBBBBBBBBBBBBBBk.......|..........kBBBBBBBBBBBBBBBk.......|..........kBccBBccBBccBBcck.......|..........kBccBBccBBccBBcck.......|..........kBBBBBBBBBBBBBBBk.......|..........kBBBBBBBBBBBBBBBk.......|..kkkkkkkkkBccBBccBBccBBcck.......|..kssssssskBccBBccBBccBBcck.......|..ksccsccskBBBBBBBBBBBBBBBk.......|..ksccsccskBBBBBBBBBBBBBBBk.......|..kssssssskBccBBccBBccBBcckkkkkkk.|..kssssssskBccBBccBBccBBcckwwwwwk.|..ksccsccskBBBBBBBBBBBBBBBkwwwwwk.|..ksccsccskBBBBBBBBBBBBBBBkwyyywk.|..kssssssskBccBBccBBccBBcckwyyywk.|..kssssssskBccBBccBBccBBcckwwwwwk.|..ksccsccskBBBBBBBBBBBBBBBkwwwwwk.|..ksccsccskBBBBkkkkkkkBBBBkwyyywk.|..kssssssskBBBBkcckcckBBBBkwyyywk.|..kssssssskBBBBkcckcckBBBBkwwwwwk.|..kssssssskBBBBkcckcckBBBBkwwwwwk.|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.",
+  s_acad:"...........................kkk....|.................k.......BBkkk....|................kkk....BBBBB......|............kssskBkssBBBBB........|...........ksssskBkBBBBB..........|.........ksssssskBkBBBsssk........|.........kswsssskBkssssssk........|........kswssssskBksssssssk.......|.......ksswssssskBkssssssssk......|.......ksssssssskBkssssssssk......|......kssssssssskBksssssssssk.....|......kssssssssskBksssssssssk.....|......kssssssssskkksssssssssk.....|....kkkkkkkkkkkkkkkkkkkkkkkkkkk...|....kwwwwwwwwwwwwwwwwwwwwwwwwwk...|....kwwwwwwwwwwwwwwwwwwwwwwwwwk...|....kwwwwwwwwwwwwwwwwwwwwwwwwwk...|....kwwkkkkwwwwwwwwwwwwkkkkwwwk...|....kwwkcckwwwwwwwwwwwwkcckwwwk...|....kwwkcckwwwwwwwwwwwwkcckwwwk...|....kwwkkkkwwwkkkkkkwwwkkkkwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kkkkkkkkkkkkkkkkkkkkkkkkkkk...",
+  s_dice:"..................................|..................................|..................................|.......kkkkkkkkkkkkkkkkkkkk.......|.......kyyyyyyyyyyyyyyyyyyk.......|..y....kyoyyyyyyyyyyyyyyoyk.......|.ywy...kyyyyyyyyyyyyyyyyyyk.......|..y....kyyyyyykkkkkkyyyyyyk.......|.......kyyyyykkwwwwkkyyyyyk.......|.......kyyyykkwwkkwwkkyyyyk...y...|.......kyyyykkkkyykwwkyyyyk..ywy..|.......kyyyyyyyyyykwwkyyyyk...y...|.......kyyyyyyyyykwwkyyyyyk.......|.......kyyyyyyyykwwkyyyyyyk.......|.......kyyyyyyyykwwkyyyyyyk.......|.......kyyyyyyyykkkkyyyyyyk.......|.......kyyyyyyyyyyyyyyyyyyk.......|....y..kyyyyyyyykwwkyyyyyyk.......|...ywy.kyyyyyyyykkkkyyyyyyk.......|....y..kyyyyyyyyyyyyyyyyyyk.......|.......kyoyyyyyyyyyyyyyyoyk.......|.......kyyyyyyyyyyyyyyyyyyk.......|.......kkkkkkkkkkkkkkkkkkkk.......|..................................|..................................|..................................|............ssssssssss............|..........ssssssssssssss..........|..........ssssssssssssss..........|..................................",
+  s_own:"...........kkkkkkkkkkkk...........|...........kyyyyykyyyyk...........|...........kyyyykokyyyk...........|...........kyykkoookkyk...........|...........kyyykoookyyk...........|...........kyykokykokyk...........|...........kyykkyyykkyk...........|...........kyyyyyyyyyyk...........|...........kkkkkkkkkkkk...........|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|..kvvvvvvvvvvvvvvvvvvvvvvvvvvvvk..|..kvvvvvvvvvvvvvvvvvvvvvvvvvvvvk..|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|....kffffffffffffffffffffffffk....|....kffffffffffffffffffffffffk....|....kffffffffffffffffffffffffk....|....kfkkkkkkffffffffffkkkkkkfk....|....kfkcccckffffffffffkcccckfk....|....kfkwwwwkffffffffffkwwwwkfk....|....kfkcccckffkkkkkkkfkcccckfk....|....kfkcccckffktttttkfkcccckfk....|....kfkkkkkkffktttttkfkkkkkkfk....|....kfffffffffktttttkffffffffk....|....kfffffffffktttttkffffffffk....|....kfffffffffkttttykffffffffk....|....kfffffffffktttttkffffffffk....|....kfffffffffktttttkffffffffk....|....kfffffffffktttttkffffffffk....|....kfffffffffktttttkffffffffk....|....kkkkkkkkkkkkkkkkkkkkkkkkkk....",
+  v_words:".y............................|ywy...........................|...kkkkyykkkkkkkkkkkkyykkkk...|..kkttkyykttttttttttkyykttkk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttky.|..ktttkyykttttttttttkyyktttk..|..ktttkyyktttkkkkkttkyyktttk..|..kkkkkyykkkkkyyykkkkyykkkkk..|..ktttkyyktttkykykttkyyktttk..|..ktttkyyktttkykykttkyyktttk..|..ktttkyyktttkyyykttkyyktttk..|..ktttkyyktttkkkkkttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..kkkkkyykkkkkkkkkkkkyykkkkk..",
+  v_cards:"........kkkkkkkkkkkkkkkkkkkk..|........kwwwwwwwwwwwwwwwwwwk..|........kwwwwwwwwwwwwwwwwwwk..|....kkkkkkkkkkkkkkkkkkkkwwwk..|....kwwwwwwwwwwwwwwwwwwkwwwk..|....kwwwwwwwwwwwwwwwwwwkwwwk..|....kwwwwwwwwwwwwwwwwwwkwwwk..|kkkkkkkkkkkkkkkkkkkkkkwkwwwk..|kwwwwwwwwwwwwwwwwwwwwkwkwwwk..|kwkkkkkkkkkkwwwwwwwwwkwkwwwk..|kwkcccccccckwwsssssswkwkwwwk..|kwkcckkkkcckwwwwwwwwwkwkwwwk..|kwkcckrrkcckwwsssssswkwkwwwk..|kwkcckrrkcckwwwwwwwwwkwkkkkk..|kwkggkkkkggkwwsssswwwkwk......|kwkggggggggkwwwwwwwwwkwk......|kwkkkkkkkkkkwwwwwwwwwkkk......|kwwwwwwwwwwwwwwwwkkkwk........|kwwwwwwwwwwwwwwwwkykwk........|kwwwwwwwwwwwwwwwwkkkwk........|kwwwwwwwwwwwwwwwwwwwwk........|kkkkkkkkkkkkkkkkkkkkkk........",
+  cloud:"....wwww........|..wwwwwwww.www..|.wwwwwwwwwwwwww.|wwwwwwwwwwwwwwww|.mmmmmmmmmmmmmm.",
+  sun:"....yyyy....|..yyyyyyyy..|.yyyyyyyyyy.|.yyyyyyyyyy.|yyyyyyyyyyyy|yyyyyyyyyyyy|yyyyyyyyyyyy|yyyyyyyyyyyy|.yyyyyyyyyy.|.yyyyyyyyyy.|..yyyyyyyy..|....yyyy....",
+  face_you:"....kkkkkkkk....|...kvvvvvvvvk...|..kvvvvvvvvvvk..|..kvvffffffvvk..|..kvffffffffvk..|..kffffffffffk..|..kffkffffkffk..|..kffkffffkffk..|..kffffffffffk..|..kfffkffkfffk..|..kffffkkffffk..|...kffffffffk...|....kkffffkk....|...kkyyyyyykk...|..kyyyyyyyyyyk..|..kyyyyyyyyyyk..",
+  face_them:"....kkkkkkkk....|...kkkkkkkkkk...|..kkkkkkkkkkkk..|..kkffffffffkk..|..kffffffffffk..|..kffffffffffk..|..kffkffffkffk..|..kffkffffkffk..|..kffffffffffk..|..kfffkkkkfffk..|..kffffffffffk..|...kffffffffk...|....kkffffkk....|..kkkwrrrrwkkk..|.kBBkwwrrwwkBBk.|.kBBBkwwwwkBBBk."
 };
-var PXC={k:"px-k",m:"px-m",l:"px-l",w:"px-w",a:"px-a",o:"px-o",r:"px-r",p:"px-p"};
+var PXC={k:"px-k",w:"px-w",b:"px-b",c:"px-c",y:"px-y",o:"px-o",r:"px-r",p:"px-p",v:"px-v",g:"px-g",G:"px-gd",t:"px-t",s:"px-s",B:"px-bd",f:"px-f",m:"px-m",l:"px-l",a:"px-a"};   /* G and B get two-letter class names: CSS class names should not differ only by capital letters */
 function pixArt(name,scale,cls){
   var rows=String(PX[name]||"").split("|"), NS="http://www.w3.org/2000/svg", svg=document.createElementNS(NS,"svg");
   var h=rows.length, w=rows[0].length, d={};
@@ -1015,12 +1133,11 @@ function pixArt(name,scale,cls){
   Object.keys(d).forEach(function(c){ var p=document.createElementNS(NS,"path"); p.setAttribute("class",PXC[c]||"px-k"); p.setAttribute("d",d[c].join("")); svg.appendChild(p); });
   return svg;
 }
-/* One icon per theme. Themes you add yourself, and "Other", get the star. */
-var THEME_PX={food:"cup",shop:"bag",travel:"train",home:"house",health:"heart",small:"talk",family:"people",free:"ticket",learn:"book",tech:"laptop",fix:"receipt",occas:"gift",work:"brief",acad:"cap"};
-function themePx(t){ return (t && THEME_PX[t.id]) || "star"; }
-/* One small pixel scene per theme (40x24 art pixels). Your own themes and "From your life" share the notebook scene. */
+/* v32: one building per theme (34x30 art pixels), so the Practice page is a street and each theme is a place on it.
+   Themes you add yourself, and "From your life", share the peach workshop with the star sign (s_own).
+   Words headings and Cards use the same building, so a theme looks the same everywhere. */
 function themeScene(t){ return (t && PX["s_"+t.id]) ? "s_"+t.id : "s_own"; }
-function themeIconFor(name,cls){ return pixArt(themePx(themeByName(name)),2,cls); }
+function themeIconFor(name,cls){ return pixArt(themeScene(themeByName(name)),1,cls); }
 /* v29: an expression in its common forms, as a regular-expression source.
    postpone → postpones, postponed, postponing · put something on hold → put it on hold, and also just "on hold".
    Short words (at, in, on…) and prepositions match only as they are. */
@@ -1805,23 +1922,28 @@ function renderSetupLine(){
 }
 function renderThemes(){
   var h=$("themegrid"); clear(h);
+  /* v32: the street. Each theme is a place: a building on its lot, then a sign on the grass.
+     The one-line description (T.blurb) is no longer shown, to keep the street calm. It is still sent to Claude with every scene. */
+  function place(cls,art,name){
+    var b=el("button",cls); b.type="button";
+    var lot=el("span","lot"); lot.appendChild(pixArt(art,4,"ticon tscene")); b.appendChild(lot);
+    var turf=el("span","turf"); turf.appendChild(el("b","sign",name)); b.appendChild(turf);
+    b.disabled = !SAMPLE && DIAG.sample!=="checking";
+    return b;
+  }
   activeThemes().forEach(function(T){
-    var b=el("button","theme"+((T.work||T.acad)?" work":"")+(T.acad?" acad":"")); b.type="button";   /* At Work and Academic & Research share the "work" class, so they always look alike (v26). Since v28 every tile is the same size. */
-    b.appendChild(pixArt(themeScene(T),2,"ticon tscene"));
-    b.appendChild(el("b",null,T.name)); b.appendChild(el("span",null,T.blurb));
+    var b=place("theme"+((T.work||T.acad)?" work":"")+(T.acad?" acad":""),themeScene(T),T.name);   /* At Work and Academic & Research share the "work" class (v26). */
     var o=S.occupation.trim(), at=str(S.acadTopic).trim()||str(S.acadField).trim();
     var tuned=!!((T.work&&o)||(T.acad&&at));
-    if(tuned) b.classList.add("tuned");   /* ochre means "tuned to you" */
-    b.appendChild(el("div","egs"+(tuned?" tuned":""),T.work&&o?"For you: "+o:(T.acad&&at?"For you: "+at:T.egs)));
-    b.disabled = !SAMPLE && DIAG.sample!=="checking";
+    if(tuned) b.classList.add("tuned");
+    /* only a tuned place shows its tag ("For you: …"), pinned to the top of its lot */
+    b.querySelector(".lot").appendChild(el("span","egs"+(tuned?" tuned":""),T.work&&o?"For you: "+o:(T.acad&&at?"For you: "+at:T.egs)));
     b.addEventListener("click",function(){ S.refit=false; startScene(T); });
     h.appendChild(b);
   });
-  /* The last card: Surprise me (v29). Not a theme, so it has its own class and isn't counted as one. */
-  var sp=el("button","surprise"); sp.type="button"; sp.id="btn-surprise";
-  sp.appendChild(pixArt("s_dice",2,"ticon tscene"));
-  sp.appendChild(el("b",null,"Surprise me")); sp.appendChild(el("span",null,"A random theme, when you can't choose."));
-  sp.disabled = !SAMPLE && DIAG.sample!=="checking";
+  /* The last place: Surprise me (v29), drawn as a "?" block. Not a theme, so it has its own class and isn't counted as one. */
+  var sp=place("surprise","s_dice","Surprise me"); sp.id="btn-surprise";
+  sp.title="A random theme, when you can't choose.";
   sp.addEventListener("click",surpriseMe);
   h.appendChild(sp);
 }
@@ -1879,7 +2001,7 @@ function startScene(theme,seed,targets){
 function renderScene(){
   var sc=S.scenario, host=$("scene-body"); clear(host); clear($("scene-extra"));
   var box=el("div","card pad");
-  box.appendChild(pixArt(themeScene(S.theme),2,"scene-art"));
+  box.appendChild(pixArt(themeScene(S.theme),3,"scene-art"));
   box.appendChild(el("div","eyebrow",S.theme.name+(S.theme.fromOwn?" · from your life":"")+(S.targetWords?" · word practice":"")));
   box.appendChild(el("h2","scene-title",str(sc.title)));
   var meta=el("div","meta");
@@ -2072,19 +2194,21 @@ function openChat(){
 }
 function renderThread(streaming){
   var h=$("thread"), sc=S.scenario; clear(h);
-  function turn(role,text,who){
+  /* v32: each line has a face. One face for you, one for whoever you're talking to (more roles may come later). */
+  function turn(role,text,who,cls){
     var t=el("div","turn"+(role==="user"?" me":""));
-    t.appendChild(el("div","who",who));
-    t.appendChild(el("div","bubble",text));
-    if(role!=="user"&&TTS){ var s=sayButton(text); if(s){ s.style.alignSelf="center"; t.appendChild(s); } }
+    var f=el("div","face"); f.appendChild(pixArt(role==="user"?"face_you":"face_them",3)); t.appendChild(f);
+    var body=el("div","turn-body");
+    body.appendChild(el("div","who",who));
+    body.appendChild(el("div",cls||"bubble",text));
+    if(role!=="user"&&TTS&&!cls){ var s=sayButton(text); if(s) body.appendChild(s); }
+    t.appendChild(body);
     return t;
   }
   h.appendChild(turn("assistant",str(sc.firstLine),shortWho(sc.partnerRole)));
   S.chat.forEach(function(m){ h.appendChild(turn(m.role,m.content,m.role==="user"?"You":shortWho(sc.partnerRole))); });
   if(streaming!=null){
-    var t=el("div","turn"); t.appendChild(el("div","who",shortWho(sc.partnerRole)));
-    t.appendChild(el("div",streaming?"bubble":"bubble thinking",streaming||"Thinking…"));
-    h.appendChild(t);
+    h.appendChild(turn("assistant",streaming||"Thinking…",shortWho(sc.partnerRole),streaming?"bubble":"bubble thinking"));
   }
 }
 function sendChat(){
