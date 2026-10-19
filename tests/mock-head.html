@@ -127,8 +127,11 @@ window.claude={use:function(name){
       var tgt=((s.match(/TARGET EXPRESSION: ([^\n]*)/)||[])[1]||"").split(" — ")[0].toLowerCase();
       var rep=((s.match(/REPLY: """([\s\S]*?)"""/)||[])[1]||"").toLowerCase();
       var used=tgt && rep.indexOf(tgt.split(/[\s-]/)[0].slice(0,4))>=0;
+      /* v34: like the real Claude, a hyphenated noun ("mix-up") used as a verb ("mixed up") counts only when the request says other word classes count */
+      var cls=used && /-/.test(tgt) && rep.indexOf(tgt)<0;
+      if(cls && s.indexOf("another word class")<0) used=false;
       var eq=(!used && rep.indexOf("tack on")>=0) ? "tack on" : "";
-      return Promise.resolve({used:!!used, equivalent:eq, feedback: used?"Natural use of it.":(eq?"Good alternative.":"Not quite — you didn't use "+tgt+", which fits here."),
+      return Promise.resolve({used:!!used, equivalent:eq, feedback: used?"Natural use of it."+(cls?" …or as a noun: there was a "+tgt+" with the time.":""):(eq?"Good alternative.":"Not quite — you didn't use "+tgt+", which fits here."),
         modelReply:"Honestly, I think we just "+tgt+"ed it on; we should redesign the process."});
     }
     if(s.indexOf("REGISTER LABELS.")===0){
