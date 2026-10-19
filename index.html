@@ -7,7 +7,8 @@
 <style>
 :root{
   /* Scene & Say design tokens. v32 "Pixel Town": a bright daytime town. Sky on top, grass under the street,
-     ink-blue outlines, and one sun-yellow button per page for the main action. There is no dark mode (a "night town" may come later). */
+     ink-blue outlines, and one sun-yellow button per page for the main action. v35 adds the night town: the same names get night values
+     under :root[data-sky="night"] at the end of this style block. */
   --sky:#8fd3ff; --sky-l:#cdeeff; --grass:#6ccd5c; --grass-2:#3f9e48; --sun:#ffcd3c; --sun-l:#fff3c4;
   --paper:#fffdf8; --surface:#ffffff; --surface-2:#eef7ff;
   --ink:#26235a; --ink-2:#4b4880; --ink-3:#5d5a8f;
@@ -19,10 +20,13 @@
   --plum:#5a3fc4; --plum-soft:#ece6ff;
   --danger:#c22f2f; --danger-2:#a32424; --danger-ink:#ffffff;
   --accent-shade:#ff9f43; --lift:#26235a;
+  --side:#26235a;   /* v35: the solid shadow under panels and buttons (the same ink by day; a softer purple at night) */
+  --on-ink:#ffffff; --on-ink-2:#e3e8f5;   /* text on something filled with ink (a selected chip, a name tag) */
   /* pixel-art palette: the drawings take every colour from here, one colour per letter */
   --px-k:#26235a; --px-w:#ffffff; --px-b:#8fd3ff; --px-c:#cdeeff; --px-y:#ffcd3c; --px-o:#ff9f43; --px-r:#ff5d5d; --px-p:#ff9fc2;
   --px-v:#9b7bff; --px-g:#6ccd5c; --px-gd:#3f9e48; --px-t:#c98a55; --px-s:#e3e8f5; --px-bd:#3d7bff; --px-f:#ffd2a8;
   --px-m:#e3e8f5; --px-l:#ffffff; --px-a:#3f9e48;
+  --px-n:#fff3c4; --px-u:#e6d79c;   /* v35: the moon and its craters (only seen at night) */
   --radius:0; --radius-sm:0;
   /* Pixelify Sans for headings, buttons and labels (the game feel); Lexend for everything you read (easy on the eyes) */
   --f-pixel:"Pixelify Sans","Lexend",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -53,6 +57,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .px-k{fill:var(--px-k)} .px-w{fill:var(--px-w)} .px-b{fill:var(--px-b)} .px-c{fill:var(--px-c)} .px-y{fill:var(--px-y)} .px-o{fill:var(--px-o)}
 .px-r{fill:var(--px-r)} .px-p{fill:var(--px-p)} .px-v{fill:var(--px-v)} .px-g{fill:var(--px-g)} .px-gd{fill:var(--px-gd)} .px-t{fill:var(--px-t)}
 .px-s{fill:var(--px-s)} .px-bd{fill:var(--px-bd)} .px-f{fill:var(--px-f)} .px-m{fill:var(--px-m)} .px-l{fill:var(--px-l)} .px-a{fill:var(--px-a)}
+.px-n{fill:var(--px-n)} .px-u{fill:var(--px-u)}
 .glyph{display:inline-block;flex:0 0 auto;width:12px;height:14px;background:currentColor;-webkit-mask:var(--i-chev) center/12px 14px no-repeat;mask:var(--i-chev) center/12px 14px no-repeat}
 
 /* header: logo and tabs on the left, the learner's profile on the right */
@@ -92,8 +97,8 @@ h1,h2,h3{margin:0;text-wrap:balance}
 
 /* v32 buttons: chunky game buttons. A 3px ink edge and a solid shadow under it; pressing pushes the button down into its shadow.
    Sun yellow = the one main action on a page. White = everything else. */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;background:var(--accent);color:var(--accent-ink);border:3px solid var(--ink);padding:5px 16px;border-radius:0;box-shadow:0 4px 0 var(--ink);font-family:var(--f-pixel);font-size:17px;font-weight:600;line-height:1.2;cursor:pointer;margin-bottom:4px;transition:background-color .14s ease,transform .08s ease}
-.btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 0 0 var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;background:var(--accent);color:var(--accent-ink);border:3px solid var(--ink);padding:5px 16px;border-radius:0;box-shadow:0 4px 0 var(--side);font-family:var(--f-pixel);font-size:17px;font-weight:600;line-height:1.2;cursor:pointer;margin-bottom:4px;transition:background-color .14s ease,transform .08s ease}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 0 0 var(--side)}
 .btn:hover:not(:disabled){background:var(--accent-2)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn.ghost{background:var(--surface);color:var(--ink);border-color:var(--ink)}
@@ -102,9 +107,9 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .setup-edit,.footnote details.card > summary{text-decoration:underline dotted;text-decoration-thickness:1px;text-underline-offset:4px}
 .btn.text:hover:not(:disabled),#spotdue .btn.ghost:hover,#cards-select:hover,.btn.ghost.showall:hover:not(:disabled){background:transparent;border-color:transparent;box-shadow:none;text-decoration-style:solid}
 .btn.ghost:hover:not(:disabled){background:var(--sky-l)}
-.btn.small{min-height:38px;padding:3px 12px;font-size:15.5px;box-shadow:0 3px 0 var(--ink)}
+.btn.small{min-height:38px;padding:3px 12px;font-size:15.5px;box-shadow:0 3px 0 var(--side)}
 .btn.small:active:not(:disabled){transform:translateY(3px)}
-.btn.tiny{min-height:30px;padding:1px 9px;font-size:14px;border-width:2px;box-shadow:0 2px 0 var(--ink)}
+.btn.tiny{min-height:30px;padding:1px 9px;font-size:14px;border-width:2px;box-shadow:0 2px 0 var(--side)}
 .btn.tiny:active:not(:disabled){transform:translateY(2px)}
 
 /* profile box */
@@ -126,8 +131,8 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .lvl:hover{border-color:var(--field)}
 .lvl b{display:block;font-size:14px;font-weight:700;letter-spacing:.02em}
 .lvl span{display:block;font-size:12px;color:var(--ink-2);margin-top:1px}
-.lvl[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
-.lvl[aria-pressed="true"] span{color:#e3e8f5}
+.lvl[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.lvl[aria-pressed="true"] span{color:var(--on-ink-2)}
 input[type="text"],input[type="search"],input[type="password"],textarea,select{width:100%;background:var(--surface);border:1px solid var(--field);border-radius:0;padding:10px 12px;font-size:15px;line-height:1.4;color:var(--ink)}
 input[type="search"]{-webkit-appearance:none;appearance:none}
 input[type="text"]:focus-visible,input[type="search"]:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--ink);outline-offset:1px;border-color:var(--accent)}
@@ -167,7 +172,7 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 .board-title{font-family:var(--f-pixel);font-size:19px;font-weight:600;color:var(--ink)}
 .board-head .hint{margin:0;color:var(--ink)}
 .board-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin-top:10px}
-.bplace{display:flex;flex-direction:column;align-items:flex-start;background:#fff;border:2px solid var(--ink);padding:4px 8px 6px 6px;min-width:0}   /* laptop: the "+ my street" line sits under the name, so long names fit */
+.bplace{display:flex;flex-direction:column;align-items:flex-start;background:var(--surface);border:2px solid var(--ink);padding:4px 8px 6px 6px;min-width:0}   /* laptop: the "+ my street" line sits under the name, so long names fit */
 .bplace-go{flex:1 1 auto;align-self:stretch;min-width:0;display:flex;align-items:center;gap:10px;background:none;border:0;padding:4px 2px;font-family:var(--f-pixel);font-size:15px;font-weight:600;color:var(--ink);text-align:left;cursor:pointer}
 .bplace-go:hover:not(:disabled) span,.bplace-go:focus-visible span{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
 .bplace-go:disabled{opacity:.45;cursor:not-allowed}
@@ -181,7 +186,7 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 .theme .lot,.more .lot{position:relative;display:flex;justify-content:center;align-items:flex-end;height:134px}
 .theme .tscene,.more .tscene{max-width:none;transition:transform .12s ease}
 .theme .turf,.more .turf{display:block;background:var(--grass);border-top:4px solid var(--grass-2);padding:12px 7px 16px}
-.theme .sign,.more .sign{display:flex;align-items:center;justify-content:center;min-height:62px;padding:8px 6px;background:#fff;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);font-family:var(--f-pixel);font-size:16px;font-weight:600;line-height:1.2;transition:background-color .12s ease}
+.theme .sign,.more .sign{display:flex;align-items:center;justify-content:center;min-height:62px;padding:8px 6px;background:var(--surface);border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);font-family:var(--f-pixel);font-size:16px;font-weight:600;line-height:1.2;transition:background-color .12s ease}
 .theme:hover:not(:disabled) .tscene,.more:hover:not(:disabled) .tscene,.theme:focus-visible .tscene,.more:focus-visible .tscene{transform:translateY(-6px)}
 .theme:hover:not(:disabled) .sign,.more:hover:not(:disabled) .sign,.theme:focus-visible .sign,.more:focus-visible .sign{background:var(--sun)}
 .theme:active:not(:disabled) .sign,.more:active:not(:disabled) .sign{transform:translateY(4px);box-shadow:0 0 0 var(--ink)}
@@ -240,9 +245,9 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 .face{width:62px;height:62px;background:var(--sky-l);border:3px solid var(--ink);display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
 .turn-body{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}
 .turn.me .turn-body{align-items:flex-end}
-.who{position:relative;z-index:1;margin:0 0 -22px 12px;padding:1px 10px;background:var(--ink);color:#fff;font-family:var(--f-pixel);font-size:14px;font-weight:600;line-height:1.4;white-space:nowrap}
-.turn.me .who{margin:0 12px -22px 0;background:#6b5200}
-.bubble{background:var(--surface);border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);border-radius:0;padding:18px 16px 12px;max-width:100%;font-size:16px;line-height:1.55}
+.who{position:relative;z-index:1;margin:0 0 -22px 12px;padding:1px 10px;background:var(--ink);color:var(--on-ink);font-family:var(--f-pixel);font-size:14px;font-weight:600;line-height:1.4;white-space:nowrap}
+.turn.me .who{margin:0 12px -22px 0;background:#6b5200;color:#fff}
+.bubble{background:var(--surface);border:3px solid var(--ink);box-shadow:0 4px 0 var(--side);border-radius:0;padding:18px 16px 12px;max-width:100%;font-size:16px;line-height:1.55}
 .turn.me .bubble{background:var(--sun-l)}
 .bubble.thinking{color:var(--ink-2);font-style:italic}
 .composer{display:flex;gap:8px;align-items:flex-end;margin-top:16px}
@@ -553,7 +558,7 @@ body.has-wordbar .wrap{padding-bottom:150px}
 /* Cards: one card per practised scene */
 .cardlist{display:grid;gap:10px}
 .saved{position:relative;background:var(--surface);border:1px solid var(--line-2);border-radius:0;box-shadow:2px 2px 0 var(--lift);overflow:hidden}
-.saved:hover{border-color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
+.saved:hover{border-color:var(--ink);box-shadow:2px 2px 0 var(--side)}
 .saved-head{width:100%;text-align:left;background:none;border:0;cursor:pointer;padding:18px 18px 18px 20px;display:flex;gap:8px 10px;align-items:center;flex-wrap:wrap}
 .saved-head:hover{background:color-mix(in srgb,var(--surface-2) 50%,transparent)}
 .saved-head b{order:0;flex:1 1 calc(100% - 40px);min-width:0;font-family:var(--f-display);font-size:19px;font-weight:600;line-height:1.3}
@@ -571,7 +576,7 @@ body.has-wordbar .wrap{padding-bottom:150px}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center}
 .chip{display:inline-flex;align-items:center;gap:6px;min-height:32px;cursor:pointer;background:transparent;border:1px solid var(--line-2);border-radius:0;padding:4px 12px;font-size:13.5px;font-weight:550;color:var(--ink-2)}
 .chip:hover{border-color:var(--field);color:var(--ink)}
-.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}   /* the selected filter is filled with ink (yellow is kept for the main button) */
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}   /* the selected filter is filled with ink (yellow is kept for the main button) */
 
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .spread{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
@@ -660,7 +665,7 @@ body{background:var(--paper);font-size:16px}
 .mark em{color:var(--ink)}
 .readout{font-family:var(--f-pixel);font-size:16px;color:var(--ink)}
 .navbtn{height:40px;padding:0 13px;font-family:var(--f-pixel);font-size:17px;font-weight:500;color:var(--ink)}
-.navbtn[aria-current="true"]{background:#fff;box-shadow:inset 0 0 0 3px var(--ink)}   /* the page you're on: a white plate */
+.navbtn[aria-current="true"]{background:var(--surface);box-shadow:inset 0 0 0 3px var(--ink)}   /* the page you're on: a white plate */
 .navbtn[aria-current="true"]::after{display:none}
 .navbtn:hover:not([aria-current="true"]){background:var(--sky-l)}
 
@@ -673,11 +678,10 @@ body{background:var(--paper);font-size:16px}
 .town .pagehead::after{display:none}
 .pagehead{align-items:end;padding-top:30px}
 .pagehead .lede{font-family:var(--f-pixel);font-size:40px;line-height:1.1;font-weight:600;letter-spacing:0}
-#v-themes .pagehead .lede{font-size:46px;max-width:19ch}
+#v-themes .pagehead .lede{font-size:46px;max-width:22ch}   /* v35 (Siyy): two lines, now that the sun sits further right */
 .pagehead .sub{color:var(--ink);margin-bottom:28px}
 .town .pagehead .sub{margin-bottom:0}
 .pagehead-art{align-self:end}
-#v-themes .pagehead-art{position:absolute;right:0;top:26px}
 .pagehead-art .px{max-width:none}
 .cloud{position:absolute;pointer-events:none}
 .cloud.c1{right:22%;top:20px}
@@ -701,36 +705,36 @@ body{background:var(--paper);font-size:16px}
 /* today's reviews: a wooden notice board with paper notes pinned to it */
 #spotdue:not([hidden]){display:block;max-width:560px;background:var(--px-t);border:3px solid var(--ink);box-shadow:0 5px 0 var(--ink);padding:8px 12px 14px}
 #spotdue::before{content:"Today";display:block;font-family:var(--f-pixel);font-size:19px;font-weight:600;color:var(--ink)}
-#spotdue .spotdue{position:relative;background:#fff;border:2px solid var(--ink);padding:10px 12px;margin-top:10px;color:var(--ink-2)}
+#spotdue .spotdue{position:relative;background:var(--surface);border:2px solid var(--ink);padding:10px 12px;margin-top:10px;color:var(--ink-2)}
 #spotdue .spotdue + .spotdue{border-top:2px solid var(--ink)}
 #spotdue .spotdue::after{content:"";position:absolute;top:-6px;left:50%;width:8px;height:8px;background:var(--px-r);border:2px solid var(--ink)}
 #spotdue .spotdue b{font-family:var(--f-pixel);font-size:17px;font-weight:600;color:var(--ink)}
-#spotdue .btn:not(.ghost){background:#fff;border-color:var(--ink);box-shadow:0 3px 0 var(--ink)}
+#spotdue .btn:not(.ghost){background:var(--surface);border-color:var(--ink);box-shadow:0 3px 0 var(--side)}
 #spotdue .btn:not(.ghost):hover{background:var(--sky-l)}
 #backupnag,#chatnews,#blocked{border-color:var(--ink)}
 
 /* panels: white, a 3px ink edge and a solid shadow */
-.card,.fb-block,.saved,.strip,.mode,.empty,.lvlcheck,.fb-convo,.fb-words,.fb-more{background:var(--surface);border:3px solid var(--ink);box-shadow:0 5px 0 var(--ink)}
+.card,.fb-block,.saved,.strip,.mode,.empty,.lvlcheck,.fb-convo,.fb-words,.fb-more{background:var(--surface);border:3px solid var(--ink);box-shadow:0 5px 0 var(--side)}
 .fb-more{border-style:dashed;box-shadow:none}
 #setup-box:not([open]){box-shadow:none}
 #setup-box:not([open])>summary{padding:4px 0}
 .footnote details.card,#wordlist > .card.pad,#cmp-list.card.pad,#cmp-suggested{box-shadow:none;border:0}
-.saved:hover{border-color:var(--ink);box-shadow:0 5px 0 var(--ink)}
+.saved:hover{border-color:var(--ink);box-shadow:0 5px 0 var(--side)}
 .mode{padding:18px}
 .mode b{font-family:var(--f-pixel);font-size:21px;font-weight:600}
 .setup-title,.custombox>summary,.field-label,.modal h3,.groupname,.cr-num,.purpose,.dl dt,.targets .lbl,.ctx-item .where{font-family:var(--f-pixel);letter-spacing:0;text-transform:none}
 .setup-title{font-size:17px;font-weight:600}
 .field-label{font-size:15.5px;font-weight:600}
 .dl dt,.purpose,.cr-num,.targets .lbl,.ctx-item .where{font-size:15px;font-weight:600}
-input[type="text"],input[type="search"],input[type="password"],textarea,select{border:3px solid var(--ink);background:#fff;font-size:16px}
+input[type="text"],input[type="search"],input[type="password"],textarea,select{border:3px solid var(--ink);background:var(--surface);font-size:16px}
 input[type="checkbox"]{border:3px solid var(--ink)}
 .lvl{border:2px solid var(--ink);font-family:var(--f-body)}
 .lvl b{font-family:var(--f-pixel);font-size:16px;font-weight:600}
-.chip{border:2px solid var(--ink);background:#fff;color:var(--ink);font-family:var(--f-pixel);font-size:15px;font-weight:500;min-height:32px}
+.chip{border:2px solid var(--ink);background:var(--surface);color:var(--ink);font-family:var(--f-pixel);font-size:15px;font-weight:500;min-height:32px}
 .chip:hover{background:var(--sky-l)}
-.tag{font-family:var(--f-pixel);font-size:14px;font-weight:600;letter-spacing:0;background:#fff;border:2px solid var(--ink);color:var(--ink);padding:1px 9px}
-.tag.on{background:var(--ink);color:#fff}
-.say{border:2px solid var(--ink);background:#fff;color:var(--ink);font-family:var(--f-pixel);font-size:14px;box-shadow:0 2px 0 var(--ink)}
+.tag{font-family:var(--f-pixel);font-size:14px;font-weight:600;letter-spacing:0;background:var(--surface);border:2px solid var(--ink);color:var(--ink);padding:1px 9px}
+.tag.on{background:var(--ink);color:var(--on-ink)}
+.say{border:2px solid var(--ink);background:var(--surface);color:var(--ink);font-family:var(--f-pixel);font-size:14px;box-shadow:0 2px 0 var(--side)}
 .notice{border:2px solid var(--fix)}
 .trash{color:var(--ink-3)}
 
@@ -767,7 +771,7 @@ input[type="checkbox"]{border:3px solid var(--ink)}
 .saved-head .cardtip b{color:var(--ink);font-family:var(--f-pixel);font-size:14px;letter-spacing:0;text-transform:none}
 .saved-head .cardtheme{font-family:var(--f-pixel);font-size:15px;font-weight:600;letter-spacing:0;text-transform:none}
 .wordbar{background:var(--surface);border-top:3px solid var(--ink);backdrop-filter:none}
-.undo{background:var(--ink);color:#fff;border:3px solid var(--ink)}
+.undo{background:var(--ink);color:var(--on-ink);border:3px solid var(--ink)}
 
 .strip > .strip-icon{margin:-4px 0 0}
 .strip p b{font-family:var(--f-pixel);font-size:20px;font-weight:600}
@@ -782,8 +786,6 @@ input[type="checkbox"]{border:3px solid var(--ink)}
   .navbtn[aria-current="true"]::after{display:none}
   .pagehead .lede{font-size:30px}
   #v-themes .pagehead .lede{font-size:28px;padding-right:58px}
-  #v-themes .pagehead-art{top:30px}
-  #v-themes .pagehead-art .px{width:48px;height:48px}
   .pagehead-art{grid-column:1;grid-row:auto;justify-self:end;margin:0}
   .pagehead .sub{margin-bottom:6px}
   .cloud{display:none}
@@ -804,7 +806,89 @@ input[type="checkbox"]{border:3px solid var(--ink)}
   .turn{grid-template-columns:50px minmax(0,1fr);gap:8px}
   .turn.me{grid-template-columns:minmax(0,1fr) 50px}
 }
+/* ===== v35 "Night town" (Siyy, 19 Oct) =====
+   The sky on every page: the sun by day, the moon and stars at night, and a few clouds. The sun or moon is a real button:
+   tapping it switches the whole town between day and night. data-sky="night" on the page's root (<html>) is the one switch;
+   the small script right after this style block sets it before anything is drawn, so the page never flashes the wrong sky. */
+.sky{position:relative;z-index:0}   /* each strip of sky is its own layer, so the stars can sit behind the text */
+.skyhost{z-index:1}   /* the strip that holds the sun or moon is drawn on top, so the next strip never cuts it off */
+.skylight{position:absolute;right:0;top:22px;z-index:1;display:block;margin:0;padding:4px;background:none;border:0;line-height:0;cursor:pointer;transition:transform .12s ease}
+.skylight .px{max-width:none}
+.skylight .sky-moon{display:none}
+.skylight:hover{transform:translateY(-3px);filter:drop-shadow(0 3px 0 color-mix(in srgb,var(--px-k) 55%,transparent))}   /* it lifts a little under the mouse, so it looks like something you can press */
+.skyhost:not(.pagehead){padding-right:64px}   /* practice screens: the back buttons wrap before they reach the sun */
+.pagehead .pagehead-art{margin-right:96px}   /* below 1240px the sun sits at the column's right edge, so the page's own picture moves left to leave a clear gap */
+.cloud.k1{left:50%;top:16px}
+.cloud.k2,.cloud.k3{display:none}
+@media (min-width:1100px){   /* the side clouds only where there is open sky beside the column */
+  .cloud.k2{display:block;left:calc(50% - 50vw + 6vw);top:120px}
+  .cloud.k3{display:block;right:calc(50% - 50vw + 3vw);top:150px}
+  .skyhost:not(.pagehead) .cloud.k2{top:18px}
+  .skyhost:not(.pagehead) .cloud.k3{top:40px}
+}
+@media (min-width:1240px){   /* a wide screen: the sun or moon sits out in the open sky, well away from the page's picture */
+  .skylight{right:-150px}
+  .skyhost:not(.pagehead){padding-right:0}
+  .pagehead .pagehead-art{margin-right:0}
+}
+@media (max-width:640px){
+  .skylight{top:26px}
+  .skylight .sky-sun{width:36px;height:36px}   /* 3× on a phone: pixel art stays at a whole-number size */
+  .skylight .sky-moon{width:42px;height:42px}
+  .skyhost:not(.pagehead){padding-right:52px}
+}
+
+/* Night: the same colour names with night values, so most of the page changes by itself.
+   Deep clear blue (not grey-brown), light text, and the sun-yellow main button still glows. */
+:root[data-sky="night"]{
+  color-scheme:dark;   /* the browser's own parts (scrollbars, the voice list) turn dark too */
+  --sky:#2b2873; --sky-l:#3d3990; --grass:#3c9a4c; --grass-2:#25713a; --sun-l:#4a3f1a;
+  --paper:#17153f; --surface:#2a2766; --surface-2:#312d74;
+  --ink:#f4f1ff; --ink-2:#d2cdf5; --ink-3:#b5b0e6; --on-ink:#1b1945; --on-ink-2:#3a3770;
+  --line:#4a468f; --line-2:#7a75c4; --field:#f4f1ff;
+  --accent-ink:#1b1945; --accent-soft:#4a3f1a;
+  --gold:#ffd77a; --gold-soft:#4a3f1a;
+  --good:#8fe39a; --good-soft:#1f4a2c;
+  --fix:#ff9a92; --fix-soft:#4d2230;
+  --plum:#c9b8ff; --plum-soft:#352a6b;
+  --lift:#0e0c2a; --side:#4a468f;   /* panels and buttons get a soft purple shadow, so light frames don't glare */
+  /* pixel art: darker outlines (so they still show on the night sky), softer whites, darker wood, and windows lit up in warm yellow */
+  --px-k:#100e2e; --px-w:#e9e6fb; --px-c:#ffe08a; --px-t:#8a5a3a; --px-s:#bcb8de; --px-m:#bcb8de; --px-l:#e9e6fb;
+  /* wood and paper (Siyy's choice B2): wooden signs, a lighter wooden board, cream notes with dark writing */
+  --wood:#966236; --sign-ink:#fff6dc; --cream:#fbf3dc; --cream-2:#efe3c0; --cream-ink:#1b1945; --cream-ink-2:#3a3770;
+}
+:root[data-sky="night"] .skylight .sky-sun{display:none}
+:root[data-sky="night"] .skylight .sky-moon{display:block}
+/* stars: a tile of small square stars behind each strip of sky, out to both edges of the screen (the same border-image trick as the sky) */
+:root[data-sky="night"] .sky::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='s' width='260' height='200' patternUnits='userSpaceOnUse' shape-rendering='crispEdges'%3E%3Cg fill='%23fff3c4'%3E%3Crect x='20' y='30' width='3' height='3'/%3E%3Crect x='140' y='16' width='2' height='2'/%3E%3Crect x='210' y='70' width='3' height='3'/%3E%3Crect x='90' y='110' width='2' height='2'/%3E%3Crect x='30' y='160' width='2' height='2'/%3E%3Crect x='180' y='150' width='3' height='3'/%3E%3C/g%3E%3Cg fill='%23ffffff' opacity='.55'%3E%3Crect x='60' y='70' width='2' height='2'/%3E%3Crect x='240' y='120' width='2' height='2'/%3E%3Crect x='120' y='180' width='2' height='2'/%3E%3C/g%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23s)'/%3E%3C/svg%3E") fill 0//0 100vmax}
+:root[data-sky="night"] .cloud{opacity:.35}   /* clouds at night: dim shapes, not bright white */
+/* the yellow and red buttons keep a dark edge and shadow at night: --ink and --side are re-set on the button itself */
+:root[data-sky="night"] .btn:not(.ghost){--ink:var(--px-k);--side:var(--px-k)}
+/* wooden street signs with cream letters; pointing at one still lights it up in sun yellow, with dark letters */
+:root[data-sky="night"] .theme .sign,:root[data-sky="night"] .more .sign{--ink:var(--px-k);--surface:var(--px-t);color:var(--sign-ink)}
+:root[data-sky="night"] .theme:hover:not(:disabled) .sign,:root[data-sky="night"] .more:hover:not(:disabled) .sign,:root[data-sky="night"] .theme:focus-visible .sign,:root[data-sky="night"] .more:focus-visible .sign{color:var(--cream-ink)}
+/* the two wooden boards (Today, All places): lighter wood, cream titles, dark edges */
+:root[data-sky="night"] #spotdue:not([hidden]),:root[data-sky="night"] .board{background:var(--wood);border-color:var(--px-k);box-shadow:0 5px 0 var(--px-k)}
+:root[data-sky="night"] #spotdue::before,:root[data-sky="night"] .board-title,:root[data-sky="night"] .board-head .hint,:root[data-sky="night"] .board-msg{color:var(--sign-ink)}
+/* the paper notes pinned on them: cream, with dark writing, icons and edges (the ink colours are re-set inside each note) */
+:root[data-sky="night"] #spotdue .spotdue,:root[data-sky="night"] .bplace{--ink:var(--cream-ink);--ink-2:var(--cream-ink-2);--ink-3:var(--cream-ink-2);--field:var(--cream-ink);--surface:var(--cream);--surface-2:var(--cream-2);--sky-l:var(--cream-2);color:var(--cream-ink-2)}
+:root[data-sky="night"] .regtag{background:var(--surface-2)}   /* by day it is window-blue; at night that colour is a lit window */
 </style>
+
+<script>
+/* v35: day or night, decided before anything is drawn, so the page never flashes the wrong sky.
+   1. Your own tap on the sun or moon wins: this device remembers it as "ss.sky".
+   2. Otherwise, follow the app the page runs in, if it marks its light or dark theme on the page (data-theme).
+   3. Otherwise, follow your device's light/dark setting.
+   skyAuto() in the main script below repeats steps 2 and 3 when your device or the app changes. */
+(function(){
+  var root=document.documentElement, saved=null;
+  try{ saved=localStorage.getItem("ss.sky"); }catch(e){}
+  var theme=root.getAttribute("data-theme");
+  var night = saved ? saved==="night" : theme ? theme==="dark" : !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  if(night) root.setAttribute("data-sky","night");
+})();
+</script>
 
 <header class="top">
   <div class="top-in">
@@ -820,13 +904,12 @@ input[type="checkbox"]{border:3px solid var(--ink)}
 <main class="wrap">
 
   <section id="v-themes">
-    <div class="town">   <!-- v32: the sky over the street. Everything from the headline to the places sits in it. -->
+    <div class="town sky">   <!-- v32: the sky over the street. Everything from the headline to the places sits in it. -->
     <span class="cloud c1" data-px="cloud" data-scale="3" aria-hidden="true"></span>
     <span class="cloud c2" data-px="cloud" data-scale="3" aria-hidden="true"></span>
     <span class="cloud c3" data-px="cloud" data-scale="3" aria-hidden="true"></span>
     <span class="cloud c4" data-px="cloud" data-scale="2" aria-hidden="true"></span>
     <div class="section pagehead">
-      <div class="pagehead-art" data-px="sun" data-scale="4" aria-hidden="true"></div>
       <div class="eyebrow">Step one</div>
       <h1 class="lede">Pick a situation you'd actually find yourself in.</h1>
       <p class="sub">The more you tell it about your life under “Your profile”, the less it invents scenes that belong to someone else.</p>
@@ -921,6 +1004,7 @@ input[type="checkbox"]{border:3px solid var(--ink)}
       <div class="datarow" id="data-row"></div>
       <details class="card pad" id="help-box">
         <summary>Help and known limits</summary>
+        <p class="hint">Tap the sun or moon to switch between day and night.</p>
         <div class="notice quiet"><b>Known limit:</b> speaking into the page is blocked here — this kind of page can't get microphone permission. Reading aloud works; recording your voice needs its own server.</div>
         <p class="hint"><b>Something not working? Run a check.</b> This reports exactly what the page can and can't reach, in its own words. Screenshot it if you need to ask why something failed.</p>
         <div id="own-help" hidden></div>
@@ -932,7 +1016,7 @@ input[type="checkbox"]{border:3px solid var(--ink)}
   </section>
 
   <section id="v-scene" hidden>
-    <div class="section row">
+    <div class="section row sky">
       <button class="btn ghost small" id="btn-back-themes">← All themes</button>
       <button class="btn ghost small" id="btn-back-words" hidden>← Back to your words</button>
     </div>
@@ -941,8 +1025,8 @@ input[type="checkbox"]{border:3px solid var(--ink)}
   </section>
 
   <section id="v-story" hidden>
-    <div class="section"><button class="btn ghost small" id="btn-back-scene">← Back to the scene</button></div>
-    <div class="section">
+    <div class="section sky"><button class="btn ghost small" id="btn-back-scene">← Back to the scene</button></div>
+    <div class="section sky">
       <div class="eyebrow">Tell the story</div>
       <h2 class="lede" id="story-title"></h2>
       <p class="sub" id="story-setting"></p>
@@ -960,8 +1044,8 @@ input[type="checkbox"]{border:3px solid var(--ink)}
   </section>
 
   <section id="v-chat" hidden>
-    <div class="section"><button class="btn ghost small" id="btn-back-scene2">← Back to the scene</button></div>
-    <div class="section">
+    <div class="section sky"><button class="btn ghost small" id="btn-back-scene2">← Back to the scene</button></div>
+    <div class="section sky">
       <div class="eyebrow">Act it out</div>
       <h2 class="lede" id="chat-title"></h2>
       <p class="sub" id="chat-setting"></p>
@@ -982,7 +1066,7 @@ input[type="checkbox"]{border:3px solid var(--ink)}
   </section>
 
   <section id="v-words" hidden>
-    <div class="section pagehead">
+    <div class="section pagehead sky">
       <div class="pagehead-art" data-px="v_words" data-scale="4" aria-hidden="true"></div>
       <div class="eyebrow">Word bank</div>
       <h1 class="lede">The expressions worth stealing.</h1>
@@ -994,14 +1078,14 @@ input[type="checkbox"]{border:3px solid var(--ink)}
   </section>
 
   <section id="v-spot" hidden>
-    <div class="section">
+    <div class="section sky">
       <button class="btn ghost small" id="spot-exit">← Back to your words</button>
     </div>
     <div class="section" id="spot-host"></div>
   </section>
 
   <section id="v-compare" hidden>
-    <div class="section pagehead">
+    <div class="section pagehead sky">
       <div class="pagehead-art" data-px="v_compare" data-scale="2" aria-hidden="true"></div>
       <div class="eyebrow">Compare</div>
       <h1 class="lede">Close words, told apart.</h1>
@@ -1011,14 +1095,14 @@ input[type="checkbox"]{border:3px solid var(--ink)}
   </section>
 
   <section id="v-cround" hidden>
-    <div class="section">
+    <div class="section sky">
       <button class="btn ghost small" id="cr-exit">← Back to your sets</button>
     </div>
     <div class="section" id="cr-host"></div>
   </section>
 
   <section id="v-cards" hidden>
-    <div class="section pagehead">
+    <div class="section pagehead sky">
       <div class="pagehead-art" data-px="v_cards" data-scale="4" aria-hidden="true"></div>
       <div class="eyebrow">Your cards</div>
       <h1 class="lede">Everything you've practised, kept.</h1>
@@ -1160,10 +1244,11 @@ var PX={
   v_cards:"........kkkkkkkkkkkkkkkkkkkk..|........kwwwwwwwwwwwwwwwwwwk..|........kwwwwwwwwwwwwwwwwwwk..|....kkkkkkkkkkkkkkkkkkkkwwwk..|....kwwwwwwwwwwwwwwwwwwkwwwk..|....kwwwwwwwwwwwwwwwwwwkwwwk..|....kwwwwwwwwwwwwwwwwwwkwwwk..|kkkkkkkkkkkkkkkkkkkkkkwkwwwk..|kwwwwwwwwwwwwwwwwwwwwkwkwwwk..|kwkkkkkkkkkkwwwwwwwwwkwkwwwk..|kwkcccccccckwwsssssswkwkwwwk..|kwkcckkkkcckwwwwwwwwwkwkwwwk..|kwkcckrrkcckwwsssssswkwkwwwk..|kwkcckrrkcckwwwwwwwwwkwkkkkk..|kwkggkkkkggkwwsssswwwkwk......|kwkggggggggkwwwwwwwwwkwk......|kwkkkkkkkkkkwwwwwwwwwkkk......|kwwwwwwwwwwwwwwwwkkkwk........|kwwwwwwwwwwwwwwwwkykwk........|kwwwwwwwwwwwwwwwwkkkwk........|kwwwwwwwwwwwwwwwwwwwwk........|kkkkkkkkkkkkkkkkkkkkkk........",
   cloud:"....wwww........|..wwwwwwww.www..|.wwwwwwwwwwwwww.|wwwwwwwwwwwwwwww|.mmmmmmmmmmmmmm.",
   sun:"....yyyy....|..yyyyyyyy..|.yyyyyyyyyy.|.yyyyyyyyyy.|yyyyyyyyyyyy|yyyyyyyyyyyy|yyyyyyyyyyyy|yyyyyyyyyyyy|.yyyyyyyyyy.|.yyyyyyyyyy.|..yyyyyyyy..|....yyyy....",
+  moon:"....nn........|...nnn........|..nnn.........|.nnnn.........|nnnnn.........|nnnnn.........|nnunn.........|nnnnnn........|nnnnnn........|nnnunnn.......|.nnnnnnnn.....|..nnnnunnnnn..|...nnnnnnnn...|....nnnnnn....",   /* v35: a crescent moon with three craters */
   face_you:"....kkkkkkkk....|...kvvvvvvvvk...|..kvvvvvvvvvvk..|..kvvffffffvvk..|..kvffffffffvk..|..kffffffffffk..|..kffkffffkffk..|..kffkffffkffk..|..kffffffffffk..|..kfffkffkfffk..|..kffffkkffffk..|...kffffffffk...|....kkffffkk....|...kkyyyyyykk...|..kyyyyyyyyyyk..|..kyyyyyyyyyyk..",
   face_them:"....kkkkkkkk....|...kkkkkkkkkk...|..kkkkkkkkkkkk..|..kkffffffffkk..|..kffffffffffk..|..kffffffffffk..|..kffkffffkffk..|..kffkffffkffk..|..kffffffffffk..|..kfffkkkkfffk..|..kffffffffffk..|...kffffffffk...|....kkffffkk....|..kkkwrrrrwkkk..|.kBBkwwrrwwkBBk.|.kBBBkwwwwkBBBk."
 };
-var PXC={k:"px-k",w:"px-w",b:"px-b",c:"px-c",y:"px-y",o:"px-o",r:"px-r",p:"px-p",v:"px-v",g:"px-g",G:"px-gd",t:"px-t",s:"px-s",B:"px-bd",f:"px-f",m:"px-m",l:"px-l",a:"px-a"};   /* G and B get two-letter class names: CSS class names should not differ only by capital letters */
+var PXC={k:"px-k",w:"px-w",b:"px-b",c:"px-c",y:"px-y",o:"px-o",r:"px-r",p:"px-p",v:"px-v",g:"px-g",G:"px-gd",t:"px-t",s:"px-s",B:"px-bd",f:"px-f",m:"px-m",l:"px-l",a:"px-a",n:"px-n",u:"px-u"};   /* G and B get two-letter class names: CSS class names should not differ only by capital letters */
 function pixArt(name,scale,cls){
   var rows=String(PX[name]||"").split("|"), NS="http://www.w3.org/2000/svg", svg=document.createElementNS(NS,"svg");
   var h=rows.length, w=rows[0].length, d={};
@@ -5086,6 +5171,42 @@ $("life").addEventListener("input",function(){ S.life=this.value; lsSet("ss.life
 /* Closed by default (Siyy's choice): click the summary line to open it. */
 
 S.cards=lsJSON(LS_CARDS,[]); S.terms=lsJSON(LS_TERMS,[]); S.sets=lsJSON(LS_SETS,[]); S.notPairs=lsJSON(LS_NOTPAIRS,[]);
+/* ---------- v35: day and night ----------
+   The sun (by day) or the moon (at night) sits in the sky at the top of every page, and tapping it switches the whole town.
+   data-sky="night" on <html> is the one switch: the night colours in the style block hang on it.
+   Your tap is saved on this device (ss.sky) and wins from then on. With nothing saved, the town follows the app's light/dark
+   theme if the page is told it, and otherwise your device's setting, and it changes when they do. */
+var SKY_DARK=window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+function skyAuto(){
+  var t=document.documentElement.getAttribute("data-theme");
+  if(t) return t==="dark" ? "night" : "day";
+  return SKY_DARK && SKY_DARK.matches ? "night" : "day";
+}
+function skyNow(){ return document.documentElement.getAttribute("data-sky")==="night" ? "night" : "day"; }
+function setSky(v){
+  if(v==="night") document.documentElement.setAttribute("data-sky","night"); else document.documentElement.removeAttribute("data-sky");
+  var to = v==="night" ? "day" : "night";   /* the button says what a tap will do */
+  Array.prototype.forEach.call(document.querySelectorAll(".skylight"),function(b){ b.setAttribute("aria-label","Switch to "+to); b.title="Tap for "+to; });
+}
+function followDevice(){ if(!lsGet("ss.sky","")) setSky(skyAuto()); }
+/* Each page gets one sun-or-moon button in its first strip of sky (in the headline area, if the page has one), and a few
+   clouds unless it already has its own. The clouds are drawn by the [data-px] line below, like every other picture. */
+Array.prototype.forEach.call(document.querySelectorAll("main > section"),function(sec){
+  var sky=sec.querySelector(".sky"); if(!sky) return;
+  var host=sec.querySelector(".pagehead")||sky;
+  if(!sky.querySelector(".cloud")) (host.classList.contains("pagehead") ? ["k1","k2","k3"] : ["k2","k3"]).forEach(function(k){
+    var c=el("span","cloud "+k); c.setAttribute("data-px","cloud"); c.setAttribute("data-scale","3"); c.setAttribute("aria-hidden","true");
+    sky.insertBefore(c,sky.firstChild);
+  });
+  var b=el("button","skylight"); b.type="button";
+  b.appendChild(pixArt("sun",4,"sky-sun")); b.appendChild(pixArt("moon",4,"sky-moon"));
+  b.addEventListener("click",function(){ var v = skyNow()==="night" ? "day" : "night"; lsSet("ss.sky",v); setSky(v); });
+  host.classList.add("skyhost"); host.appendChild(b);
+});
+setSky(skyNow());   /* the early script already chose; this gives the buttons their labels */
+if(SKY_DARK){ try{ SKY_DARK.addEventListener("change",followDevice); }catch(e){ try{ SKY_DARK.addListener(followDevice); }catch(e2){} } }
+try{ new MutationObserver(followDevice).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]}); }catch(e){}
+
 Array.prototype.forEach.call(document.querySelectorAll("[data-px]"),function(n){ n.appendChild(pixArt(n.getAttribute("data-px"),Number(n.getAttribute("data-scale"))||2)); });
 renderLevels(); renderThemes(); renderCustom(); renderReadout(); renderCards(); renderWords(); renderNoteBox(); renderDiag();
 
