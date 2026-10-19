@@ -28,7 +28,7 @@ const SET=(words,extra)=>Object.assign({createdAt:NOW-20*D,updatedAt:NOW,words,k
     await p.click('#nav-compare'); await p.click('#cmp-round-open'); await p.click('#cr-start'); await p.waitForTimeout(500);
     ok("the round says so on screen", (await p.textContent('#cr-item .cr-anyform')).includes("on hold for hold"));
     const sp=(await prompts("COMPARE — SITUATIONS")).filter(x=>x.includes("WORDS:")).pop()||"";
-    ok("the situations request includes the saved word's register", sp.includes('HOW "hold" IS USED: Neutral; very common at work.'));
+    ok("the situations request includes the saved word's register (v33: with its label)", sp.includes('HOW "hold" IS USED: [neutral · everyday] Neutral; very common at work.'));
     const sits=await p.$$eval('#cr-item .cr-sit .spot-sit',xs=>xs.map(x=>x.textContent));
     for(let i=0;i<sits.length;i++){
       const k=Number((sits[i].match(/case (\d+)/)||[])[1])-1;

@@ -48,18 +48,19 @@ const PALETTE=["#26235a","#ffffff","#8fd3ff","#cdeeff","#ffcd3c","#ff9f43","#ff5
 
   await section("Practice: the street is the menu", async()=>{
     const p=await open(1280,900);
-    const places=await p.$$eval('#themegrid > button',bs=>bs.map(x=>{ const s=x.querySelector('.lot svg.tscene'), t=x.querySelector('.turf .sign');
-      return {art:s?s.innerHTML:"", vb:s?s.getAttribute('viewBox'):"", w:s?s.getBoundingClientRect().width:0, sign:t?t.textContent:"", text:x.textContent, surprise:x.id==="btn-surprise"}; }));
-    const themes=places.filter(x=>!x.surprise);
-    ok("each theme is a place: a building on its lot and a sign on the grass ("+themes.length+")", themes.length===14 && places.every(x=>x.art && x.sign));
+    /* v33 (Siyy, 19 Oct): ONE street of 5 places and a "More places" signpost; the other places wait on the All places board */
+    const places=await p.$$eval('#themegrid .onestreet > button',bs=>bs.map(x=>{ const s=x.querySelector('.lot svg.tscene'), t=x.querySelector('.turf .sign');
+      return {art:s?s.innerHTML:"", vb:s?s.getAttribute('viewBox'):"", w:s?s.getBoundingClientRect().width:0, sign:t?t.textContent:"", text:x.textContent, more:x.id==="btn-more"}; }));
+    const themes=places.filter(x=>!x.more);
+    ok("each theme is a place: a building on its lot and a sign on the grass ("+themes.length+")", themes.length===5 && places.every(x=>x.art && x.sign));
     ok("every building is drawn on the same 34×30 grid, shown 4× on a laptop", places.every(x=>x.vb==="0 0 34 30" && x.w===136));
-    ok("the 14 buildings and the Surprise block all look different", new Set(places.map(x=>x.art)).size===15);
-    const rows=await p.$$eval('#themegrid > button',bs=>{ const t={}; bs.forEach(x=>{ const k=Math.round(x.getBoundingClientRect().top); t[k]=(t[k]||0)+1; }); return Object.keys(t).sort((a,b)=>a-b).map(k=>t[k]); });
-    ok("five places on each row ("+rows.join(", ")+")", rows.join()==="5,5,5");
+    ok("the 5 buildings and the signpost all look different", new Set(places.map(x=>x.art)).size===6);
+    const rows=await p.$$eval('#themegrid .onestreet > button',bs=>{ const t={}; bs.forEach(x=>{ const k=Math.round(x.getBoundingClientRect().top); t[k]=(t[k]||0)+1; }); return Object.keys(t).sort((a,b)=>a-b).map(k=>t[k]); });
+    ok("one street: all six on one row ("+rows.join(", ")+")", rows.join()==="6");
     ok("the street shows only names, no descriptions", !themes.some(x=>/Ordering, dietary needs|Returns, haggling/.test(x.text)) && themes.some(x=>x.sign==="Food & Eating Out"));
-    ok("Surprise me is the ? block, last on the street", places[places.length-1].surprise && places[places.length-1].sign==="Surprise me");
+    ok("'More places' is the signpost, last on the street", places[places.length-1].more && places[places.length-1].sign==="More places");
     ok("the street sits on the sky", await p.$eval('#themegrid',g=>window.__hexOf(window.__bg(g)))==="#8fd3ff");
-    ok("each place stands on grass", await p.$$eval('#themegrid .turf',ts=>ts.length===15 && ts.every(t=>window.__hexOf(getComputedStyle(t).backgroundColor)==="#6ccd5c")));
+    ok("each place stands on grass", await p.$$eval('#themegrid .turf',ts=>ts.length===6 && ts.every(t=>window.__hexOf(getComputedStyle(t).backgroundColor)==="#6ccd5c")));
     /* this check and the "no sideways scroll" ones also passed on v31: they protect what must not get worse */
     const low=await p.$$eval('#v-themes .pagehead .lede, #v-themes .pagehead .sub, #themegrid .sign, .street .section-head .eyebrow, .setup-line',es=>es.filter(e=>e.offsetParent).map(e=>Math.round(window.__contrast(e)*100)/100).filter(c=>c<4.5));
     ok("text on the sky and on the signs is easy to read (4.5:1 or more)"+(low.length?" (low: "+low.join(", ")+")":""), low.length===0);
@@ -127,11 +128,14 @@ const PALETTE=["#26235a","#ffffff","#8fd3ff","#cdeeff","#ffcd3c","#ff9f43","#ff5
     await p.close();
   });
 
-  await section("Phone: three places a row, nothing scrolls sideways", async()=>{
+  await section("Phone: the street slides sideways, the page never does", async()=>{
     const p=await open(390,844);
-    const r=await p.$$eval('#themegrid > button',bs=>({rows:(()=>{ const t={}; bs.forEach(x=>{ const k=Math.round(x.getBoundingClientRect().top); t[k]=(t[k]||0)+1; }); return Object.keys(t).sort((a,b)=>a-b).map(k=>t[k]); })(), w:bs[0].querySelector('svg').getBoundingClientRect().width, inside:bs.every(x=>{ const q=x.getBoundingClientRect(); return q.left>=0 && q.right<=window.innerWidth; })}));
-    ok("three places a row ("+r.rows.join(", ")+")", r.rows.join()==="3,3,3,3,3");
-    ok("buildings shown 3× (102 px), all inside the screen", r.w===102 && r.inside);
+    /* v33: one street; on a phone it scrolls on its own, three places in view */
+    const r=await p.$$eval('#themegrid .onestreet > button',bs=>({rows:(()=>{ const t={}; bs.forEach(x=>{ const k=Math.round(x.getBoundingClientRect().top); t[k]=(t[k]||0)+1; }); return Object.keys(t).sort((a,b)=>a-b).map(k=>t[k]); })(), w:bs[0].querySelector('svg').getBoundingClientRect().width,
+      seen:bs.filter(x=>{ const q=x.getBoundingClientRect(); return q.left>=0 && q.right<=window.innerWidth; }).length, first:Math.round(bs[0].getBoundingClientRect().left)}));
+    const scroller=await p.$eval('#themegrid .onestreet',s=>({scrolls:s.scrollWidth>s.clientWidth, x:getComputedStyle(s).overflowX}));
+    ok("one row of six ("+r.rows.join(", ")+"), three fully in view, the first one 16px from the edge ("+r.first+")", r.rows.join()==="6" && r.seen===3 && r.first===16);
+    ok("buildings shown 3× (102 px), and the street itself scrolls sideways", r.w===102 && scroller.scrolls && scroller.x==="auto");
     const wide=async()=>p.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth);
     ok("Practice: no sideways scroll", !(await wide()));
     await p.click('#themegrid .theme >> nth=1'); await p.waitForTimeout(500);

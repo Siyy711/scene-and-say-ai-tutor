@@ -33,7 +33,7 @@ const CMPD=(hist,extra)=>({compare:Object.assign({last:hist[hist.length-1].right
     await start(BASE);
     ok("home page: 'Compare: 1 due again · 1 new'", (await p.textContent('#spotdue .cmpdue span'))==="Compare: 1 due again · 1 new");
     await p.click('#nav-compare'); await p.waitForTimeout(150);
-    ok("Compare page: Practise button with the same count", await p.isEnabled('#cmp-round-open') && (await p.textContent('#cmp-count'))==="1 due again · 1 new");
+    ok("v33: Compare page: Practise button with no count (the Practice board is the only reminder)", await p.isEnabled('#cmp-round-open') && (await p.$$('#cmp-count, .spotcount')).length===0 && (await p.textContent('#cmp-round-open')).trim()==="Practise");
     await p.click('#nav-practice'); await p.waitForTimeout(150);
     await p.click('#cmpdue-go'); await p.waitForTimeout(150);
     ok("home Start opens a Compare round", await p.isVisible('#v-cround') && await p.isVisible('#cr-start'));
@@ -113,9 +113,9 @@ const CMPD=(hist,extra)=>({compare:Object.assign({last:hist[hist.length-1].right
     const rec=await p.textContent('.setrow[data-id="s1"] .spotrec');
     ok("'Compare practice' with Practice 1: your lines, feedback, more natural", rec.includes("Compare practice") && rec.includes("Practice 1") && rec.includes("You wrote: I think") && rec.includes("Feedback:") && rec.includes("More natural:"));
     await p.click('.setrow[data-id="s1"] .cmp-reset'); await p.waitForTimeout(300);
-    ok("Reset → due now, record kept, tag 'practise again'", Number((await db()).s1.compare.resetAt)>0 && (await db()).s1.compare.history.length===1 && (await p.textContent('.setrow[data-id="s1"] .spottag'))==="practise again" && (await p.textContent('#cmp-count'))==="1 due again");
+    ok("Reset → due now, record kept, tag 'practise again'", Number((await db()).s1.compare.resetAt)>0 && (await db()).s1.compare.history.length===1 && (await p.textContent('.setrow[data-id="s1"] .spottag'))==="practise again" && (await p.textContent('#spotdue .cmpdue span'))==="Compare: 1 due again");
     await p.click('#undo-btn'); await p.waitForTimeout(300);
-    ok("Undo → schedule back", !Number((await db()).s1.compare.resetAt) && (await p.textContent('#cmp-count'))==="");
+    ok("Undo → schedule back", !Number((await db()).s1.compare.resetAt) && (await p.$$('#spotdue .cmpdue')).length===0);
   });
 
   await section("A reply that breaks: Try again", async()=>{
