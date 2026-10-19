@@ -34,8 +34,9 @@ DB[P+"sets/s1"]={createdAt:NOW-D,updatedAt:NOW-D,words:["for","since"],kind:"pre
     ok("Practice opens with its pixel street scene, hidden from screen readers", !!art && art.hidden && art.shown);
     await p.click('#nav-practice'); await p.waitForTimeout(200);
     const tiles=await p.$$eval('#themegrid .theme',ts=>ts.map(t=>{ const s=t.querySelector('svg.tscene'); return s ? (s.getAttribute('aria-hidden')==="true" ? s.innerHTML : "") : ""; }));
-    ok("every theme tile has a pixel scene ("+tiles.length+" tiles), hidden from screen readers", tiles.length>=14 && tiles.every(Boolean));
-    ok("…and the 14 built-in themes each have a different scene", new Set(tiles.slice(0,14)).size===14);
+    ok("every place on the street has a pixel scene ("+tiles.length+" places), hidden from screen readers", tiles.length===5 && tiles.every(Boolean));
+    const all=await p.$$eval('#town-board .bplace[data-theme] .bplace-go svg.px',ss=>ss.map(s=>s.getAttribute('aria-hidden')==="true"?s.innerHTML:""));
+    ok("…and the 14 built-in themes on the All places board each have a different scene ("+all.length+")", all.length===14 && all.every(Boolean) && new Set(all).size===14);   /* v33: one street of 5, the rest on the board */
     ok("only a theme tuned to you shows its keyword line (here: At Work, tuned to MES consultant)", await p.$$eval('#themegrid .theme .egs',es=>es.filter(e=>getComputedStyle(e).display!=="none").map(e=>e.textContent).join("|"))==="For you: MES consultant");   /* v29: "tuned to:" became "For you:" */
     const crisp=await p.$$eval('svg.px',ss=>ss.filter(s=>s.getBoundingClientRect().width>0).every(s=>{ const vb=s.viewBox.baseVal, r=s.getBoundingClientRect(); return s.getAttribute('shape-rendering')==="crispEdges" && Number.isInteger(Math.round(r.width*1000)/1000/vb.width); }));
     ok("all pixel art is drawn at whole-number scale with crisp edges", crisp);
@@ -82,7 +83,7 @@ DB[P+"sets/s1"]={createdAt:NOW-D,updatedAt:NOW-D,words:["for","since"],kind:"pre
     await p.click('#nav-words'); await p.waitForTimeout(300);
     const fw=await filled("words");
     ok("Words: only one filled button ("+fw.join(", ")+")", fw.length===1 && fw[0].startsWith("Spot it"));
-    ok("the Spot it count sits inside its button", await p.$eval('#spot-count',c=>c.parentElement.id==="spot-open" && c.textContent==="3 new"));
+    ok("v33: the Spot it button holds only its name (no count)", (await p.$$('#spot-count, .spotcount')).length===0 && (await p.textContent('#spot-open')).trim()==="Spot it");
     const borders=await p.evaluate(()=>[getComputedStyle(document.querySelector('#word-q')).borderTopColor, getComputedStyle(document.querySelector('#occ')).borderTopColor]);
     ok("the search box has the same border as the other text fields", borders[0]===borders[1]);
     await p.close();
@@ -93,7 +94,7 @@ DB[P+"sets/s1"]={createdAt:NOW-D,updatedAt:NOW-D,words:["for","since"],kind:"pre
     const low=async(sel)=>p.$$eval(sel,es=>es.filter(e=>e.offsetParent && e.textContent.trim()).map(e=>Math.round(window.__contrast(e)*100)/100).filter(c=>c<4.5));
     for(const sel of ['#themegrid .theme .egs','#spotdue .spotdue','.setup-line','#v-themes .hint']) { const l=await low(sel); ok("Practice "+sel+(l.length?" (low: "+l.join(", ")+")":""), l.length===0); }
     await p.click('#nav-words'); await p.waitForTimeout(300);
-    for(const sel of ['.wordbtn .when','.wordbtn .peek','#wordlist .groupname .count','#spot-count']) { const l=await low(sel); ok("Words "+sel+(l.length?" (low: "+l.join(", ")+")":""), l.length===0); }
+    for(const sel of ['.wordbtn .when','.wordbtn .peek','#wordlist .groupname .count','.regtag']) { const l=await low(sel); ok("Words "+sel+(l.length?" (low: "+l.join(", ")+")":""), l.length===0); }
     await p.click('#nav-cards'); await p.waitForTimeout(300);
     { const l=await low('.saved-head .when'); ok("Cards dates"+(l.length?" (low: "+l.join(", ")+")":""), l.length===0); }
     await p.close();

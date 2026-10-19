@@ -31,7 +31,7 @@ const URL='file://'+process.cwd()+'/'+(process.argv[2]||'preview-mock.html');
     await p.goto('about:blank'); await p.goto(URL+'#db'); await p.waitForTimeout(600);
     ok("still hidden after reload (same day)", !(await p.isVisible('#spotdue')));
     await p.click('#nav-words'); await p.waitForTimeout(150);
-    ok("the count next to Spot it on Words stays", (await p.textContent('#spot-count'))==="1 new");
+    ok("v33: Words shows no count, whether the board is hidden or not", (await p.$$('#spot-count, .spotcount')).length===0 && (await p.textContent('#spot-open')).trim()==="Spot it");
     await p.evaluate(()=>{ const h=JSON.parse(localStorage.getItem('ss.dueHidden')); h.spot="2000-1-1"; h.cmp="2000-1-1"; localStorage.setItem('ss.dueHidden',JSON.stringify(h)); });
     await p.goto('about:blank'); await p.goto(URL+'#db'); await p.waitForTimeout(600);
     ok("on another day they come back", await p.isVisible('#spotdue-go') && await p.isVisible('#cmpdue-go'));

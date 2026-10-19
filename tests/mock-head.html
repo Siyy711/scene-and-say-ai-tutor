@@ -131,6 +131,21 @@ window.claude={use:function(name){
       return Promise.resolve({used:!!used, equivalent:eq, feedback: used?"Natural use of it.":(eq?"Good alternative.":"Not quite — you didn't use "+tgt+", which fits here."),
         modelReply:"Honestly, I think we just "+tgt+"ed it on; we should redesign the process."});
     }
+    if(s.indexOf("REGISTER LABELS.")===0){
+      /* v33: like the real Claude, one label pair per listed expression, judged from the meaning it is sent. "regfail" makes the request fail. */
+      window.__regCalls=(window.__regCalls||0)+1;
+      var rl=s.split("\n").filter(function(l){ return /^\d+\. .* — /.test(l); });
+      if(rl.some(function(l){ return /^\d+\. regfail — /.test(l); })) return Promise.reject({code:"invalid_json",message:"cut short"});
+      return Promise.resolve({items:rl.map(function(l){
+        var i=Number(l.match(/^(\d+)\./)[1]), x=l.toLowerCase();
+        var lab=/^\d+\. (mvp|stand-up|deploy|api)\b|ai tool|software/.test(x)?["jargon","tech"]
+              : /^\d+\. (touch base|loop in|circle back)\b/.test(x)?["casual","work"]
+              : /^\d+\. (hang out|gonna|chill)\b/.test(x)?["casual","everyday"]
+              : /^\d+\. (notwithstanding|hereby|pursuant)\b/.test(x)?["formal","academic"]
+              : ["neutral","everyday"];
+        return {i:i, level:lab[0], domain:lab[1]};
+      })});
+    }
     if(s.indexOf("file an expression they met outside")>=0){
       /* Answers depend on the request, like the real Claude: no fixed reply. */
       var ex=(s.match(/EXPRESSION: (.*)/)||[])[1]||"", sent=(s.match(/THEIR EXAMPLE SENTENCE: (.*)/)||[])[1]||"";
@@ -142,6 +157,8 @@ window.claude={use:function(name){
       if(saved && (/onto/.test(low)||isForm)){ var mm=saved.match(/(\d+)\. [^\n]*existing system/); if(mm) sameAs=Number(mm[1]); }
       var r={term:term,kind:"word",usage:"Neutral.",theme:"At Work",check:"",pattern:"",sameAs:sameAs,addForm:(sameAs>=0&&isForm)?"bolt-on (adj.)":"",
         situation:/Suits/.test(s)?"Suits S2E3 — Harvey, when a client's file goes missing.":""};
+      /* v33: the register only when the request asks for it */
+      if(s.indexOf('"register": {"level"')>=0) r.register=/^(mvp|stand-up)$/i.test(term)?{level:"jargon",domain:"tech"}:{level:"neutral",domain:"everyday"};
       if(/cracks/.test(ex)){ r.kind="idiom"; r.meaning="be missed or forgotten by mistake"; r.usage="Neutral; common at work."; r.check="The usual form is 'slip through the cracks'."; }
       if(hasS){
         if(/onto/.test(low)){ r.meaning="to add something to an existing system without redesigning it"; r.usual="a metal fastener"; r.pattern="bolt something onto something · bolt-on (adj.)"; r.example2="They bolted a chatbot onto the old website."; }

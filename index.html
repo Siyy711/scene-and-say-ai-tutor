@@ -65,7 +65,6 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .navbtn{position:relative;background:none;border:0;cursor:pointer;padding:0 12px;height:60px;font-size:15px;font-weight:600;color:var(--ink-2)}
 .navbtn:hover{color:var(--ink)}
 .navbtn[aria-current="true"]{color:var(--ink)}
-.navcount{display:inline-block;margin-left:6px;padding:1px 5px;background:var(--px-o);color:#241f1b;font-size:12px;font-weight:700;line-height:1.3;vertical-align:1px;font-variant-numeric:tabular-nums}   /* words or sets due again */
 .navbtn[aria-current="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:4px;background:linear-gradient(var(--accent),var(--accent)) 2px 0/calc(100% - 4px) 2px no-repeat,linear-gradient(var(--accent),var(--accent)) 0 2px/100% 2px no-repeat}   /* a stepped pixel bar */
 :focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 
@@ -145,17 +144,40 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 
 /* Practice, v32: the street. Each theme is a place: a building standing on its lot, a strip of grass, and a white sign.
    Pointing at a place makes the building hop up and the sign turn sun yellow. Five places a row on a laptop, three on a phone. */
-.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:30px 0}
-.theme,.surprise{position:relative;display:flex;flex-direction:column;text-align:center;cursor:pointer;background:none;border:0;border-radius:0;padding:0;color:var(--ink)}
-.theme:disabled,.surprise:disabled{opacity:.45;cursor:not-allowed}
-.theme .lot,.surprise .lot{position:relative;display:flex;justify-content:center;align-items:flex-end;height:134px}
-.theme .tscene,.surprise .tscene{max-width:none;transition:transform .12s ease}
-.theme .turf,.surprise .turf{display:block;background:var(--grass);border-top:4px solid var(--grass-2);padding:12px 7px 16px}
-.theme .sign,.surprise .sign{display:flex;align-items:center;justify-content:center;min-height:62px;padding:8px 6px;background:#fff;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);font-family:var(--f-pixel);font-size:16px;font-weight:600;line-height:1.2;transition:background-color .12s ease}
-.theme:hover:not(:disabled) .tscene,.surprise:hover:not(:disabled) .tscene,.theme:focus-visible .tscene,.surprise:focus-visible .tscene{transform:translateY(-6px)}
-.theme:hover:not(:disabled) .sign,.surprise:hover:not(:disabled) .sign,.theme:focus-visible .sign,.surprise:focus-visible .sign{background:var(--sun)}
-.theme:active:not(:disabled) .sign,.surprise:active:not(:disabled) .sign{transform:translateY(4px);box-shadow:0 0 0 var(--ink)}
-.theme:focus-visible,.surprise:focus-visible{outline:none}
+/* v33 (Siyy, 19 Oct): ONE street. Three equal rows read as shelves in a shop, so the street shows your 5 places
+   and a signpost; the signpost opens a wooden board with every place, where you choose what stands on your street. */
+.onestreet{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}
+.more .sign{background:var(--sun-l)}
+/* 6 lots (5 places + the signpost) are 129px wide at most, and a 4× building is 136px: the art's empty edges absorb that.
+   On a narrow laptop window the lots get much smaller, so the buildings drop to 3× (102px), as on a phone. */
+@media (min-width:641px) and (max-width:820px){
+  .onestreet .lot{height:96px}
+  .onestreet .tscene{width:102px;height:90px}
+}
+.board{margin-top:26px;background:var(--px-t);border:3px solid var(--ink);box-shadow:0 5px 0 var(--ink);padding:10px 14px 16px}
+.board-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.board-title{font-family:var(--f-pixel);font-size:19px;font-weight:600;color:var(--ink)}
+.board-head .hint{margin:0;color:var(--ink)}
+.board-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.bplace{display:flex;flex-direction:column;align-items:flex-start;background:#fff;border:2px solid var(--ink);padding:4px 8px 6px 6px;min-width:0}   /* laptop: the "+ my street" line sits under the name, so long names fit */
+.bplace-go{flex:1 1 auto;align-self:stretch;min-width:0;display:flex;align-items:center;gap:10px;background:none;border:0;padding:4px 2px;font-family:var(--f-pixel);font-size:15px;font-weight:600;color:var(--ink);text-align:left;cursor:pointer}
+.bplace-go:hover:not(:disabled) span,.bplace-go:focus-visible span{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.bplace-go:disabled{opacity:.45;cursor:not-allowed}
+.bplace-go .px{flex:none}
+.bplace-pin{flex:none;margin-left:46px;background:none;border:0;padding:0 2px;font-size:12.5px;color:var(--ink);text-decoration:underline dotted;text-decoration-thickness:2px;text-underline-offset:3px;cursor:pointer;white-space:nowrap}
+.bplace-pin[aria-pressed="true"]{text-decoration:none;font-weight:650}
+.bplace-pin:disabled{opacity:.45;cursor:not-allowed}
+.board-msg{margin-top:8px;color:var(--ink)}
+.theme,.more{position:relative;display:flex;flex-direction:column;text-align:center;cursor:pointer;background:none;border:0;border-radius:0;padding:0;color:var(--ink)}
+.theme:disabled,.more:disabled{opacity:.45;cursor:not-allowed}
+.theme .lot,.more .lot{position:relative;display:flex;justify-content:center;align-items:flex-end;height:134px}
+.theme .tscene,.more .tscene{max-width:none;transition:transform .12s ease}
+.theme .turf,.more .turf{display:block;background:var(--grass);border-top:4px solid var(--grass-2);padding:12px 7px 16px}
+.theme .sign,.more .sign{display:flex;align-items:center;justify-content:center;min-height:62px;padding:8px 6px;background:#fff;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);font-family:var(--f-pixel);font-size:16px;font-weight:600;line-height:1.2;transition:background-color .12s ease}
+.theme:hover:not(:disabled) .tscene,.more:hover:not(:disabled) .tscene,.theme:focus-visible .tscene,.more:focus-visible .tscene{transform:translateY(-6px)}
+.theme:hover:not(:disabled) .sign,.more:hover:not(:disabled) .sign,.theme:focus-visible .sign,.more:focus-visible .sign{background:var(--sun)}
+.theme:active:not(:disabled) .sign,.more:active:not(:disabled) .sign{transform:translateY(4px);box-shadow:0 0 0 var(--ink)}
+.theme:focus-visible,.more:focus-visible{outline:none}
 .theme .egs:not(.tuned){display:none}   /* the keywords repeat the description; only "For you" stays */
 .theme .egs.tuned{position:absolute;top:0;left:8px;right:8px;z-index:1;padding:1px 6px;background:var(--sun-l);border:2px solid var(--ink);font-family:var(--f-pixel);font-size:13.5px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
 .theme.tuned{order:-1}
@@ -305,7 +327,10 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 .term-where{font-size:13.5px;color:var(--ink-2);margin-top:4px}
 .term-where b{font-weight:650;color:var(--ink)}
 .srctag{font-size:12px;font-weight:650;color:var(--ink);background:var(--accent-soft);border-radius:0;padding:2px 6px;white-space:nowrap}
-.themesel{width:auto;padding:4px 8px;font-size:13px}
+.themesel,.regpick{width:auto;padding:4px 8px;font-size:13px}
+.regtag{font-size:12px;font-weight:600;color:var(--ink);background:var(--px-c);border:2px solid var(--ink);padding:0 6px;line-height:18px;white-space:nowrap}   /* v33: register at a glance */
+.regsel{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.regsel .reglab{margin:0}
 .trash{display:grid;place-items:center;width:32px;height:32px;background:none;border:1px solid transparent;border-radius:0;color:var(--field);cursor:pointer;padding:0;line-height:0;flex:0 0 auto}
 .trash svg{display:none}
 .trash::before{content:"";width:14px;height:14px;background:currentColor;-webkit-mask:var(--i-trash) center/14px 14px no-repeat;mask:var(--i-trash) center/14px 14px no-repeat}
@@ -368,9 +393,6 @@ body.has-cardbar .wrap{padding-bottom:150px}
 .spotdue b{color:var(--ink);font-weight:650}
 #spotdue .btn:not(.ghost){background:var(--surface);color:var(--ink);border-color:var(--field);box-shadow:none}
 #spotdue .btn:not(.ghost):hover{background:var(--surface-2)}
-.spotcount{font-size:13px;font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums;align-self:center}
-.btn .spotcount{margin-left:2px;padding:1px 6px;background:var(--px-o);color:#241f1b;font-size:12.5px;font-weight:700;line-height:1.3}
-.btn .spotcount:empty{display:none}
 #notebox .btn{min-height:40px}
 .cmpdue{margin-top:0}
 .duebtns{gap:6px;flex-wrap:nowrap}
@@ -592,7 +614,6 @@ body.has-wordbar .wrap{padding-bottom:150px}
   .mark{grid-column:1 / 3;margin:0;font-size:18px;gap:8px}
   .readout{grid-column:3 / 5;grid-row:1;justify-self:end;margin:0;max-width:100%}
   .navbtn{grid-row:2;height:44px;padding:0 4px;font-size:14.5px}
-  .navcount{margin-left:3px;padding:0 4px}
   .navbtn[aria-current="true"]::after{left:10%;right:10%}
   .pagehead{grid-template-columns:minmax(0,1fr);padding-top:28px}
   .pagehead-art{grid-column:1;grid-row:1;justify-self:start;margin:0 0 18px}
@@ -634,7 +655,6 @@ body{background:var(--paper);font-size:16px}
 .navbtn[aria-current="true"]{background:#fff;box-shadow:inset 0 0 0 3px var(--ink)}   /* the page you're on: a white plate */
 .navbtn[aria-current="true"]::after{display:none}
 .navbtn:hover:not([aria-current="true"]){background:var(--sky-l)}
-.navcount{background:var(--sun);color:var(--ink);border:2px solid var(--ink);font-family:var(--f-pixel);font-size:13px;font-weight:600;padding:0 4px;line-height:16px}
 
 .town,.pagehead{background-color:var(--sky);border-image:conic-gradient(var(--sky) 0 0) fill 0//0 100vmax}
 .pagehead{position:relative;padding-bottom:22px}
@@ -741,7 +761,7 @@ input[type="checkbox"]{border:3px solid var(--ink)}
 .footnote{border-top:3px dotted var(--line)}
 .footnote details.card > summary{font-family:var(--f-pixel);font-size:16px;font-weight:600}
 
-@media (prefers-reduced-motion: reduce){ .theme .tscene,.surprise .tscene{transform:none !important} }
+@media (prefers-reduced-motion: reduce){ .theme .tscene,.more .tscene{transform:none !important} }
 @media (max-width:640px){
   .top-in{padding:8px 16px 8px;gap:6px 4px}
   .mark{font-size:20px}
@@ -754,11 +774,15 @@ input[type="checkbox"]{border:3px solid var(--ink)}
   .pagehead-art{grid-column:1;grid-row:auto;justify-self:end;margin:0}
   .pagehead .sub{margin-bottom:6px}
   .cloud{display:none}
-  .grid{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:20px}
-  .theme .lot,.surprise .lot{height:96px}
-  .theme .tscene,.surprise .tscene{width:102px;height:90px}
-  .theme .turf,.surprise .turf{padding:8px 4px 12px}
-  .theme .sign,.surprise .sign{font-size:13px;min-height:50px;padding:5px 3px;border-width:2px}
+  .onestreet{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 16px;margin:0 -16px;padding:0 16px;scrollbar-width:none}   /* the street slides sideways; the page never does */
+  .onestreet > button{flex:0 0 31%;scroll-snap-align:start}
+  .board-list{grid-template-columns:minmax(0,1fr)}
+  .bplace{flex-direction:row;align-items:center;gap:6px;padding-bottom:4px}   /* phone: one place per line, with room for both */
+  .bplace-pin{margin-left:0;padding:4px 2px}
+  .theme .lot,.more .lot{height:96px}
+  .theme .tscene,.more .tscene{width:102px;height:90px}
+  .theme .turf,.more .turf{padding:8px 4px 12px}
+  .theme .sign,.more .sign{font-size:13px;min-height:50px;padding:5px 3px;border-width:2px}
   .theme .egs.tuned{left:2px;right:2px;font-size:12px}
   .section-head .eyebrow{font-size:24px}
   .face{width:50px;height:50px}
@@ -860,7 +884,7 @@ input[type="checkbox"]{border:3px solid var(--ink)}
 
     <div class="section street">
       <div class="section-head"><div class="eyebrow">Where to today?</div><span class="hint">Pick a place to get a scene from there.</span></div>
-      <div class="grid" id="themegrid"></div>
+      <div class="townrow" id="themegrid"></div>
     </div>
     </div>
 
@@ -1113,6 +1137,7 @@ var PX={
   s_fix:"......................kkkkkkkkkkk.|......................kyyyyyyyyyk.|......................kyyyykkyyyk.|......................kyyyykkyyyk.|......................kyyyykkyyyk.|......................kyyyykkyyyk.|........kkkkk.........kyyyykkyyyk.|........k...k.........kyyyyyyyyyk.|.....kkkkkkkkkkk......kyyyykkyyyk.|.....kvvvvvvvvvk......kyyyykkyyyk.|.....kvvvvvvvvvk......kkkkkkkkkkk.|.....kvvvvvvvvvk..........kkk.....|.....kvvvvvvvvvk..........ktk.....|.....kkkkkkkkkkk..........ktk.....|.......k....k.............ktk.....|.......k....k.............ktk.....|..kkkkkkkkkkkkkkkk........ktk.....|..kooooooooooooook...kkkkkktk.....|..kooooooooooooook...k....ktk.....|..kooooooooooooook...k....kkk.....|..kooooooooooooookkkkkkkkkkkkkk...|..kooooooooooooookkBBBBBwBBBBBk...|..kkkkkkkkkkkkkkkkkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kooooooooooooookkBBBBBwBBBBBk...|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkk...",
   s_work:"..........kkkkkkkkkkkkkkkkk.......|..........kBBBBBBBBBBBBBBBk.......|..........kBccBBccBBccBBcck.......|..........kBccBBccBBccBBcck.......|..........kBBBBBBBBBBBBBBBk.......|..........kBBBBBBBBBBBBBBBk.......|..........kBccBBccBBccBBcck.......|..........kBccBBccBBccBBcck.......|..........kBBBBBBBBBBBBBBBk.......|..........kBBBBBBBBBBBBBBBk.......|..........kBccBBccBBccBBcck.......|..........kBccBBccBBccBBcck.......|..........kBBBBBBBBBBBBBBBk.......|..........kBBBBBBBBBBBBBBBk.......|..kkkkkkkkkBccBBccBBccBBcck.......|..kssssssskBccBBccBBccBBcck.......|..ksccsccskBBBBBBBBBBBBBBBk.......|..ksccsccskBBBBBBBBBBBBBBBk.......|..kssssssskBccBBccBBccBBcckkkkkkk.|..kssssssskBccBBccBBccBBcckwwwwwk.|..ksccsccskBBBBBBBBBBBBBBBkwwwwwk.|..ksccsccskBBBBBBBBBBBBBBBkwyyywk.|..kssssssskBccBBccBBccBBcckwyyywk.|..kssssssskBccBBccBBccBBcckwwwwwk.|..ksccsccskBBBBBBBBBBBBBBBkwwwwwk.|..ksccsccskBBBBkkkkkkkBBBBkwyyywk.|..kssssssskBBBBkcckcckBBBBkwyyywk.|..kssssssskBBBBkcckcckBBBBkwwwwwk.|..kssssssskBBBBkcckcckBBBBkwwwwwk.|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.",
   s_acad:"...........................kkk....|.................k.......BBkkk....|................kkk....BBBBB......|............kssskBkssBBBBB........|...........ksssskBkBBBBB..........|.........ksssssskBkBBBsssk........|.........kswsssskBkssssssk........|........kswssssskBksssssssk.......|.......ksswssssskBkssssssssk......|.......ksssssssskBkssssssssk......|......kssssssssskBksssssssssk.....|......kssssssssskBksssssssssk.....|......kssssssssskkksssssssssk.....|....kkkkkkkkkkkkkkkkkkkkkkkkkkk...|....kwwwwwwwwwwwwwwwwwwwwwwwwwk...|....kwwwwwwwwwwwwwwwwwwwwwwwwwk...|....kwwwwwwwwwwwwwwwwwwwwwwwwwk...|....kwwkkkkwwwwwwwwwwwwkkkkwwwk...|....kwwkcckwwwwwwwwwwwwkcckwwwk...|....kwwkcckwwwwwwwwwwwwkcckwwwk...|....kwwkkkkwwwkkkkkkwwwkkkkwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kwwwwwwwwwkttttkwwwwwwwwwwk...|....kkkkkkkkkkkkkkkkkkkkkkkkkkk...",
+  s_more:"..................................|..................................|..................................|..................................|.....kkkkkkkkkkkkkkkkkkkkkk.......|.....kwwwwwwwwwwwwwwywwwwwwk......|.....kwwwwwwwwwwwwwwyywwwwwwk.....|.....kwwwyyyyyyyyyyyyyywwwwwwkk...|.....kwwwyyyyyyyyyyyyyywwwwwwkk...|.....kwwwwwwwwwwwwwwyywwwwwwk.....|.....kwwwwwwwwwwwwwwywwwwwwk......|.....kkkkkkkkkkkkkkkkkkkkkk.......|...............kttk...............|...............kttk...............|.......kkkkkkkkkkkkkkkkkkkkk......|......kcccccccccccccccccccck......|....kkccccccccccccccccccccck......|....kkccccccccccccccccccccck......|......kcccccccccccccccccccck......|.......kkkkkkkkkkkkkkkkkkkkk......|...............kttk...............|...............kttk...............|...............kttk...............|...............kttk...............|...............kttk...............|...............kttk...............|...............kttk...............|............gggggggggg............|............gGGGGGGGGg............|.............GGGGGGGG.............",
   s_dice:"..................................|..................................|..................................|.......kkkkkkkkkkkkkkkkkkkk.......|.......kyyyyyyyyyyyyyyyyyyk.......|..y....kyoyyyyyyyyyyyyyyoyk.......|.ywy...kyyyyyyyyyyyyyyyyyyk.......|..y....kyyyyyykkkkkkyyyyyyk.......|.......kyyyyykkwwwwkkyyyyyk.......|.......kyyyykkwwkkwwkkyyyyk...y...|.......kyyyykkkkyykwwkyyyyk..ywy..|.......kyyyyyyyyyykwwkyyyyk...y...|.......kyyyyyyyyykwwkyyyyyk.......|.......kyyyyyyyykwwkyyyyyyk.......|.......kyyyyyyyykwwkyyyyyyk.......|.......kyyyyyyyykkkkyyyyyyk.......|.......kyyyyyyyyyyyyyyyyyyk.......|....y..kyyyyyyyykwwkyyyyyyk.......|...ywy.kyyyyyyyykkkkyyyyyyk.......|....y..kyyyyyyyyyyyyyyyyyyk.......|.......kyoyyyyyyyyyyyyyyoyk.......|.......kyyyyyyyyyyyyyyyyyyk.......|.......kkkkkkkkkkkkkkkkkkkk.......|..................................|..................................|..................................|............ssssssssss............|..........ssssssssssssss..........|..........ssssssssssssss..........|..................................",
   s_own:"...........kkkkkkkkkkkk...........|...........kyyyyykyyyyk...........|...........kyyyykokyyyk...........|...........kyykkoookkyk...........|...........kyyykoookyyk...........|...........kyykokykokyk...........|...........kyykkyyykkyk...........|...........kyyyyyyyyyyk...........|...........kkkkkkkkkkkk...........|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|..kvvvvvvvvvvvvvvvvvvvvvvvvvvvvk..|..kvvvvvvvvvvvvvvvvvvvvvvvvvvvvk..|..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..|....kffffffffffffffffffffffffk....|....kffffffffffffffffffffffffk....|....kffffffffffffffffffffffffk....|....kfkkkkkkffffffffffkkkkkkfk....|....kfkcccckffffffffffkcccckfk....|....kfkwwwwkffffffffffkwwwwkfk....|....kfkcccckffkkkkkkkfkcccckfk....|....kfkcccckffktttttkfkcccckfk....|....kfkkkkkkffktttttkfkkkkkkfk....|....kfffffffffktttttkffffffffk....|....kfffffffffktttttkffffffffk....|....kfffffffffkttttykffffffffk....|....kfffffffffktttttkffffffffk....|....kfffffffffktttttkffffffffk....|....kfffffffffktttttkffffffffk....|....kfffffffffktttttkffffffffk....|....kkkkkkkkkkkkkkkkkkkkkkkkkk....",
   v_words:".y............................|ywy...........................|...kkkkyykkkkkkkkkkkkyykkkk...|..kkttkyykttttttttttkyykttkk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttky.|..ktttkyykttttttttttkyyktttk..|..ktttkyyktttkkkkkttkyyktttk..|..kkkkkyykkkkkyyykkkkyykkkkk..|..ktttkyyktttkykykttkyyktttk..|..ktttkyyktttkykykttkyyktttk..|..ktttkyyktttkyyykttkyyktttk..|..ktttkyyktttkkkkkttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..ktttkyykttttttttttkyyktttk..|..kkkkkyykkkkkkkkkkkkyykkkkk..",
@@ -1348,7 +1373,14 @@ function renderCustom(){
       var nm=n.value.trim(); if(!nm){ msg.textContent="Give it a name first."; n.focus(); return; }
       if(all.some(function(x){ return termKey(x.name)===termKey(nm); })){ msg.textContent="That one is already in the list."; return; }
       var own=custGet(ownKey); own.push(hidKey==="hidT" ? {id:"own_"+Date.now().toString(36), name:nm.slice(0,40), blurb:l.value.trim().slice(0,160)} : {id:"owna_"+Date.now().toString(36), name:nm.slice(0,40), desc:l.value.trim().slice(0,160)});
-      custPut(ownKey,own); renderThemes(); renderCustom();
+      custPut(ownKey,own);
+      var note="";
+      if(hidKey==="hidT"){   /* v33: a new theme goes on your street if there's room; otherwise it waits on the All places board */
+        var st=streetIds(), nid=own[own.length-1].id;
+        if(st.indexOf(nid)<0){ if(st.length<STREET_MAX){ st.push(nid); setStreet(st); } else note="Added. Your street is full, so it's on the All places board (More places)."; }
+      }
+      renderThemes(); renderCustom();
+      if(note){ var m=$("cust-themes"); m=m&&m.querySelector(".custmsg"); if(m) m.textContent=note; }
     });
     add.appendChild(n); add.appendChild(l); add.appendChild(go);
     box.appendChild(add); box.appendChild(msg);
@@ -1371,8 +1403,8 @@ function scenePrompt(theme, seed, targets){
     lines.push("Build the practice scene around THAT event. Keep their details. Fill in the ordinary specifics they left out, but never contradict what they said.");
   } else if(hasT){
     lines.push("The learner wants to practise using these expressions from their word bank:");
-    targets.forEach(function(t){ lines.push("- "+str(t.term)+(t.meaning?"   ("+str(t.meaning)+")":"")); });
-    lines.push("Design ONE scene where a person would naturally need ALL of these expressions. They must fit the situation, not be forced into it. Choose whichever everyday situation suits them best.");
+    targets.forEach(function(t){ var rg=regOf(findTerm(t.id)); lines.push("- "+str(t.term)+(t.meaning?"   ("+str(t.meaning)+")":"")+(rg?"   [register: "+regLabel(rg)+"]":"")); });
+    lines.push("Design ONE scene where a person would naturally need ALL of these expressions. They must fit the situation, not be forced into it. Choose whichever situation suits them best, and match their register: jargon only among people who share that field, casual words only in a relaxed moment, formal words where people speak or write formally.");
   } else if(theme && theme.acad && S.acadPick){
     lines.push("Theme: "+theme.name+". SITUATION TYPE: "+S.acadPick.name+" — "+S.acadPick.desc+".");
   } else lines.push("Theme: "+theme.name+" — "+theme.blurb);
@@ -1920,32 +1952,98 @@ function renderSetupLine(){
   if(acadOn()) bits.push("academic: "+(str(S.acadField).trim()||str(S.acadTopic).trim()).slice(0,40));
   h.textContent=bits.join(" · ");
 }
+/* v33: your street. Saved on this device as a list of theme ids ("ss.street"), like Customise situations.
+   Until you choose, SS picks 5 for you: places tuned to you first, then your own themes, then the ones you've practised most, then everyday ones. */
+var LS_STREET="ss.street", STREET_MAX=5, STREET_START=["food","home","small","travel","shop","family","free","health","fix","occas","tech","learn","work","acad"];
+function tunedTheme(T){ var o=S.occupation.trim(), at=str(S.acadTopic).trim()||str(S.acadField).trim(); return !!((T.work&&o)||(T.acad&&at)); }
+function streetIds(){
+  var all=activeThemes(), ids=all.map(function(t){ return t.id; });
+  var saved=lsJSON(LS_STREET,null);
+  if(Array.isArray(saved)){
+    var keep=saved.filter(function(id){ return ids.indexOf(id)>=0; }).slice(0,STREET_MAX);
+    if(keep.length) return keep;   /* every saved place was hidden in Customise situations: fall back to SS's pick */
+  }
+  var used={}; S.cards.forEach(function(c){ var k=str(c.theme); used[k]=(used[k]||0)+1; });
+  var start=function(t){ var k=STREET_START.indexOf(t.id); return k<0?99:k; };
+  return all.slice().sort(function(a,b){
+    return (tunedTheme(b)-tunedTheme(a)) || ((b.own?1:0)-(a.own?1:0)) || ((used[b.name]||0)-(used[a.name]||0)) || (start(a)-start(b));
+  }).slice(0,STREET_MAX).map(function(t){ return t.id; });
+}
+function setStreet(ids){ lsPut(LS_STREET,ids.slice(0,STREET_MAX)); }
+var BOARD={open:false, msg:""};
 function renderThemes(){
   var h=$("themegrid"); clear(h);
-  /* v32: the street. Each theme is a place: a building on its lot, then a sign on the grass.
-     The one-line description (T.blurb) is no longer shown, to keep the street calm. It is still sent to Claude with every scene. */
+  var off = !SAMPLE && DIAG.sample!=="checking";
+  /* v32: each place is a building on its lot, then a sign on the grass. The description (T.blurb) is not shown, but is still sent to Claude. */
   function place(cls,art,name){
     var b=el("button",cls); b.type="button";
     var lot=el("span","lot"); lot.appendChild(pixArt(art,4,"ticon tscene")); b.appendChild(lot);
     var turf=el("span","turf"); turf.appendChild(el("b","sign",name)); b.appendChild(turf);
-    b.disabled = !SAMPLE && DIAG.sample!=="checking";
+    b.disabled=off;
     return b;
   }
-  activeThemes().forEach(function(T){
+  var all=activeThemes(), mine=streetIds();
+  var row=el("div","onestreet");
+  mine.forEach(function(id){
+    var T=all.filter(function(t){ return t.id===id; })[0]; if(!T) return;
     var b=place("theme"+((T.work||T.acad)?" work":"")+(T.acad?" acad":""),themeScene(T),T.name);   /* At Work and Academic & Research share the "work" class (v26). */
-    var o=S.occupation.trim(), at=str(S.acadTopic).trim()||str(S.acadField).trim();
-    var tuned=!!((T.work&&o)||(T.acad&&at));
+    var tuned=tunedTheme(T), o=S.occupation.trim(), at=str(S.acadTopic).trim()||str(S.acadField).trim();
     if(tuned) b.classList.add("tuned");
     /* only a tuned place shows its tag ("For you: …"), pinned to the top of its lot */
     b.querySelector(".lot").appendChild(el("span","egs"+(tuned?" tuned":""),T.work&&o?"For you: "+o:(T.acad&&at?"For you: "+at:T.egs)));
     b.addEventListener("click",function(){ S.refit=false; startScene(T); });
-    h.appendChild(b);
+    row.appendChild(b);
   });
-  /* The last place: Surprise me (v29), drawn as a "?" block. Not a theme, so it has its own class and isn't counted as one. */
-  var sp=place("surprise","s_dice","Surprise me"); sp.id="btn-surprise";
+  /* the signpost at the end of the street: opens the board with every place */
+  var more=place("more","s_more","More places"); more.id="btn-more"; more.disabled=false;
+  more.setAttribute("aria-expanded",String(BOARD.open)); more.setAttribute("aria-controls","town-board");
+  more.addEventListener("click",function(){
+    BOARD.open=!BOARD.open; BOARD.msg=""; renderThemes();
+    var mb=$("btn-more"); if(mb) mb.focus({preventScroll:true});   /* the street is redrawn, so keep the keyboard where it was */
+    if(BOARD.open){ var bd=$("town-board"); if(bd) bd.scrollIntoView({block:"nearest",behavior:"smooth"}); }
+  });
+  row.appendChild(more);
+  h.appendChild(row);
+
+  var board=el("div","board"); board.id="town-board"; board.hidden=!BOARD.open;
+  var head=el("div","board-head"); head.appendChild(el("b","board-title","All places"));
+  var full=mine.length>=STREET_MAX;
+  head.appendChild(el("span","hint",full?"Your street is full. To swap, take one off first (tap “On my street ✓”).":"Choose up to "+STREET_MAX+" for your street."));
+  board.appendChild(head);
+  var list=el("div","board-list");
+  all.forEach(function(T){
+    var on=mine.indexOf(T.id)>=0;
+    var it=el("div","bplace"); it.setAttribute("data-theme",T.id);
+    var go=el("button","bplace-go"); go.type="button"; go.disabled=off;
+    go.appendChild(pixArt(themeScene(T),1)); go.appendChild(el("span",null,T.name));
+    go.addEventListener("click",function(){ S.refit=false; startScene(T); });
+    var pin=el("button","bplace-pin",on?"On my street ✓":"+ my street"); pin.type="button";
+    pin.setAttribute("aria-pressed",String(on)); pin.setAttribute("aria-label",(on?"Take “"+T.name+"” off your street":"Put “"+T.name+"” on your street"));
+    if(!on && full){ pin.disabled=true; pin.title="Your street holds "+STREET_MAX+". Take one off first."; }
+    pin.addEventListener("click",function(){
+      var ids=streetIds();
+      if(on && ids.length<=1) BOARD.msg="Your street needs at least one place.";
+      else {
+        if(on) ids=ids.filter(function(x){ return x!==T.id; });
+        else if(ids.length<STREET_MAX) ids.push(T.id);
+        setStreet(ids);
+        BOARD.msg = !on && ids.length>=STREET_MAX ? "Your street is full. Take one off to add another." : "";
+      }
+      renderThemes();
+      var again=document.querySelector('#town-board .bplace[data-theme="'+T.id+'"] .bplace-pin'); if(again) again.focus({preventScroll:true});
+    });
+    it.appendChild(go); it.appendChild(pin);
+    list.appendChild(it);
+  });
+  /* Surprise me (v29) lives on the board now: not a theme, so it has its own id and isn't counted as one. */
+  var sp=el("button","bplace-go bsurprise"); sp.type="button"; sp.id="btn-surprise"; sp.disabled=off;
+  sp.appendChild(pixArt("s_dice",1)); sp.appendChild(el("span",null,"Surprise me"));
   sp.title="A random theme, when you can't choose.";
   sp.addEventListener("click",surpriseMe);
-  h.appendChild(sp);
+  var spw=el("div","bplace"); spw.appendChild(sp); list.appendChild(spw);
+  board.appendChild(list);
+  var msg=el("p","hint board-msg",BOARD.msg); msg.id="board-msg"; if(!BOARD.msg) msg.hidden=true; board.appendChild(msg);
+  h.appendChild(board);
 }
 function show(v){
   ["themes","scene","story","chat","words","cards","spot","compare","cround"].forEach(function(x){ var n=$("v-"+x); if(n) n.hidden=(x!==v); });
@@ -1955,6 +2053,7 @@ function show(v){
   $("nav-cards").setAttribute("aria-current",String(v==="cards"));
   renderWordBar(); renderCardBar();
   if(v==="themes") renderSpotDue();
+  if(v==="words") labelWords();
   window.scrollTo({top:0,behavior:"auto"});
 }
 
@@ -2459,6 +2558,7 @@ function notePrompt(n,existing){
   lines.push('  "theme": "exactly one of: '+THEMES.map(function(t){ return t.name; }).join(" | ")+'",');
   lines.push('  "situation": "if they said where they met it, ONE short line in English that keeps their details (show, episode, who said it, what was happening); otherwise an empty string",');
   lines.push('  "check": "an empty string if the expression is fine; otherwise ONE short line, e.g. the usual form, or that it is very rare or region-specific",');
+  lines.push('  "register": {"level":"'+REG_LEVELS.join("|")+'","domain":"'+REG_DOMAINS.join("|")+'"} — '+regRules()+',');
   lines.push('  "sameAs": '+(existing&&existing.length?'"the number of the ALREADY SAVED entry with the SAME MEANING (even in another form), or -1 if this is a different meaning",':'-1,'));
   lines.push('  "addForm": '+(existing&&existing.length?'"if sameAs is not -1 and the learner\'s expression is a DIFFERENT FORM that the entry\'s pattern does not mention yet, that form with a short label, e.g. \\"bolt-on (adj.)\\"; otherwise an empty string"':'""'));
   lines.push('}');
@@ -2476,7 +2576,6 @@ function renderNoteBox(){
   sp.title = !S.terms.length ? "Save some words first" : "Find your words in new situations — no cue";
   sp.addEventListener("click",openSpot);
   top.appendChild(sp);
-  var cnt=el("span","spotcount"); cnt.id="spot-count"; sp.appendChild(cnt);   /* the count sits inside its button */
   var open=el("button","btn ghost small","+ Add a note"); open.id="note-open";
   top.appendChild(open);
   host.appendChild(top);
@@ -2585,6 +2684,7 @@ function renderNoteBox(){
         obj.alsoUsed={meaning:str(r.alsoUsed.meaning).trim(), example:str(r.alsoUsed.example).trim()};
       }
       if(picId) obj.pic=picId;
+      var rg=cleanReg(r.register); if(rg) obj.reg=rg;
       return persist("terms",obj).then(function(res){ return {obj:obj,res:res,check:str(r.check)}; });
     }).then(function(o){
       S.busy=false;
@@ -2854,11 +2954,11 @@ function spotCountText(c){
 function renderSpotDue(){
   var c=spotCounts(), txt=spotCountText(c);
   var cc=(typeof cmpCounts==="function") ? cmpCounts() : {due:0,fresh:0}, ctxt=spotCountText(cc);
-  setNavCount("nav-words", SAMPLE ? c.due : 0); setNavCount("nav-compare", SAMPLE ? cc.due : 0);
-  var cnt=$("spot-count"); if(cnt) cnt.textContent = (SAMPLE && txt) ? txt : "";
   var host=$("spotdue"); if(!host) return;
   clear(host);
-  /* "Got it" hides a line for the rest of the day; it comes back tomorrow. The counts on Words and Compare always stay. */
+  /* "Hide for today" hides a line for the rest of the day; it comes back tomorrow.
+     v33 (Siyy, 19 Oct): this board on Practice is the ONLY due reminder. The counts inside the Spot it and Practise buttons
+     and the numbers on the Words and Compare tabs were removed, so those pages stay calm. */
   var hid=lsJSON(LS_DUEHIDDEN,{}), today=dayKey();
   if(hid.spot===today) txt=""; if(hid.cmp===today) ctxt="";
   if(!SAMPLE || (!txt && !ctxt)){ host.hidden=true; return; }
@@ -2879,16 +2979,6 @@ function renderSpotDue(){
   if(ctxt) dueLine("spotdue cmpdue","Compare: ",ctxt,"cmpdue-go",openCompareRound,"cmp");
 }
 var LS_DUEHIDDEN="ss.dueHidden";
-/* A small number on the Words and Compare tabs: words or sets that are due AGAIN (v29).
-   New ones aren't counted: a number that never goes away soon stops being seen. */
-function setNavCount(id,n){
-  var b=$(id); if(!b) return;
-  var s=b.querySelector(".navcount"), name=str(b.firstChild&&b.firstChild.nodeValue).trim();
-  if(!n){ if(s) s.remove(); b.removeAttribute("aria-label"); b.removeAttribute("title"); return; }
-  if(!s){ s=el("span","navcount"); s.setAttribute("aria-hidden","true"); b.appendChild(s); }
-  s.textContent=String(n);
-  b.setAttribute("aria-label",name+", "+n+" due again"); b.title=plural(n,"item","items")+" due again";
-}
 function dayKey(t){ var d=t?new Date(t):new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
 function renderChatBanner(fresh){
   var host=$("chatnews"); if(!host) return; clear(host); host.hidden=false;
@@ -2962,6 +3052,89 @@ function shortDate(t){
   return d.toLocaleDateString(undefined, d.getFullYear()===now.getFullYear() ? {day:"numeric",month:"short"} : {day:"numeric",month:"short",year:"numeric"});
 }
 
+/* ---------- register (v33) ----------
+   Every word gets two labels: how formal it is (level), and whose words they are (domain).
+   They show on the word's row, you can change them in the entry, and they decide where
+   Spot it and Compare set their scenes. Stored on the word as the optional field `reg`. */
+var REG_LEVELS=["formal","neutral","casual","slang","jargon"];
+var REG_DOMAINS=["everyday","work","tech","academic"];
+var REG_SAYS={formal:"official or written, careful", neutral:"fine almost anywhere", casual:"relaxed talk with friends or family", slang:"very informal, in-group", jargon:"specialist words only people in one field use"};
+var REG_WHERE={everyday:"anyone, anywhere", work:"offices, business, meetings", tech:"software, IT, AI and data", academic:"study, research and papers"};
+function regRules(){
+  return "level: "+REG_LEVELS.map(function(l){ return l+" = "+REG_SAYS[l]; }).join("; ")+". domain: "+REG_DOMAINS.map(function(d){ return d+" = "+REG_WHERE[d]; }).join("; ")+
+    ". Judge the meaning given, not other meanings of the word: 'chunk' as a piece of a long text for an AI tool is jargon · tech, but 'a chunk of cheese' is neutral · everyday";
+}
+function cleanReg(x){
+  if(!x||typeof x!=="object") return null;
+  var l=str(x.level).toLowerCase().trim(), d=str(x.domain).toLowerCase().trim();
+  return (REG_LEVELS.indexOf(l)>=0 && REG_DOMAINS.indexOf(d)>=0) ? {level:l, domain:d} : null;
+}
+function regOf(t){ return (t && t.reg && cleanReg(t.reg)) || null; }
+function regLabel(r){ return r ? r.level+" · "+r.domain : ""; }
+function regPrompt(list){
+  var L=[];
+  L.push("REGISTER LABELS. You label English expressions from a learner's word bank. Reply with ONLY a JSON object.");
+  L.push("For each expression, in the meaning given, give two labels. "+regRules()+".");
+  L.push("");
+  list.forEach(function(t,i){ L.push(i+". "+str(t.term)+" — "+(str(t.meaning)||"(no meaning saved)")+(str(t.usage).trim()?"   [usage: "+str(t.usage).trim().slice(0,200)+"]":"")); });
+  L.push("");
+  L.push('JSON shape: {"items":[{"i":0,"level":"…","domain":"…"}]} — exactly '+list.length+' items, one per expression, in the same order.');
+  return L.join("\n");
+}
+/* Words with no register get one: at most 20 per request, one request after another.
+   Each answer is two short words per expression, so 20 fit easily in one short reply (pitfall 14 is about long replies).
+   A word is asked about once per visit; if the reply fails, it keeps every place and is asked again next visit. */
+var REG={tried:{}};
+function labelTerms(list){
+  var todo=arr(list).filter(function(t){ return t && t.id && !regOf(t) && !REG.tried[t.id]; });
+  if(!SAMPLE||!todo.length) return Promise.resolve([]);
+  var chunks=[], done=[];
+  for(var i=0;i<todo.length;i+=20) chunks.push(todo.slice(i,i+20));
+  return chunks.reduce(function(pr,ch){
+    return pr.then(function(){
+      ch.forEach(function(t){ REG.tried[t.id]=1; });
+      return SAMPLE.json(regPrompt(ch),{modelTier:"quick",cache:false}).then(function(r){
+        var its=arr(r&&r.items);
+        return Promise.all(ch.map(function(t,k){
+          var hit=its.filter(function(x){ return x && Number(x.i)===k; })[0]||its[k];
+          var rg=cleanReg(hit); if(!rg) return null;
+          var cur=findTerm(t.id); if(!cur || regOf(cur)) return null;   /* deleted, or you set it meanwhile */
+          done.push(t.id);
+          return updateItem("terms",t.id,{reg:rg});
+        }));
+      }).catch(function(){});
+    });
+  },Promise.resolve()).then(function(){ return done; });
+}
+/* On the Words page: label what's missing, then redraw only those rows (pitfall 19). */
+function labelWords(){
+  labelTerms(S.terms).then(function(ids){
+    ids.forEach(function(id){ var row=document.querySelector('.wordrow[data-id="'+id+'"]'), t=findTerm(id); if(row&&t) row.replaceWith(wordRow(t,row._opt)); });
+  });
+}
+/* Change the register yourself, in the open entry. Your choice is never overwritten. */
+function regSelect(t){
+  var box=el("span","regsel"), cur=regOf(t)||{};
+  function sel(list,val,label){
+    var s=document.createElement("select"); s.className="regpick"; s.setAttribute("aria-label",label+" for “"+str(t.term)+"”");   /* its own class, not .themesel (pitfall 41) */
+    if(!val){ var o0=document.createElement("option"); o0.value=""; o0.textContent="—"; s.appendChild(o0); }
+    list.forEach(function(x){ var o=document.createElement("option"); o.value=x; o.textContent=x; if(x===val) o.selected=true; s.appendChild(o); });
+    return s;
+  }
+  var lv=sel(REG_LEVELS,cur.level,"How formal"), dm=sel(REG_DOMAINS,cur.domain,"Who uses it");
+  lv.classList.add("reg-level"); dm.classList.add("reg-domain");
+  function save(){
+    if(!lv.value||!dm.value) return;
+    updateItem("terms",t.id,{reg:{level:lv.value, domain:dm.value, by:"you"}}).then(function(){
+      var row=document.querySelector('.wordrow[data-id="'+t.id+'"]'), nt=findTerm(t.id); if(row&&nt) row.replaceWith(wordRow(nt,row._opt));
+    });
+  }
+  lv.addEventListener("change",save); dm.addEventListener("change",save);
+  box.appendChild(el("span","hint reglab","Register")); box.appendChild(lv); box.appendChild(dm);
+  box.title="Spot it and Compare set their scenes where people really use this kind of word.";
+  return box;
+}
+
 /* ---------- Spot it: find your own words, with no cue ---------- */
 /* No cue -> one hint (where you met it) -> bridge (side by side, then try once more).
    Each word keeps its own short history in the optional field `spot`. */
@@ -3033,11 +3206,33 @@ function whereMet(t){
 }
 
 var SPOT_SETTINGS=["a seminar, lecture or research meeting","a work meeting","an email or chat message at work","a call with a client or supplier","chatting with a friend","family","a shop, restaurant or service desk","travel or getting around","a hobby, the gym or free time","your home or neighbours","a doctor, bank or other appointment"];
+/* v33: the place comes FROM the word's register (Siyy, 19 Oct: "MVP" came out with the neighbours).
+   Before v33 SS drew any of the places above and told Claude to "keep the place, change the moment",
+   so a tech word could land at home. Now SS only draws places where people really use that kind of word.
+   A neutral everyday word, or a word with no register yet, keeps every place, as before. Each list has at least 3 places, so scenes still vary. */
+var PLACES={
+  casual:["chatting with a friend","family","a hobby, the gym or free time","your home or neighbours","travel or getting around"],
+  formal:["a doctor, bank or other appointment","a shop, restaurant or service desk","a written complaint, review or formal letter","a work meeting","an email or chat message at work"],
+  work:["a work meeting","an email or chat message at work","a call with a client or supplier","a one-to-one with your manager"],
+  tech:["a stand-up or planning meeting with a software team","a chat with a developer or IT support","a work meeting","an email or chat message at work"],
+  academic:["a seminar, lecture or research meeting","a meeting with your supervisor","writing or reviewing a paper or report"]
+};
+function placesFor(r){
+  if(!r) return SPOT_SETTINGS;
+  if(r.domain!=="everyday") return PLACES[r.domain];
+  if(r.level==="jargon") return PLACES.work;
+  if(r.level==="casual"||r.level==="slang") return PLACES.casual;
+  if(r.level==="formal") return PLACES.formal;
+  return SPOT_SETTINGS;
+}
 /* SS picks the setting, never the same one as last time for that word, so variety doesn't depend on Claude alone. */
+function pickFrom(list,last){
+  var opts=list.filter(function(x){ return x!==last; }); if(!opts.length) opts=list;
+  return opts[Math.floor(Math.random()*opts.length)];
+}
 function pickSetting(t){
   var h=spotHist(t), last=h.length?str(h[h.length-1].setting):"";
-  var opts=SPOT_SETTINGS.filter(function(x){ return x!==last; });
-  return opts[Math.floor(Math.random()*opts.length)];
+  return pickFrom(placesFor(regOf(t)),last);
 }
 function spotSituationPrompt(items){
   var L=level(), lines=[];
@@ -3051,6 +3246,7 @@ function spotSituationPrompt(items){
     lines.push("ITEM "+i+": "+str(t.term)+" — "+str(t.meaning)+(t.pattern?" [pattern: "+str(t.pattern)+"]":""));
     lines.push("   Their own sentence: "+(str(t.example)||"none")+(w.text?" | Where they met it: "+w.text:""));
     var reg=registerOf(t); if(reg) lines.push("   How it's used (register): "+reg);
+    var rg=regOf(t); if(rg) lines.push("   REGISTER: "+regLabel(rg)+" ("+REG_SAYS[rg.level]+"; "+REG_WHERE[rg.domain]+")");
     lines.push("   SETTING to use: "+it.setting);
     var prev=spotHist(t).map(function(e){ return str(e&&e.sit); }).filter(Boolean).slice(-3);
     if(prev.length) lines.push("   AVOID — earlier situations for this item (make the new one clearly different): "+prev.join(" / "));
@@ -3061,7 +3257,7 @@ function spotSituationPrompt(items){
   lines.push("- Nobody in the situation asks for the expression or for \"another word / another way to say it\". The expression should simply be the natural thing to use, without anyone fishing for it.");
   lines.push("- If the expression is ABOUT language itself (e.g. synonym, paraphrase, redundant wording), use a situation where people really talk about words: editing a draft, giving feedback on a report, helping a colleague with their English.");
   lines.push("- Use the SETTING given for each item, and make it DIFFERENT from where they met it and from any AVOID list.");
-  lines.push("- MATCH THE REGISTER. Read \"How it's used\": the situation must be one where a native speaker would really say or write this expression. If the SETTING is too casual or too formal for it, keep the place but change the moment (e.g. a formal or critical word → a written review, feedback on a report, a thoughtful discussion; a casual phrase → a chat, not a formal email).");
+  lines.push("- MATCH THE REGISTER. Read REGISTER and \"How it's used\". The SETTING was chosen to fit them, so keep it, and fill it with people who would really say or write this expression there. Jargon stays with people who share that field: a tech word comes up among people who work in tech, never with neighbours, family or a shop assistant. A casual phrase stays in a relaxed moment, not a formal email; a formal word goes where people speak or write formally.");
   lines.push("- 2-3 short sentences in the second person (\"You…\"), at about their level.");
   lines.push("- \"replyType\": the most natural way to respond here — \"say\" (speak to someone), \"message\" (write a short email or chat message) or \"feedback\" (comment on a draft or someone's work). End the situation so that this reply is clearly what's needed.");
   lines.push("- \"hint\": ONE line that points them back to something they will remember, WITHOUT naming the expression or any form of it. Best: their own sentence with the expression replaced by ____. Otherwise a specific memory from where they met it. Never a generic line such as \"you saved this from a chat\".");
@@ -3152,10 +3348,14 @@ function loadItem(it){
 }
 function startSpot(){
   if(SPOT.busy) return;
-  SPOT.items=pickSpotItems(SPOT.n).map(function(t){ return {t:t, setting:pickSetting(t), stage:"nocue", result:null, last:null}; });
-  SPOT.i=0;
+  var picked=pickSpotItems(SPOT.n);
+  SPOT.items=[]; SPOT.i=0;
   SPOT.busy=true; $("spot-start").disabled=true; $("spot-start").textContent="Setting the scene…";
-  loadItem(SPOT.items[0]).then(function(){
+  /* v33: words without a register get one first, so the place can fit them. If that fails, they keep every place. */
+  labelTerms(picked).then(function(){
+    SPOT.items=picked.map(function(t){ var cur=findTerm(t.id)||t; return {t:cur, setting:pickSetting(cur), stage:"nocue", result:null, last:null}; });
+    return loadItem(SPOT.items[0]);
+  }).then(function(){
     SPOT.busy=false; renderSpotItem();
   }).catch(function(e){
     SPOT.busy=false; var b=$("spot-start"); if(b){ b.disabled=false; b.textContent="Start"; }
@@ -3463,6 +3663,7 @@ function wordRow(t,opt){
   btn.setAttribute("aria-expanded",String(open));
   btn.appendChild(el("b",null,str(t.term)));
   if(t.kind) btn.appendChild(el("span","kind",str(t.kind)));
+  var rgt=regOf(t); if(rgt) btn.appendChild(el("span","regtag",regLabel(rgt)));   /* v33: register at a glance */
   if(opt.theme) btn.appendChild(el("span","thlabel",opt.theme));
   if(t.source==="note") btn.appendChild(el("span","srctag","my note"));
   if(t.source==="chat") btn.appendChild(el("span","srctag","from a chat"));
@@ -3521,6 +3722,7 @@ function wordRow(t,opt){
   var tools=el("div","row");
   var sb=sayButton(str(t.term)+". "+str(t.example)); if(sb) tools.appendChild(sb);
   if(open) tools.appendChild(themeSelect(t));
+  if(open) tools.appendChild(regSelect(t));
   if(t.fromScene) tools.appendChild(el("span","tag","from: "+str(t.fromScene)));
   body.appendChild(tools);
   var deepHost=el("div"); body.appendChild(deepHost);
@@ -3806,7 +4008,6 @@ function renderCompare(){
   pr.title="Twin situations: choose the word that fits each one";
   pr.addEventListener("click",openCompareRound);
   tools.appendChild(pr);
-  var pc=el("span","spotcount"); pc.id="cmp-count"; pr.appendChild(pc);
   var fb=el("button","btn ghost small",CMP.finding?"Looking…":"Find pairs"); fb.id="cmp-find"; fb.type="button";
   fb.disabled=!SAMPLE||CMP.finding; fb.title=(OWNKEY?"The AI":"Claude")+" looks through your word bank for expressions you could mix up";
   fb.addEventListener("click",runFindPairs);
@@ -4083,8 +4284,8 @@ function cmpSituationPrompt(it){
   lines.push("WORDS: "+cmpWordsLine(s));
   if(s.topic) lines.push("TOPIC: "+str(s.topic)+" (only this use of the words)");
   if(s.explain&&s.explain.core) lines.push("CORE DIFFERENCE (from their notes): "+str(s.explain.core));
-  arr(s.words).forEach(function(w){ var t=bankTermByKey(w), reg=t?registerOf(t):""; if(reg) lines.push("HOW \""+str(w)+"\" IS USED: "+reg); });
-  lines.push("SETTING to use: "+it.setting+" (if it doesn't suit these words' register, keep the place and change the moment)");
+  arr(s.words).forEach(function(w){ var t=bankTermByKey(w), reg=t?registerOf(t):"", rg=t?regOf(t):null; if(reg||rg) lines.push("HOW \""+str(w)+"\" IS USED: "+(rg?"["+regLabel(rg)+"] ":"")+reg); });
+  lines.push("SETTING to use: "+it.setting+" (chosen to fit these words' register: keep it, with people who would really use these words there)");
   var prev=cmpHist(s).map(function(e){ return str(e&&e.sit); }).filter(Boolean).slice(-3);
   if(prev.length) lines.push("AVOID — earlier situations for this set (make the new one clearly different): "+prev.join(" / "));
   lines.push("");
@@ -4152,8 +4353,17 @@ function renderCompareSetup(){
 }
 function cmpPickSetting(s){
   var h=cmpHist(s), last=h.length?str(h[h.length-1].setting):"";
-  var opts=SPOT_SETTINGS.filter(function(x){ return x!==last; });
-  return opts[Math.floor(Math.random()*opts.length)];
+  return pickFrom(placesForSet(s),last);
+}
+/* v33: a set's places are the ones that fit ALL its words (formal "commence" vs neutral "start" → a formal place,
+   where the choice really matters). If no place fits them all, any place that fits one of them. */
+function placesForSet(s){
+  var lists=arr(s.words).map(bankTermByKey).filter(Boolean).map(regOf).filter(Boolean).map(placesFor);
+  if(!lists.length) return SPOT_SETTINGS;
+  var all=lists[0].filter(function(x){ return lists.every(function(l){ return l.indexOf(x)>=0; }); });
+  if(all.length) return all;
+  var any=[]; lists.forEach(function(l){ l.forEach(function(x){ if(any.indexOf(x)<0) any.push(x); }); });
+  return any;
 }
 function loadCmpItem(it){
   if(it.ready) return Promise.resolve(it);
@@ -4178,10 +4388,14 @@ function loadCmpItem(it){
   return it.loading;
 }
 function startCompareRound(){
-  CR.items=cmpPick(CR.n).map(function(s){ return {s:s, setting:cmpPickSetting(s), done:false}; });
-  CR.i=0;
+  var sets=cmpPick(CR.n), words=[];
+  CR.items=[]; CR.i=0;
+  sets.forEach(function(s){ arr(s.words).map(bankTermByKey).forEach(function(t){ if(t && words.indexOf(t)<0) words.push(t); }); });
   var go=$("cr-start"); if(go){ go.disabled=true; go.textContent="Setting the scene…"; }
-  loadCmpItem(CR.items[0]).then(renderCompareItem).catch(function(e){
+  labelTerms(words).then(function(){
+    CR.items=sets.map(function(s){ return {s:s, setting:cmpPickSetting(s), done:false}; });
+    return loadCmpItem(CR.items[0]);
+  }).then(renderCompareItem).catch(function(e){
     if(go){ go.disabled=false; go.textContent="Start"; }
     var m=$("cr-msg"); if(m) m.textContent="The situations didn't come back properly"+(e&&e.code?" ("+e.code+")":"")+". Press Start to try again.";
   });
@@ -4342,12 +4556,10 @@ function resetCompare(s){
     undoToast("Schedule reset for “"+setTitle(cur)+"”.",function(){ updateItem("sets",cur.id,{compare:before}).then(function(){ refreshSetRow(cur.id); renderCompareTools(); }); });
   });
 }
-/* The Practise button and its count on the Compare page (redrawn without rebuilding the list). */
+/* The Practise button on the Compare page (redrawn without rebuilding the list). */
 function renderCompareTools(){
-  var b=$("cmp-round-open"), cnt=$("cmp-count");
-  var c=cmpCounts(), txt=spotCountText(c);
+  var b=$("cmp-round-open");
   if(b) b.disabled=!SAMPLE||!S.sets.length;
-  if(cnt) cnt.textContent=(SAMPLE&&txt)?txt:"";
   renderSpotDue();
 }
 
@@ -5385,7 +5597,7 @@ renderDataRow();
     DIAG.uid = UID ? String(UID).slice(0,8)+"…" : "none — no private storage";
     return loadAll();
   }).then(function(){
-    renderDiag(); renderCards(); renderWords(); renderCompare(); renderBackupNag();
+    renderDiag(); renderThemes(); renderCards(); renderWords(); renderCompare(); renderBackupNag();   /* renderThemes: until you choose your street, it follows your cards (v33) */
     startLive();
     loadNotPairs();
     return checkChatAdditions();

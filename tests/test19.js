@@ -18,7 +18,7 @@ const sp=(last,ago,extra)=>({spot:Object.assign({last,at:NOW-ago*D,history:[{at:
     ok("…on the first page you see (themes), without opening anything", await p.isVisible('#v-themes') && await p.isVisible('#spotdue'));
     ok("it's a line with Start and Got it", await p.isVisible('#spotdue-go') && await p.isVisible('#spotdue-ok') && (await p.$$('#spotdue button')).length===2);   /* v26: Got it added on Siyy's request */
     await p.click('#nav-words'); await p.waitForTimeout(150);
-    ok("the Spot it button on Words shows the same count", (await p.textContent('#spot-count'))==="2 due again · 2 new");
+    ok("v33: the Spot it button on Words shows no count (the Practice board is the only reminder)", (await p.$$('#spot-count, .spotcount')).length===0 && (await p.textContent('#spot-open')).trim()==="Spot it");
     await p.click('#nav-practice'); await p.waitForTimeout(150);
     await p.click('#spotdue-go'); await p.waitForTimeout(200);
     ok("Start opens Spot it", await p.isVisible('#v-spot') && await p.isVisible('#spot-start'));
@@ -33,7 +33,7 @@ const sp=(last,ago,extra)=>({spot:Object.assign({last,at:NOW-ago*D,history:[{at:
     await start({r1:W("caveat",sp("nocue",1)),r2:W("park",sp("hint",1))});
     ok("no line on the home page", !(await p.isVisible('#spotdue')));
     await p.click('#nav-words'); await p.waitForTimeout(150);
-    ok("no count next to the Spot it button", (await p.textContent('#spot-count'))==="");
+    ok("no count next to the Spot it button", (await p.$$('#spot-count, .spotcount')).length===0 && (await p.textContent('#spot-open')).trim()==="Spot it");
   });
 
   await section("The count updates after a round", async()=>{
@@ -42,7 +42,7 @@ const sp=(last,ago,extra)=>({spot:Object.assign({last,at:NOW-ago*D,history:[{at:
     await p.click('#spotdue-go'); await p.click('#spot-n .chip >> text=1'); await p.click('#spot-start'); await p.waitForTimeout(600);
     await p.fill('#spot-reply','Sure, fire away, and let us touch base later.'); await p.click('#spot-check'); await p.waitForTimeout(400);
     await p.click('#spot-exit'); await p.waitForTimeout(150);
-    ok("Words count after the round: 1 new", (await p.textContent('#spot-count'))==="1 new");
+    ok("v33: still no count on Words after the round", (await p.$$('#spot-count, .spotcount')).length===0 && (await p.textContent('#spot-open')).trim()==="Spot it");
     await p.click('#nav-practice'); await p.waitForTimeout(150);
     ok("home line after the round: 1 new", (await line())==="Spot it: 1 new");
   });

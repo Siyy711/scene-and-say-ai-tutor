@@ -31,9 +31,12 @@ const NEWONLY={}; NEWONLY[P+"terms/a"]=W("touch base","At Work"); NEWONLY[P+"set
     const tops=await p.evaluate(()=>['#v-themes .pagehead','#spotdue','#setup-box','#themegrid','.ownweek','#help-box'].map(s=>{ const e=document.querySelector(s); return e&&e.offsetParent ? Math.round(e.getBoundingClientRect().top) : null; }));
     ok("headline, then today's reviews, then the profile line, then the themes, then your own week, then Help ("+tops.join(", ")+")", tops.every(t=>t!==null) && tops.every((t,i)=>!i||t>tops[i-1]));
     ok("…the headline itself is unchanged", (await p.textContent('#v-themes .lede'))==="Pick a situation you'd actually find yourself in.");
-    const last=await p.$eval('#themegrid',g=>{ const x=g.lastElementChild; return x?{id:x.id,cls:x.className,art:!!x.querySelector('svg.px[aria-hidden="true"]'),name:(x.querySelector('b')||{}).textContent}:null; });
-    ok("'Surprise me' is the last card in the theme grid, with its own drawing", !!last && last.id==="btn-surprise" && last.cls==="surprise" && last.art && last.name==="Surprise me");
-    ok("…and it isn't counted as a theme (still 14 theme cards)", (await p.$$('#themegrid .theme')).length===14);
+    /* v33: one street of 5 places; the signpost "More places" ends it and opens the All places board, where Surprise me lives now */
+    const last=await p.$eval('#themegrid .onestreet',g=>{ const x=g.lastElementChild; return x?{id:x.id,cls:x.className,art:!!x.querySelector('svg.px[aria-hidden="true"]'),name:(x.querySelector('b')||{}).textContent}:null; });
+    ok("the street ends with the 'More places' signpost, with its own drawing", !!last && last.id==="btn-more" && last.cls==="more" && last.art && last.name==="More places");
+    const sp=await p.$eval('#town-board',g=>{ const x=g.querySelector('#btn-surprise'); return x?{art:!!x.querySelector('svg.px[aria-hidden="true"]'),name:x.textContent.trim(),theme:!!x.closest('[data-theme]')}:null; });
+    ok("'Surprise me' is on the All places board, with its own drawing", !!sp && sp.art && sp.name==="Surprise me");
+    ok("…and it isn't counted as a theme (5 on the street, 14 on the board)", !sp.theme && (await p.$$('#themegrid .theme')).length===5 && (await p.$$('#town-board .bplace[data-theme]')).length===14);
     ok("the themes heading has no extra link any more", (await p.$$('#v-themes .section-head button')).length===0);
     ok("At Work says 'For you: MES consultant'", (await p.textContent('#themegrid .theme.tuned .egs'))==="For you: MES consultant");
     ok("the review line offers 'Hide for today'", (await p.textContent('#spotdue-ok'))==="Hide for today");
@@ -47,7 +50,7 @@ const NEWONLY={}; NEWONLY[P+"terms/a"]=W("touch base","At Work"); NEWONLY[P+"set
     ok("…closed at first", !(await p.isVisible('#help-box .notice')) && !(await p.isVisible('#btn-diag')));
     await p.click('#help-box > summary'); await p.waitForTimeout(150);
     ok("…and opening it shows the note and the live check", await p.isVisible('#help-box .notice') && await p.isVisible('#btn-diag'));
-    await p.click('#btn-surprise'); await p.waitForTimeout(500);
+    await p.click('#btn-more'); await p.click('#btn-surprise'); await p.waitForTimeout(500);
     /* protects behaviour that must not change */
     ok("'Surprise me' still starts a scene", await p.isVisible('#v-scene'));
     await p.close();
@@ -63,12 +66,11 @@ const NEWONLY={}; NEWONLY[P+"terms/a"]=W("touch base","At Work"); NEWONLY[P+"set
     await p.close();
   });
 
-  await section("Tabs: a number for what is due again", async()=>{
+  await section("v33: the tabs carry no numbers; the Practice board is the only reminder", async()=>{
     const p=await open(1280,800);
-    ok("Words shows 1 (one word practised a month ago)", (await p.textContent('#nav-words .navcount'))==="1");
-    ok("Compare shows 1 (one set practised a month ago)", (await p.textContent('#nav-compare .navcount'))==="1");
-    ok("…and screen readers hear it as 'Words, 1 due again'", (await p.getAttribute('#nav-words','aria-label'))==="Words, 1 due again");
-    ok("Practice and Cards have no number", (await p.$$('#nav-practice .navcount, #nav-cards .navcount')).length===0);
+    ok("Words and Compare show no number, though one word and one set are due again", (await p.$$('.navcount')).length===0 && (await p.textContent('#nav-words')).trim()==="Words" && (await p.textContent('#nav-compare')).trim()==="Compare");
+    ok("…and screen readers hear just 'Words'", !(await p.getAttribute('#nav-words','aria-label')));
+    ok("the Practice board still shows both: "+(await p.textContent('#spotdue')).replace(/\s+/g," ").slice(0,90), (await p.textContent('#spotdue .spotdue:not(.cmpdue) span')).includes("1 due again") && (await p.textContent('#spotdue .cmpdue span')).includes("1 due again"));
     await p.close();
     const q=await open(1280,800,NEWONLY);
     ok("new words and sets alone don't make a number", (await q.$$('.navcount')).length===0 && !(await q.getAttribute('#nav-words','aria-label')));
