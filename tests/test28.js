@@ -30,7 +30,8 @@ DB[P+"sets/s1"]={createdAt:NOW-D,updatedAt:NOW-D,words:["for","since"],kind:"pre
 
   await section("Laptop: pixel art on every page", async()=>{
     const p=await open(1280,800);
-    const art=await p.$eval('#v-themes',v=>{ const s=v.querySelector('.pagehead-art svg'); return s?{hidden:s.getAttribute('aria-hidden')==="true",shown:s.getBoundingClientRect().width>40}:null; });
+    /* v35: the Practice sun became the sun-or-moon button (.skylight); its first drawing is the sun, shown by day */
+    const art=await p.$eval('#v-themes',v=>{ const s=v.querySelector('.skylight svg'); return s?{hidden:s.getAttribute('aria-hidden')==="true",shown:s.getBoundingClientRect().width>40}:null; });
     ok("Practice opens with its pixel street scene, hidden from screen readers", !!art && art.hidden && art.shown);
     await p.click('#nav-practice'); await p.waitForTimeout(200);
     const tiles=await p.$$eval('#themegrid .theme',ts=>ts.map(t=>{ const s=t.querySelector('svg.tscene'); return s ? (s.getAttribute('aria-hidden')==="true" ? s.innerHTML : "") : ""; }));
@@ -128,14 +129,15 @@ DB[P+"sets/s1"]={createdAt:NOW-D,updatedAt:NOW-D,words:["for","since"],kind:"pre
     }
   });
 
-  /* v32 (Pixel Town): automatic dark mode was removed on purpose (Siyy, 16 Oct: "night town for later").
-     The old check ("dark mode uses different pixel colours") now checks the opposite: a dark system setting keeps the daytime town. */
-  await section("The town stays in daytime, even when the computer is set to dark", async()=>{
+  /* v32 (Pixel Town): automatic dark mode was removed on purpose (Siyy, 16 Oct: "night town for later"), so this checked that a dark
+     system setting kept the daytime town. v35 (Siyy, 19 Oct) is that night town: a dark computer setting now turns the town to night.
+     The sun stays the same yellow; the outlines, the page and the sky change. test36 checks the night town in detail. */
+  await section("A computer set to dark shows the night town", async()=>{
     const lt=await open(1280,800,'light'), dk=await open(1280,800,'dark');
     const tok=pg=>pg.evaluate(()=>['--px-k','--px-y','--paper','--sky'].map(k=>getComputedStyle(document.documentElement).getPropertyValue(k).trim()).concat([getComputedStyle(document.body).backgroundColor]));
     const a=await tok(lt), c=await tok(dk);
     ok("pixel and page colours are defined ("+a.join(" ")+")", a.every(Boolean));
-    ok("…and a dark computer setting shows the very same colours", a.join()===c.join());
+    ok("…and a dark computer setting shows night colours: outlines, page and sky change, the sun yellow stays ("+c.join(" ")+")", a[0]!==c[0] && a[1]===c[1] && a[2]!==c[2] && a[3]!==c[3] && a[4]!==c[4]);
     await lt.close(); await dk.close();
   });
 
