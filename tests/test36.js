@@ -1,5 +1,7 @@
 // v35 (Siyy, 19 Oct): the night town. A deep-blue sky with stars and a crescent moon, wooden signs, cream notes on the boards.
 // It follows the device's light/dark setting; tapping the sun or moon switches, and this device remembers the tap (ss.sky).
+// v36 changed two checks on purpose: a tap now holds only until the device switches (see test37.js), so a tap back to what
+// the device says is not saved, and a saved tap carries what the device said at that moment (ss.skyDevice).
 // The sun or moon sits in the sky of every page, well to the right of the page's own picture. The Practice title is two lines.
 const {chromium}=require(process.env.PW||'playwright');
 const ok=(label,cond)=>{console.log((cond?"PASS ":"FAIL ")+label); if(!cond) process.exitCode=1;};
@@ -32,14 +34,15 @@ const NIGHT={sky:"#2b2873",paper:"#17153f",grass:"#3c9a4c",wood:"#966236",sign:"
         const c=window.__contrast(e); if(c<min) out.push(e.textContent.trim().slice(0,24)+" "+(Math.round(c*100)/100)); });
       return out; };
   };
-  /* scheme: what the device says (light/dark). saved: an ss.sky value already on this device, or none. */
+  /* scheme: what the device says (light/dark). saved: an ss.sky value already on this device, or none.
+     "night:day" also saves what the device said at the tap (ss.skyDevice = day), as v36 does. */
   const open=async(w,h,scheme,saved,file)=>{
     if(ctx) await ctx.close();
     ctx=await b.newContext({viewport:{width:w,height:h},colorScheme:scheme||'light'}); p=await ctx.newPage();
     p.on('pageerror',e=>errs.push(e.message)); p.setDefaultTimeout(4000);
     const url=file?'file://'+process.cwd()+'/'+file:URL;
     await p.goto(url);
-    await p.evaluate(([d,P,saved])=>{ localStorage.clear(); const o={}; for(const k in d) o[P+k]=d[k]; localStorage.setItem('__mockdb',JSON.stringify(o)); if(saved) localStorage.setItem('ss.sky',saved); },[DB,P,saved||""]);
+    await p.evaluate(([d,P,saved])=>{ localStorage.clear(); const o={}; for(const k in d) o[P+k]=d[k]; localStorage.setItem('__mockdb',JSON.stringify(o)); if(saved){ const [s,d]=saved.split(':'); localStorage.setItem('ss.sky',s); if(d) localStorage.setItem('ss.skyDevice',d); } },[DB,P,saved||""]);
     await p.goto(url+(file?'':'#db')); await p.reload(); await p.waitForTimeout(700);
     await p.evaluate(helpers); await p.mouse.move(0,0);
   };
@@ -147,7 +150,7 @@ const NIGHT={sky:"#2b2873",paper:"#17153f",grass:"#3c9a4c",wood:"#966236",sign:"
     ok("after a reload, still day, even though the device is set to dark", await sky()==="day");
     await go('words');
     await p.focus('#v-words .skylight'); await p.keyboard.press('Enter'); await p.waitForTimeout(200);
-    ok("the sun on another page switches back to night, from the keyboard too", await sky()==="night" && await p.evaluate(()=>localStorage.getItem('ss.sky'))==="night");
+    ok("the sun on another page switches back to night, from the keyboard too (the same as the device, so nothing stays saved)", await sky()==="night" && await p.evaluate(()=>localStorage.getItem('ss.sky'))===null);
     await go('themes');
     ok("…and every page follows: Practice shows the moon again", (await light()).shows==="moon");
   });
@@ -163,9 +166,9 @@ const NIGHT={sky:"#2b2873",paper:"#17153f",grass:"#3c9a4c",wood:"#966236",sign:"
     ok("if the app around the page marks itself dark (data-theme), the town follows that", await sky()==="night");
     await p.evaluate(()=>document.documentElement.setAttribute('data-theme','light')); await p.waitForTimeout(150);
     ok("…and light", await sky()==="day");
-    await open(1280,800,'light','night');
+    await open(1280,800,'light','night:day');
     await p.emulateMedia({colorScheme:'light'}); await p.waitForTimeout(150);
-    ok("a saved tap wins over the device: saved night stays night on a light device", await sky()==="night");
+    ok("a saved tap wins while the device stays the same: night tapped on a light device stays night", await sky()==="night");
   });
 
   await section("Night is decided before anything is drawn (no flash of the day sky)", async()=>{

@@ -877,16 +877,18 @@ input[type="checkbox"]{border:3px solid var(--ink)}
 
 <script>
 /* v35: day or night, decided before anything is drawn, so the page never flashes the wrong sky.
-   1. Your own tap on the sun or moon wins: this device remembers it as "ss.sky".
-   2. Otherwise, follow the app the page runs in, if it marks its light or dark theme on the page (data-theme).
-   3. Otherwise, follow your device's light/dark setting.
-   skyAuto() in the main script below repeats steps 2 and 3 when your device or the app changes. */
+   "What the device says": the app's light/dark theme, if the app marks it on the page (data-theme); otherwise your
+   device's light/dark setting.
+   v36 (Siyy, 19 Oct): your tap on the sun or moon is saved on this device (ss.sky) together with what the device said at
+   that moment (ss.skyDevice). The tap holds only while the device still says the same. Once it says something else, the
+   town follows the device again. An old v35 tap (ss.sky alone) no longer counts.
+   skyPick() in the main script uses the same rule, and also clears a tap that no longer counts. */
 (function(){
-  var root=document.documentElement, saved=null;
-  try{ saved=localStorage.getItem("ss.sky"); }catch(e){}
+  var root=document.documentElement, saved=null, at=null;
   var theme=root.getAttribute("data-theme");
-  var night = saved ? saved==="night" : theme ? theme==="dark" : !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
-  if(night) root.setAttribute("data-sky","night");
+  var auto = theme ? (theme==="dark" ? "night" : "day") : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "night" : "day");
+  try{ saved=localStorage.getItem("ss.sky"); at=localStorage.getItem("ss.skyDevice"); }catch(e){}
+  if((saved && at===auto ? saved : auto)==="night") root.setAttribute("data-sky","night");
 })();
 </script>
 
@@ -1004,7 +1006,7 @@ input[type="checkbox"]{border:3px solid var(--ink)}
       <div class="datarow" id="data-row"></div>
       <details class="card pad" id="help-box">
         <summary>Help and known limits</summary>
-        <p class="hint">Tap the sun or moon to switch between day and night.</p>
+        <p class="hint">Tap the sun or moon to switch between day and night. When your device switches between light and dark, the town follows it again.</p>
         <div class="notice quiet"><b>Known limit:</b> speaking into the page is blocked here — this kind of page can't get microphone permission. Reading aloud works; recording your voice needs its own server.</div>
         <p class="hint"><b>Something not working? Run a check.</b> This reports exactly what the page can and can't reach, in its own words. Screenshot it if you need to ask why something failed.</p>
         <div id="own-help" hidden></div>
@@ -1299,6 +1301,7 @@ function arr(v){ return Array.isArray(v)?v:[]; }
 function newId(p){ return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function lsGet(k,fb){ try{ var v=localStorage.getItem(k); return v==null?fb:v; }catch(e){ return fb; } }
 function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
 function lsJSON(k,fb){ try{ return JSON.parse(localStorage.getItem(k)||"null")||fb; }catch(e){ return fb; } }
 function lsPut(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 
@@ -5174,8 +5177,9 @@ S.cards=lsJSON(LS_CARDS,[]); S.terms=lsJSON(LS_TERMS,[]); S.sets=lsJSON(LS_SETS,
 /* ---------- v35: day and night ----------
    The sun (by day) or the moon (at night) sits in the sky at the top of every page, and tapping it switches the whole town.
    data-sky="night" on <html> is the one switch: the night colours in the style block hang on it.
-   Your tap is saved on this device (ss.sky) and wins from then on. With nothing saved, the town follows the app's light/dark
-   theme if the page is told it, and otherwise your device's setting, and it changes when they do. */
+   The town follows what the device says (skyAuto: the app's light/dark theme if the page is told it, otherwise your device's
+   setting), and changes when it does. v36: a tap is saved on this device (ss.sky) with what the device said at that moment
+   (ss.skyDevice), and holds only until the device says something else. A tap back to what the device says is not saved. */
 var SKY_DARK=window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
 function skyAuto(){
   var t=document.documentElement.getAttribute("data-theme");
@@ -5188,7 +5192,14 @@ function setSky(v){
   var to = v==="night" ? "day" : "night";   /* the button says what a tap will do */
   Array.prototype.forEach.call(document.querySelectorAll(".skylight"),function(b){ b.setAttribute("aria-label","Switch to "+to); b.title="Tap for "+to; });
 }
-function followDevice(){ if(!lsGet("ss.sky","")) setSky(skyAuto()); }
+function skyForget(){ lsDel("ss.sky"); lsDel("ss.skyDevice"); }
+function skyPick(){
+  var auto=skyAuto(), saved=lsGet("ss.sky",""), at=lsGet("ss.skyDevice","");
+  if(saved && at===auto) return saved;   /* the device still says what it said at your tap */
+  if(saved||at) skyForget();             /* it has switched since then (or it is an old v35 tap) */
+  return auto;
+}
+function followDevice(){ setSky(skyPick()); }
 /* Each page gets one sun-or-moon button in its first strip of sky (in the headline area, if the page has one), and a few
    clouds unless it already has its own. The clouds are drawn by the [data-px] line below, like every other picture. */
 Array.prototype.forEach.call(document.querySelectorAll("main > section"),function(sec){
@@ -5200,10 +5211,14 @@ Array.prototype.forEach.call(document.querySelectorAll("main > section"),functio
   });
   var b=el("button","skylight"); b.type="button";
   b.appendChild(pixArt("sun",4,"sky-sun")); b.appendChild(pixArt("moon",4,"sky-moon"));
-  b.addEventListener("click",function(){ var v = skyNow()==="night" ? "day" : "night"; lsSet("ss.sky",v); setSky(v); });
+  b.addEventListener("click",function(){
+    var v = skyNow()==="night" ? "day" : "night", auto=skyAuto();
+    if(v===auto) skyForget(); else { lsSet("ss.sky",v); lsSet("ss.skyDevice",auto); }
+    setSky(v);
+  });
   host.classList.add("skyhost"); host.appendChild(b);
 });
-setSky(skyNow());   /* the early script already chose; this gives the buttons their labels */
+followDevice();   /* the early script already chose; this clears a tap that no longer counts and gives the buttons their labels */
 if(SKY_DARK){ try{ SKY_DARK.addEventListener("change",followDevice); }catch(e){ try{ SKY_DARK.addListener(followDevice); }catch(e2){} } }
 try{ new MutationObserver(followDevice).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]}); }catch(e){}
 
