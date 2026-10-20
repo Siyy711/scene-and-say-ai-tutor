@@ -43,7 +43,8 @@ const W=(term,i,extra)=>Object.assign({createdAt:NOW-i*60000,term,kind:"phrase",
   ok("after a miss: no 'sort it out' anywhere on the page", !/sort it out/i.test(page1));
   ok("…a neutral message instead", page1.includes("Not quite — you saved a word that fits here. Here's a hint."));
   ok("…and the hint", await p.isVisible('#spot-hint'));
-  const cp=await p.evaluate(()=>window.__prompts[window.__prompts.length-1]);
+  /* v38: opening a word also asks how to say it, so this reads the last request that is NOT that one */
+  const cp=await p.evaluate(()=>window.__prompts.filter(x=>x.indexOf("HOW TO SAY IT.")!==0).slice(-1)[0]);
   ok("check request tells Claude not to name the word on a miss", cp.includes("must NOT name or hint at the target expression"));
   await p.fill('#spot-reply','I will handle it.'); await p.click('#spot-check'); await p.waitForTimeout(400);
   ok("second miss: now the word may appear (bridge)", await p.isVisible('#spot-bridge') && (await p.textContent('#v-spot')).includes("Not quite — here's the word."));

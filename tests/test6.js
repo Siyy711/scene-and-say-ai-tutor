@@ -12,7 +12,8 @@ const ok=(label,cond)=>console.log((cond?"PASS ":"FAIL ")+label);
   await p.goto('file://'+process.cwd()+'/preview-mock.html');
   await p.evaluate(([t,c])=>{localStorage.clear();localStorage.setItem('ss.terms.v1',JSON.stringify(t));localStorage.setItem('ss.cards.v1',JSON.stringify([c]));},[TERMS,OLD]);
   await p.reload(); await p.waitForTimeout(700);
-  const last=()=>p.evaluate(()=>window.__prompts[window.__prompts.length-1]);
+  /* v38: opening a word also asks how to say it, so this reads the last request that is NOT that one */
+  const last=()=>p.evaluate(()=>window.__prompts.filter(x=>x.indexOf("HOW TO SAY IT.")!==0).slice(-1)[0]);
 
   console.log("— Fix 1: Show me one first, with target words —");
   await p.click('#nav-words'); await p.check('input[data-term="t1"]'); await p.check('input[data-term="t2"]');

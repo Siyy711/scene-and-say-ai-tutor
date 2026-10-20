@@ -9,7 +9,8 @@ const OLD={createdAt:Date.now()-86400000,term:"take a look at",kind:"phrase",mea
   const b=await chromium.launch(process.env.CHROMIUM?{executablePath:process.env.CHROMIUM}:{});
   const p=await b.newPage({viewport:{width:900,height:1300}});
   const errs=[]; p.on('pageerror',e=>errs.push(e.message));
-  const last=()=>p.evaluate(()=>window.__prompts[window.__prompts.length-1]);
+  /* v38: opening a word also asks how to say it, so this reads the last request that is NOT that one */
+  const last=()=>p.evaluate(()=>window.__prompts.filter(x=>x.indexOf("HOW TO SAY IT.")!==0).slice(-1)[0]);
   const db=()=>p.evaluate(()=>window.__mockdb());
   const terms=async()=>Object.entries(await db()).filter(([k])=>k.includes('/terms/')).map(([k,v])=>Object.assign({id:k.split('/').pop()},v));
   const addNote=async(term,sentence)=>{ await p.click('#note-open'); await p.fill('#note-term',term); if(sentence) await p.fill('#note-eg',sentence); await p.click('#note-go'); await p.waitForTimeout(700); };

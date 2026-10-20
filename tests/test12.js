@@ -9,7 +9,8 @@ const BOLT_NOFORM=Object.assign({},BOLT,{pattern:"bolt something onto something"
   const b=await chromium.launch(process.env.CHROMIUM?{executablePath:process.env.CHROMIUM}:{});
   const p=await b.newPage({viewport:{width:900,height:1300}});
   const errs=[]; p.on('pageerror',e=>errs.push(e.message));
-  const last=()=>p.evaluate(()=>window.__prompts[window.__prompts.length-1]);
+  /* v38: opening a word also asks how to say it, so this reads the last request that is NOT that one */
+  const last=()=>p.evaluate(()=>window.__prompts.filter(x=>x.indexOf("HOW TO SAY IT.")!==0).slice(-1)[0]);
   const terms=async()=>Object.entries(await p.evaluate(()=>window.__mockdb())).filter(([k])=>k.includes('/terms/')).map(([k,v])=>Object.assign({id:k.split('/').pop()},v));
   const start=async(doc)=>{ await p.goto('about:blank'); await p.goto(URL); await p.evaluate(([d,P])=>{ localStorage.clear(); localStorage.setItem('__mockdb',JSON.stringify({[P+"terms/tmuz4wawt92qj"]:d})); },[doc,P]); await p.goto(URL+'#db'); await p.reload(); await p.waitForTimeout(700); await p.click('#nav-words'); await p.waitForTimeout(150); };
   const addNote=async(term,sentence)=>{ await p.click('#note-open'); await p.fill('#note-term',term); if(sentence) await p.fill('#note-eg',sentence); await p.click('#note-go'); await p.waitForTimeout(800); };

@@ -32,6 +32,7 @@ function __coll(path){
   return q;
 }
 window.claude={use:function(name){
+  if(name==="sample" && localStorage.getItem("__noSample")) return Promise.resolve(null);   /* like a view where sample isn't granted */
   if(location.hash==="#db" && name==="db") return Promise.resolve({doc:function(p){ return {collection:function(c){ return __coll(p+"/"+c); }}; }});
   if(location.hash==="#db" && name==="user") return Promise.resolve({id:function(){ return "u_test"; }});
   /* S1: like the real "downloads" capability, only allowed file types, and the viewer may say no (__dlDecline). */
@@ -174,6 +175,13 @@ window.claude={use:function(name){
         r.alsoUsed={meaning:"a less obvious use of "+term,example:"An example of that use."};
       }
       return Promise.resolve(r);
+    }
+    if(s.indexOf("HOW TO SAY IT.")===0){   /* v38: like the real Claude, it answers for the meaning the request names */
+      var st=(s.match(/EXPRESSION: (.*?)   \(/)||[])[1]||"", sm=(s.match(/MEANING HERE: (.*)/)||[])[1]||"";
+      window.__soundAsks=(window.__soundAsks||0)+1;
+      if(st.indexOf("brokensound")>=0){ window.__brokenSound=(window.__brokenSound||0)+1; if(window.__brokenSound===1) return Promise.reject({code:"invalid_json",message:"cut short"}); }
+      if(st==="same sound") return Promise.resolve({chunks:"SAME SOUND",tips:[],uk:"/ˈseɪm ˈsaʊnd/",us:"/ˈseɪm ˈsaʊnd/"});
+      return Promise.resolve({chunks:st.toUpperCase().split(/\s+/).join(" · "),tips:["ʊ tip for "+st+(sm?" ("+sm+")":""),"second tip"],uk:"/ˈʌk "+st+"/",us:"/ˈʊs "+st+"/"});
     }
     if(s.indexOf("careful lexicographer")>=0){
       var rare=s.indexOf("ENTRY: on the blink")>=0;

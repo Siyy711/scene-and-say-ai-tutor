@@ -1,6 +1,6 @@
 # SS test suite: how to run it
 
-These are the automated checks for Scene & Say, v5 to v37: 34 files and 975 checks. They run the real app in a browser against a **stand-in** for Claude and the database (`mock-head.html`). They test the app's logic and screens. They **can't** judge the quality of real Claude replies, so for that, try the app by hand after changing a request to Claude.
+These are the automated checks for Scene & Say, v5 to v38: 35 files and 1016 checks. They run the real app in a browser against a **stand-in** for Claude and the database (`mock-head.html`). They test the app's logic and screens. They **can't** judge the quality of real Claude replies, so for that, try the app by hand after changing a request to Claude.
 
 ## Files
 
@@ -16,6 +16,7 @@ These are the automated checks for Scene & Say, v5 to v37: 34 files and 975 chec
 | `test36.js` | v35, the night town. A browser set to dark opens it at night with nothing saved: deep-blue sky edge to edge, stars on both sides of the column and a crescent moon (real pixels from a screenshot), dim clouds, lit windows; wooden signs with cream letters, the Today and All places boards in lighter wood with cream notes; the yellow main button keeps a dark edge; panels have a light frame and a soft purple shadow. Every text on 8 pages (and the open profile) is 4.5:1 or more at night. Tapping the moon switches to day (a real button with "Switch to day" / "Tap for day"), the choice is saved on this device only (`ss.sky`), survives a reload and works from the keyboard. With nothing saved, the town follows the device as it changes, and the app's own `data-theme`; a saved tap wins. Night is set before the top bar is drawn. At 1440, 1280, 1024, 760 and 390px, day and night: one sun or moon on each of 8 pages, never over a picture, title, text or button, out in the open sky from 1240px, 3× on a phone; clouds on every page's sky; no sideways scroll. The sun lifts under the mouse; Help has the switch line; the Practice title is two lines; daytime colours unchanged; the own-key page gets night too. |
 | `test37.js` | v36, a tap holds only until the device switches. A tap on the sun or moon is saved with what the device said at that moment (`ss.sky` + `ss.skyDevice`) and survives a reload; when the device (or the app's `data-theme`) switches, while SS is open or closed, the tap is forgotten and the town follows the device again; a tap back to what the device says is not saved; an old v35 tap is forgotten once, with no flash of the wrong sky; nothing goes to the cloud; the Help line; the own-key page follows the same rule. |
 | `test38.js` | v37, the messages after "+ Add a note". At 1280, 900 (night) and 400px the search field keeps its width and never covers Spot it or "+ Add a note"; the messages ("Added …", "Worth knowing …") sit in their own full-width row under the search field; a Close button removes them; starting another note, leaving Words or opening Spot it clears them. |
+| `test39.js` | v38, how to say a word (phonics). Opening a word asks Claude once ("HOW TO SAY IT.", with the word, its meaning and sentence) and saves `sound` on the word; it shows first in the entry: "Say it:", the chunks, the IPA and up to two tips. Next time, and after a reload, it shows at once without asking. The IPA follows the reading voice (British: UK, American: US, Any English or Australian: both; the same in both: "UK & US"), in a font that has the IPA symbols. Each meaning of "record" is asked on its own. A broken answer shows Try again and saves nothing. No AI in the view: no sound line. A new note gets it too; phone width; Help line; the own-key page sends it to the learner's own AI service. |
 | `build_own.py` | Wraps the app in a plain web page with **no** stand-in: `preview-own.html`, the page the tests open. The same script builds `index.html` at the repo root, the page GitHub Pages serves; `run-all.sh` rebuilds it every time. |
 | `mock-head.html` | The stand-in: a fake `window.claude` with scripted, request-dependent replies, plus a fake database in localStorage that freezes data like the real one, and (S1) a fake `downloads` that only accepts allowed file types and can be told the viewer said no. |
 | `build_mock.py` | Glues `mock-head.html` + the app into `preview-mock.html`, the page the tests open. |
@@ -34,7 +35,7 @@ npx playwright install chromium  # once: downloads the browser it drives
 ./run-all.sh
 ```
 
-`run-all.sh` first builds `preview-mock.html` from `../app/scene-and-say.html`, then runs every file. Every file should show "pass", and the total should match the last known number (975 at v37).
+`run-all.sh` first builds `preview-mock.html` from `../app/scene-and-say.html`, then runs every file. Every file should show "pass", and the total should match the last known number (1016 at v38).
 
 In a Claude cloud session, Playwright and Chromium are already installed, so you can skip `npm install` and run:
 
