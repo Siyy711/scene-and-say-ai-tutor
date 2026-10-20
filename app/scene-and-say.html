@@ -2609,6 +2609,7 @@ function soundIPA(snd){
   var out=[]; if(uk) out.push(["UK",uk]); if(us) out.push(["US",us]); return out;
 }
 function soundView(t,host,open){
+  t=findTerm(t.id)||t;   /* the row may hold an older copy of the word (the list is re-read after a save) */
   clear(host); host.hidden=false;
   var snd=cleanSound(t.sound);
   if(snd){
@@ -2635,10 +2636,11 @@ function soundView(t,host,open){
   if(SOUND_ASKING[t.id]) return;
   SOUND_ASKING[t.id]=true;
   var id=t.id;
-  SAMPLE.json(soundPrompt(t),{modelTier:"default",cache:{gcTime:86400000}}).then(function(r){
+  /* No cache: once it works it is saved on the word, and Try again must really ask again. */
+  SAMPLE.json(soundPrompt(t),{modelTier:"default",cache:false}).then(function(r){
     var snd2=cleanSound(r);
     if(!snd2) throw {code:"invalid_json"};
-    return updateItem("terms",id,{sound:snd2}).then(function(){ var cur=findTerm(id); if(cur && !cur.sound) cur.sound=snd2; t.sound=snd2; });
+    return updateItem("terms",id,{sound:snd2});   /* also puts it on this page's copy of the word */
   }).catch(function(){ SOUND_FAILED[id]=true; }).then(function(){ delete SOUND_ASKING[id]; soundRedraw(id); });
 }
 /* Redraw only the sound line, so nothing else in the entry (a "Go deeper" on its way, a Compare panel) is lost. */
