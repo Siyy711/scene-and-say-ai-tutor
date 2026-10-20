@@ -23,7 +23,8 @@ function seed(extra){
   const errs=[]; p.on('pageerror',e=>errs.push(e.message));
   const db=()=>p.evaluate(()=>window.__mockdb());
   const fresh=async(extra)=>{ await p.goto('about:blank'); await p.goto(URL); await p.evaluate(d=>{ localStorage.clear(); localStorage.setItem('ss.occupation','consultant'); localStorage.setItem('__mockdb',JSON.stringify(d)); },seed(extra)); await p.goto(URL+'#db'); await p.reload(); await p.waitForTimeout(600); };
-  const last=()=>p.evaluate(()=>window.__prompts[window.__prompts.length-1]);
+  /* v38: opening a word also asks how to say it, so this reads the last request that is NOT that one */
+  const last=()=>p.evaluate(()=>window.__prompts.filter(x=>x.indexOf("HOW TO SAY IT.")!==0).slice(-1)[0]);
 
   console.log("— Act it out: easier to find —");
   await fresh();

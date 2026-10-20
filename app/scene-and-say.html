@@ -342,6 +342,14 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 .word-pic{margin-top:8px}
 .term-where{font-size:13.5px;color:var(--ink-2);margin-top:4px}
 .term-where b{font-weight:650;color:var(--ink)}
+.term-sound{display:grid;gap:4px;font-size:15px;color:var(--ink)}
+.snd-line{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.snd-line b{font-weight:650;color:var(--ink)}
+.snd-chunks{font-weight:600;letter-spacing:.03em}
+/* The app's font (Lexend) has no ɪ ʊ ʌ ɔ ː ʃ ʒ ɑ ɜ ɒ θ, so the IPA uses the device's own font, which has them. */
+.snd-ipa{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Noto Sans","DejaVu Sans","Lucida Grande",Arial,sans-serif;color:var(--ink-2);white-space:nowrap}
+.snd-acc{font-family:var(--f-body);font-size:12px;font-weight:650;color:var(--ink-3)}
+.snd-tips{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2);display:grid;gap:2px}
 .srctag{font-size:12px;font-weight:650;color:var(--ink);background:var(--accent-soft);border-radius:0;padding:2px 6px;white-space:nowrap}
 .themesel,.regpick{width:auto;padding:4px 8px;font-size:13px}
 .regtag{font-size:12px;font-weight:600;color:var(--ink);background:var(--px-c);border:2px solid var(--ink);padding:0 6px;line-height:18px;white-space:nowrap}   /* v33: register at a glance */
@@ -1010,6 +1018,7 @@ input[type="checkbox"]{border:3px solid var(--ink)}
       <details class="card pad" id="help-box">
         <summary>Help and known limits</summary>
         <p class="hint">Tap the sun or moon to switch between day and night. When your device switches between light and dark, the town follows it again.</p>
+        <p class="hint">Open a word to see how to say it: its chunks, its sounds (IPA) and a tip or two. The IPA follows your reading voice in Your profile.</p>
         <div class="notice quiet"><b>Known limit:</b> speaking into the page is blocked here — this kind of page can't get microphone permission. Reading aloud works; recording your voice needs its own server.</div>
         <p class="hint"><b>Something not working? Run a check.</b> This reports exactly what the page can and can't reach, in its own words. Screenshot it if you need to ask why something failed.</p>
         <div id="own-help" hidden></div>
@@ -1382,7 +1391,7 @@ function renderVoice(){
   ACCENTS.forEach(function(a){
     var c=el("button","chip",a.label); c.type="button";
     c.setAttribute("aria-pressed",String(a.id===VP.accent));
-    c.addEventListener("click",function(){ VP.accent=a.id; VP.uri=""; lsSet("ss.accent",a.id); lsSet("ss.voiceURI",""); renderVoice(); renderSetupLine(); });
+    c.addEventListener("click",function(){ VP.accent=a.id; VP.uri=""; lsSet("ss.accent",a.id); lsSet("ss.voiceURI",""); renderVoice(); renderSetupLine(); soundRedrawAll(); });
     ah.appendChild(c);
   });
   var sel=$("voicesel"); clear(sel);
@@ -2556,6 +2565,93 @@ function deepView(t, host){
     ddc.appendChild(box); cc.appendChild(ddc); g.appendChild(cc);
   }
   host.appendChild(g);
+}
+
+/* ---------- v38: how to say it ---------- */
+/* Under the word in its open entry: the chunks (the stressed part in capitals), the IPA that matches your reading
+   voice, and up to two letter-sound tips (自然拼读). Claude makes it the first time you open the word, and SS keeps it
+   on the word as t.sound = {chunks, tips:[…], uk, us}, so each word is asked only once. Old words have no t.sound
+   until then; nothing old is rewritten. Each meaning is asked on its own: a word can change its sound with its
+   meaning (a REC-ord / to re-CORD). */
+var SOUND_ASKING={}, SOUND_FAILED={};   /* this visit only: id -> true while asking; id -> true after a failed try */
+function soundPrompt(t){
+  var lines=[];
+  lines.push("HOW TO SAY IT. You are a pronunciation coach for an adult English learner who is learning to read words by their sounds (phonics). Reply with ONLY a JSON object.");
+  lines.push("");
+  lines.push("EXPRESSION: "+str(t.term)+"   ("+(str(t.kind)||"phrase")+")");
+  lines.push("MEANING HERE: "+(str(t.meaning)||"—"));
+  if(t.example) lines.push('SENTENCE: "'+str(t.example)+'"');
+  lines.push("Give the pronunciation for THIS meaning. Some words change their sound or stress with their meaning or word class (a REC-ord / to re-CORD; to read / have read).");
+  lines.push("");
+  lines.push("JSON shape:");
+  lines.push('{');
+  lines.push('  "chunks": "the expression said in chunks: syllables joined with \\" · \\", a space between words, stressed syllables in CAPITALS and the rest in lower case. Respell a syllable only when its letters would mislead, e.g. \\"has-been\\" -> \\"HAZ · been\\", \\"contrive\\" -> \\"con · TRIVE\\", \\"slip through the cracks\\" -> \\"SLIP through the CRACKS\\"",');
+  lines.push('  "tips": ["0-2 short letter-sound tips for the parts a learner is most likely to say wrong, one line each, e.g. \\"the s in has sounds like z\\" or \\"ough in through sounds like the oo in too\\"; an empty list if nothing is tricky"],');
+  lines.push('  "uk": "modern standard British IPA for the whole expression, between slashes, with stress marks",');
+  lines.push('  "us": "General American IPA for the whole expression, between slashes, with stress marks"');
+  lines.push('}');
+  lines.push("");
+  lines.push("Use standard learner's-dictionary IPA (as in the Cambridge or Oxford learner's dictionaries). Keep the tips about sounds and letters, not about meaning.");
+  return lines.join("\n");
+}
+function ipaOf(x){ var v=str(x).trim().replace(/^[\/\[]+|[\/\]]+$/g,"").trim(); return v ? "/"+v+"/" : ""; }
+function cleanSound(r){
+  if(!r||typeof r!=="object") return null;
+  var o={chunks:str(r.chunks).trim(), tips:arr(r.tips).map(function(x){ return str(x).trim(); }).filter(Boolean).slice(0,2), uk:ipaOf(r.uk), us:ipaOf(r.us)};
+  return o.chunks && (o.uk||o.us) ? o : null;
+}
+/* Which IPA to show: the one that matches your reading voice; both (marked UK and US) for Any English or Australian. */
+function soundIPA(snd){
+  var uk=str(snd.uk), us=str(snd.us);
+  if(uk && uk===us) return [["UK & US",uk]];
+  if(VP.accent==="gb" && uk) return [["UK",uk]];
+  if(VP.accent==="us" && us) return [["US",us]];
+  var out=[]; if(uk) out.push(["UK",uk]); if(us) out.push(["US",us]); return out;
+}
+function soundView(t,host,open){
+  t=findTerm(t.id)||t;   /* the row may hold an older copy of the word (the list is re-read after a save) */
+  clear(host); host.hidden=false;
+  var snd=cleanSound(t.sound);
+  if(snd){
+    var ln=el("div","snd-line"); ln.appendChild(el("b",null,"Say it: "));
+    ln.appendChild(el("span","snd-chunks",snd.chunks));
+    soundIPA(snd).forEach(function(x){   /* real spaces between the parts, so a screen reader doesn't run them together */
+      var ip=el("span","snd-ipa"); ip.appendChild(el("span","snd-acc",x[0])); ip.appendChild(document.createTextNode(" ")); ip.appendChild(el("span","snd-ph",x[1]));
+      ln.appendChild(document.createTextNode(" ")); ln.appendChild(ip);
+    });
+    host.appendChild(ln);
+    if(snd.tips.length){ var ul=el("ul","snd-tips"); snd.tips.forEach(function(x){ ul.appendChild(el("li",null,x)); }); host.appendChild(ul); }
+    return;
+  }
+  if(!SAMPLE){ host.hidden=true; return; }   /* no AI here: no sound line, and nothing else changes */
+  if(SOUND_FAILED[t.id]){
+    var f=el("div","snd-line hint"); f.appendChild(document.createTextNode("Couldn't get the sounds. "));
+    var again=el("button","btn ghost tiny","Try again"); again.type="button";
+    again.addEventListener("click",function(){ delete SOUND_FAILED[t.id]; soundRedraw(t.id); });
+    f.appendChild(again); host.appendChild(f);
+    return;
+  }
+  if(!open){ host.hidden=true; return; }      /* asked only when you open the word */
+  host.appendChild(el("div","snd-line hint dots","Finding the sounds"));
+  if(SOUND_ASKING[t.id]) return;
+  SOUND_ASKING[t.id]=true;
+  var id=t.id;
+  /* No cache: once it works it is saved on the word, and Try again must really ask again. */
+  SAMPLE.json(soundPrompt(t),{modelTier:"default",cache:false}).then(function(r){
+    var snd2=cleanSound(r);
+    if(!snd2) throw {code:"invalid_json"};
+    return updateItem("terms",id,{sound:snd2});   /* also puts it on this page's copy of the word */
+  }).catch(function(){ SOUND_FAILED[id]=true; }).then(function(){ delete SOUND_ASKING[id]; soundRedraw(id); });
+}
+/* Redraw only the sound line, so nothing else in the entry (a "Go deeper" on its way, a Compare panel) is lost. */
+function soundRedraw(id){
+  var t=findTerm(id); if(!t) return;
+  var hs=document.querySelectorAll('.wordrow[data-id="'+id+'"] > .worddetail > .term-sound');
+  for(var i=0;i<hs.length;i++) soundView(t,hs[i],S.openTerm===id);
+}
+function soundRedrawAll(){
+  var hs=document.querySelectorAll('.wordrow > .worddetail > .term-sound');
+  for(var i=0;i<hs.length;i++){ var row=hs[i].parentNode.parentNode, t=findTerm(row.getAttribute("data-id")); if(t) soundView(t,hs[i],S.openTerm===t.id); }
 }
 
 /* ---------- notes: expressions you met outside Scene & Say ---------- */
@@ -3808,6 +3904,7 @@ function wordRow(t,opt){
   row.appendChild(line);
 
   var body=el("div","worddetail"); body.hidden=!open;
+  var snd=el("div","term-sound"); body.appendChild(snd); soundView(t,snd,open);   /* v38: how to say it, under the word */
   if(t.knownAs){
     var ct=el("div","contrast");
     var c1=el("div","c-usual"); c1.appendChild(el("b",null,"Usually means: ")); c1.appendChild(document.createTextNode(str(t.knownAs))); ct.appendChild(c1);

@@ -12,7 +12,8 @@ const OLDT={createdAt:Date.now()-5000,term:"on the blink",kind:"idiom",meaning:"
     localStorage.setItem('__mockdb',JSON.stringify({"data/users/u_test/store/terms/tOld":o})); },OLDT);
   await p.reload(); await p.waitForTimeout(600);
   const db=()=>p.evaluate(()=>window.__mockdb());
-  const last=()=>p.evaluate(()=>window.__prompts[window.__prompts.length-1]);
+  /* v38: opening a word also asks how to say it, so this reads the last request that is NOT that one */
+  const last=()=>p.evaluate(()=>window.__prompts.filter(x=>x.indexOf("HOW TO SAY IT.")!==0).slice(-1)[0]);
 
   console.log("— Add a note, with a picture —");
   await p.click('#nav-words'); await p.waitForTimeout(200);

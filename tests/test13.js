@@ -12,7 +12,8 @@ const W=(term,extra)=>Object.assign({createdAt:NOW-3600000,term,kind:"phrase",me
   const b=await chromium.launch(process.env.CHROMIUM?{executablePath:process.env.CHROMIUM}:{});
   const p=await b.newPage({viewport:{width:900,height:1200}});
   const errs=[]; p.on('pageerror',e=>errs.push(e.message));
-  const last=()=>p.evaluate(()=>window.__prompts[window.__prompts.length-1]);
+  /* v38: opening a word also asks how to say it, so this reads the last request that is NOT that one */
+  const last=()=>p.evaluate(()=>window.__prompts.filter(x=>x.indexOf("HOW TO SAY IT.")!==0).slice(-1)[0]);
   const db=async()=>Object.fromEntries(Object.entries(await p.evaluate(()=>window.__mockdb())).filter(([k])=>k.includes('/terms/')).map(([k,v])=>[k.split('/').pop(),v]));
   const start=async(docs)=>{ await p.goto('about:blank'); await p.goto(URL); await p.evaluate(([d,P])=>{ localStorage.clear(); localStorage.setItem('ss.occupation','supply chain consultant'); localStorage.setItem('ss.life','gym three times a week'); const o={}; for(const k in d) o[P+"terms/"+k]=d[k]; localStorage.setItem('__mockdb',JSON.stringify(o)); },[docs,P]); await p.goto(URL+'#db'); await p.reload(); await p.waitForTimeout(700); await p.click('#nav-words'); await p.waitForTimeout(150); };
   const answer=async(text)=>{ await p.fill('#spot-reply',text); await p.click('#spot-check'); await p.waitForTimeout(400); };
