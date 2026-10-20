@@ -301,6 +301,10 @@ input[type="checkbox"]:disabled{opacity:.4;cursor:not-allowed}
 #v-words:has(#note-form:not([hidden])) > #notebox{grid-column:1 / -1}
 #v-words:has(#note-form:not([hidden])) > .wordsearch{grid-row:3;margin-top:20px}
 #v-words > #wordlist{margin-top:20px}
+/* v37: the messages after "+ Add a note" get their own full-width row under the search field. Inside #notebox they made
+   the button column wide and squeezed the search field next to it to nothing (Siyy, 20 Oct). */
+#notenews{display:grid;gap:10px;margin-top:16px}
+#notenews > .btn{justify-self:end}
 .wordsearch{position:relative}
 .wordsearch input{width:100%;min-height:40px;padding-left:42px;background:var(--surface)}
 .wordsearch::before{content:"";position:absolute;left:14px;top:50%;width:16px;height:16px;margin-top:-8px;background:var(--ink-3);-webkit-mask:var(--i-search) center/16px 16px no-repeat;mask:var(--i-search) center/16px 16px no-repeat;pointer-events:none;z-index:1}
@@ -1075,6 +1079,7 @@ input[type="checkbox"]{border:3px solid var(--ink)}
     </div>
     <div class="section" id="notebox"></div>
     <div class="section wordsearch"><input type="search" id="word-q" placeholder="Search words or meanings" aria-label="Search your words"></div>
+    <div class="section" id="notenews" role="status" hidden></div>
     <div class="section" id="wordlist"></div>
   </section>
 
@@ -2155,6 +2160,7 @@ function show(v){
   $("nav-words").setAttribute("aria-current",String(v==="words"||v==="spot"));
   $("nav-cards").setAttribute("aria-current",String(v==="cards"));
   renderWordBar(); renderCardBar();
+  if(v!=="words") noteNewsClear();   /* v37: a note's messages belong to the moment you added it */
   if(v==="themes") renderSpotDue();
   if(v==="words") labelWords();
   window.scrollTo({top:0,behavior:"auto"});
@@ -2670,6 +2676,18 @@ function notePrompt(n,existing){
   return lines.join("\n");
 }
 
+/* v37: the messages after a note is added ("Added … under …", "Worth knowing: …") sit in #notenews, with a Close button.
+   They go when you close them, start another note, open Spot it or leave Words. */
+function noteNews(nodes){
+  var h=$("notenews"); if(!h) return;
+  clear(h);
+  nodes.forEach(function(n){ h.appendChild(n); });
+  var x=el("button","btn ghost tiny","Close"); x.type="button"; x.setAttribute("aria-label","Close these messages");
+  x.addEventListener("click",function(){ noteNewsClear(); $("note-open").focus(); });
+  h.appendChild(x); h.hidden=false;
+}
+function noteNewsClear(){ var h=$("notenews"); if(h){ clear(h); h.hidden=true; } }
+
 function renderNoteBox(){
   var host=$("notebox"); if(!host) return;
   clear(host);
@@ -2736,7 +2754,7 @@ function renderNoteBox(){
   if(!SAMPLE){ go.disabled=true; msg.textContent=needsAI("Adding a note"); }
   host.appendChild(f);
 
-  open.addEventListener("click",function(){ f.hidden=false; open.hidden=true; sp.hidden=true; term.focus(); });
+  open.addEventListener("click",function(){ noteNewsClear(); f.hidden=false; open.hidden=true; sp.hidden=true; term.focus(); });
   cancel.addEventListener("click",function(){ NOTE.pic=null; renderNoteBox(); });
 
   go.addEventListener("click",function(){
@@ -2798,7 +2816,7 @@ function renderNoteBox(){
         same.textContent = o.added.length
           ? "This meaning is already saved as “"+str(o.dup.term)+"”, so instead of a new entry I added "+o.added.join(" and ")+" to it. It's open below."
           : "“"+str(o.dup.term)+"” is already in your word bank with this meaning, and there was nothing new to add. It's open below.";
-        $("notebox").appendChild(same);
+        noteNews([same]);
         return;
       }
       NOTE.pic=null;
@@ -2807,8 +2825,9 @@ function renderNoteBox(){
       var done=el("div","notice quiet");
       done.id="note-done";
       done.textContent="Added “"+o.obj.term+"” under "+o.obj.theme+". You can move it to another theme in its entry."+(o.res&&o.res.local?" Saved on this device only.":"")+picNote;
-      $("notebox").appendChild(done);
-      if(o.check){ var ck=el("div","notice quiet"); ck.id="note-check"; ck.textContent="Worth knowing: "+o.check; $("notebox").appendChild(ck); }
+      var news=[done];
+      if(o.check){ var ck=el("div","notice quiet"); ck.id="note-check"; ck.textContent="Worth knowing: "+o.check; news.push(ck); }
+      noteNews(news);
     }).catch(function(e){
       S.busy=false; go.disabled=false; go.textContent="Add to word bank";
       msg.textContent=errCopy(e&&e.code)||"Something went wrong. Your note is still here, so you can try again.";
