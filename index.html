@@ -885,6 +885,51 @@ input[type="checkbox"]{border:3px solid var(--ink)}
 /* the paper notes pinned on them: cream, with dark writing, icons and edges (the ink colours are re-set inside each note) */
 :root[data-sky="night"] #spotdue .spotdue,:root[data-sky="night"] .bplace{--ink:var(--cream-ink);--ink-2:var(--cream-ink-2);--ink-3:var(--cream-ink-2);--field:var(--cream-ink);--surface:var(--cream);--surface-2:var(--cream-2);--sky-l:var(--cream-2);color:var(--cream-ink-2)}
 :root[data-sky="night"] .regtag{background:var(--surface-2)}   /* by day it is window-blue; at night that colour is a lit window */
+/* ---------- v39: a livelier town (Siyy, 21 Oct) ----------
+   Tiny cats and dogs on the grass of every main page, one hanging on the box you write in, little birds now and then,
+   drifting clouds, and grass with tufts and flowers. All of it is decoration: nothing is stored and nothing is asked of Claude.
+   The animals' coat colours are set on each animal by the script (one coat per animal, picked at random); these are the defaults.
+   The outline uses the town's ink (--px-k), so it darkens at night like every other drawing. */
+:root{--pt-w:#fffaf0;--pt-t:#e0a062;--pt-c:#f2cf95;--pt-b:#a8673f;--pt-p:#ff9fc2;--pt-n:#5a3a2e;--pt-e:#26235a;--pt-r:#7f7c95;--pt-y:#ffe58a;--pt-a:#f5b942;
+  --grass-art:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='g' width='120' height='48' patternUnits='userSpaceOnUse' shape-rendering='crispEdges'%3E%3Crect width='120' height='48' fill='%236ccd5c'/%3E%3Crect x='8' y='10' width='2' height='2' fill='%234fb447'/%3E%3Crect x='10' y='8' width='2' height='2' fill='%234fb447'/%3E%3Crect x='10' y='10' width='2' height='2' fill='%234fb447'/%3E%3Crect x='12' y='10' width='2' height='2' fill='%234fb447'/%3E%3Crect x='46' y='14' width='2' height='2' fill='%234fb447'/%3E%3Crect x='48' y='12' width='2' height='2' fill='%234fb447'/%3E%3Crect x='48' y='14' width='2' height='2' fill='%234fb447'/%3E%3Crect x='50' y='14' width='2' height='2' fill='%234fb447'/%3E%3Crect x='88' y='9' width='2' height='2' fill='%234fb447'/%3E%3Crect x='90' y='7' width='2' height='2' fill='%234fb447'/%3E%3Crect x='90' y='9' width='2' height='2' fill='%234fb447'/%3E%3Crect x='92' y='9' width='2' height='2' fill='%234fb447'/%3E%3Crect x='26' y='32' width='2' height='2' fill='%234fb447'/%3E%3Crect x='28' y='30' width='2' height='2' fill='%234fb447'/%3E%3Crect x='28' y='32' width='2' height='2' fill='%234fb447'/%3E%3Crect x='30' y='32' width='2' height='2' fill='%234fb447'/%3E%3Crect x='70' y='28' width='2' height='2' fill='%234fb447'/%3E%3Crect x='72' y='26' width='2' height='2' fill='%234fb447'/%3E%3Crect x='72' y='28' width='2' height='2' fill='%234fb447'/%3E%3Crect x='74' y='28' width='2' height='2' fill='%234fb447'/%3E%3Crect x='104' y='36' width='2' height='2' fill='%234fb447'/%3E%3Crect x='106' y='34' width='2' height='2' fill='%234fb447'/%3E%3Crect x='106' y='36' width='2' height='2' fill='%234fb447'/%3E%3Crect x='108' y='36' width='2' height='2' fill='%234fb447'/%3E%3Crect x='56' y='44' width='2' height='2' fill='%234fb447'/%3E%3Crect x='58' y='42' width='2' height='2' fill='%234fb447'/%3E%3Crect x='58' y='44' width='2' height='2' fill='%234fb447'/%3E%3Crect x='60' y='44' width='2' height='2' fill='%234fb447'/%3E%3Crect x='14' y='46' width='2' height='2' fill='%234fb447'/%3E%3Crect x='16' y='44' width='2' height='2' fill='%234fb447'/%3E%3Crect x='16' y='46' width='2' height='2' fill='%234fb447'/%3E%3Crect x='18' y='46' width='2' height='2' fill='%234fb447'/%3E%3Crect x='20' y='14' width='2' height='2' fill='%238fe07a'/%3E%3Crect x='64' y='9' width='2' height='2' fill='%238fe07a'/%3E%3Crect x='98' y='16' width='2' height='2' fill='%238fe07a'/%3E%3Crect x='38' y='24' width='2' height='2' fill='%238fe07a'/%3E%3Crect x='84' y='38' width='2' height='2' fill='%238fe07a'/%3E%3Crect x='4' y='32' width='2' height='2' fill='%238fe07a'/%3E%3Crect x='112' y='26' width='2' height='2' fill='%238fe07a'/%3E%3Crect x='48' y='34' width='2' height='2' fill='%238fe07a'/%3E%3Crect x='34' y='10' width='2' height='2' fill='%23ffffff'/%3E%3Crect x='32' y='12' width='2' height='2' fill='%23ffffff'/%3E%3Crect x='36' y='12' width='2' height='2' fill='%23ffffff'/%3E%3Crect x='34' y='14' width='2' height='2' fill='%23ffffff'/%3E%3Crect x='34' y='12' width='2' height='2' fill='%23ffcd3c'/%3E%3Crect x='110' y='8' width='2' height='2' fill='%23ffd84d'/%3E%3Crect x='108' y='10' width='2' height='2' fill='%23ffd84d'/%3E%3Crect x='112' y='10' width='2' height='2' fill='%23ffd84d'/%3E%3Crect x='110' y='12' width='2' height='2' fill='%23ffd84d'/%3E%3Crect x='110' y='10' width='2' height='2' fill='%23ffcd3c'/%3E%3Crect x='80' y='30' width='2' height='2' fill='%23ffffff'/%3E%3Crect x='78' y='32' width='2' height='2' fill='%23ffffff'/%3E%3Crect x='82' y='32' width='2' height='2' fill='%23ffffff'/%3E%3Crect x='80' y='34' width='2' height='2' fill='%23ffffff'/%3E%3Crect x='80' y='32' width='2' height='2' fill='%23ffcd3c'/%3E%3Crect x='62' y='36' width='2' height='2' fill='%23ffd84d'/%3E%3Crect x='60' y='38' width='2' height='2' fill='%23ffd84d'/%3E%3Crect x='64' y='38' width='2' height='2' fill='%23ffd84d'/%3E%3Crect x='62' y='40' width='2' height='2' fill='%23ffd84d'/%3E%3Crect x='62' y='38' width='2' height='2' fill='%23ffcd3c'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url%28%23g%29'/%3E%3Crect width='100%25' height='4' fill='%233f9e48'/%3E%3C/svg%3E")}
+:root[data-sky="night"]{--grass-art:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='g' width='120' height='48' patternUnits='userSpaceOnUse' shape-rendering='crispEdges'%3E%3Crect width='120' height='48' fill='%233c9a4c'/%3E%3Crect x='8' y='10' width='2' height='2' fill='%232f8240'/%3E%3Crect x='10' y='8' width='2' height='2' fill='%232f8240'/%3E%3Crect x='10' y='10' width='2' height='2' fill='%232f8240'/%3E%3Crect x='12' y='10' width='2' height='2' fill='%232f8240'/%3E%3Crect x='46' y='14' width='2' height='2' fill='%232f8240'/%3E%3Crect x='48' y='12' width='2' height='2' fill='%232f8240'/%3E%3Crect x='48' y='14' width='2' height='2' fill='%232f8240'/%3E%3Crect x='50' y='14' width='2' height='2' fill='%232f8240'/%3E%3Crect x='88' y='9' width='2' height='2' fill='%232f8240'/%3E%3Crect x='90' y='7' width='2' height='2' fill='%232f8240'/%3E%3Crect x='90' y='9' width='2' height='2' fill='%232f8240'/%3E%3Crect x='92' y='9' width='2' height='2' fill='%232f8240'/%3E%3Crect x='26' y='32' width='2' height='2' fill='%232f8240'/%3E%3Crect x='28' y='30' width='2' height='2' fill='%232f8240'/%3E%3Crect x='28' y='32' width='2' height='2' fill='%232f8240'/%3E%3Crect x='30' y='32' width='2' height='2' fill='%232f8240'/%3E%3Crect x='70' y='28' width='2' height='2' fill='%232f8240'/%3E%3Crect x='72' y='26' width='2' height='2' fill='%232f8240'/%3E%3Crect x='72' y='28' width='2' height='2' fill='%232f8240'/%3E%3Crect x='74' y='28' width='2' height='2' fill='%232f8240'/%3E%3Crect x='104' y='36' width='2' height='2' fill='%232f8240'/%3E%3Crect x='106' y='34' width='2' height='2' fill='%232f8240'/%3E%3Crect x='106' y='36' width='2' height='2' fill='%232f8240'/%3E%3Crect x='108' y='36' width='2' height='2' fill='%232f8240'/%3E%3Crect x='56' y='44' width='2' height='2' fill='%232f8240'/%3E%3Crect x='58' y='42' width='2' height='2' fill='%232f8240'/%3E%3Crect x='58' y='44' width='2' height='2' fill='%232f8240'/%3E%3Crect x='60' y='44' width='2' height='2' fill='%232f8240'/%3E%3Crect x='14' y='46' width='2' height='2' fill='%232f8240'/%3E%3Crect x='16' y='44' width='2' height='2' fill='%232f8240'/%3E%3Crect x='16' y='46' width='2' height='2' fill='%232f8240'/%3E%3Crect x='18' y='46' width='2' height='2' fill='%232f8240'/%3E%3Crect x='20' y='14' width='2' height='2' fill='%2352b062'/%3E%3Crect x='64' y='9' width='2' height='2' fill='%2352b062'/%3E%3Crect x='98' y='16' width='2' height='2' fill='%2352b062'/%3E%3Crect x='38' y='24' width='2' height='2' fill='%2352b062'/%3E%3Crect x='84' y='38' width='2' height='2' fill='%2352b062'/%3E%3Crect x='4' y='32' width='2' height='2' fill='%2352b062'/%3E%3Crect x='112' y='26' width='2' height='2' fill='%2352b062'/%3E%3Crect x='48' y='34' width='2' height='2' fill='%2352b062'/%3E%3Crect x='34' y='10' width='2' height='2' fill='%23d9d5ee'/%3E%3Crect x='32' y='12' width='2' height='2' fill='%23d9d5ee'/%3E%3Crect x='36' y='12' width='2' height='2' fill='%23d9d5ee'/%3E%3Crect x='34' y='14' width='2' height='2' fill='%23d9d5ee'/%3E%3Crect x='34' y='12' width='2' height='2' fill='%23c9b86a'/%3E%3Crect x='110' y='8' width='2' height='2' fill='%23e6d79c'/%3E%3Crect x='108' y='10' width='2' height='2' fill='%23e6d79c'/%3E%3Crect x='112' y='10' width='2' height='2' fill='%23e6d79c'/%3E%3Crect x='110' y='12' width='2' height='2' fill='%23e6d79c'/%3E%3Crect x='110' y='10' width='2' height='2' fill='%23c9b86a'/%3E%3Crect x='80' y='30' width='2' height='2' fill='%23d9d5ee'/%3E%3Crect x='78' y='32' width='2' height='2' fill='%23d9d5ee'/%3E%3Crect x='82' y='32' width='2' height='2' fill='%23d9d5ee'/%3E%3Crect x='80' y='34' width='2' height='2' fill='%23d9d5ee'/%3E%3Crect x='80' y='32' width='2' height='2' fill='%23c9b86a'/%3E%3Crect x='62' y='36' width='2' height='2' fill='%23e6d79c'/%3E%3Crect x='60' y='38' width='2' height='2' fill='%23e6d79c'/%3E%3Crect x='64' y='38' width='2' height='2' fill='%23e6d79c'/%3E%3Crect x='62' y='40' width='2' height='2' fill='%23e6d79c'/%3E%3Crect x='62' y='38' width='2' height='2' fill='%23c9b86a'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url%28%23g%29'/%3E%3Crect width='100%25' height='4' fill='%2325713a'/%3E%3C/svg%3E")}
+.pt-w{fill:var(--pt-w)} .pt-t{fill:var(--pt-t)} .pt-c{fill:var(--pt-c)} .pt-b{fill:var(--pt-b)} .pt-p{fill:var(--pt-p)} .pt-n{fill:var(--pt-n)}
+.pt-e{fill:var(--pt-e)} .pt-r{fill:var(--pt-r)} .pt-y{fill:var(--pt-y)} .pt-a{fill:var(--pt-a)}
+/* the grass: the same strips as before (v34), now drawn with tufts, light specks and small flowers. It is one SVG pattern,
+   painted with the border-image trick, so it still runs from edge to edge of the screen. */
+.townrow::before,.pagehead::after,.town::after,#v-scene > .section:first-child::after,#v-spot > .section:first-child::after,#v-cround > .section:first-child::after,#v-story > .section:nth-child(2)::after,#v-chat > .section:nth-child(2)::after{border-image-source:var(--grass-art)}
+.theme .turf,.more .turf{background-image:var(--grass-art)}
+/* the clouds drift a little to and fro, each at its own pace */
+.cloud{animation:cloud-drift 24s ease-in-out infinite alternate}
+.cloud.c2,.cloud.k2{animation-duration:31s;animation-delay:-9s}
+.cloud.c3,.cloud.k3{animation-duration:27s;animation-delay:-17s}
+@keyframes cloud-drift{from{translate:-28px 0}to{translate:28px 0}}
+/* the animals. .petyard is a line with no height on top of the grass; each .pet stands on it and moves sideways (transform). */
+.petyard{position:absolute;left:0;right:0;height:0;z-index:2;pointer-events:none}
+.pet{position:absolute;bottom:-2px;left:0;pointer-events:auto;cursor:pointer;line-height:0;-webkit-tap-highlight-color:transparent}
+.petbody{display:block;line-height:0}
+.petbody svg{display:none;max-width:none}
+.petbody svg.on{display:block}   /* every picture of the animal is drawn once; only the one marked "on" shows, so it never flashes */
+.pet.goleft .petbody{scale:-1 1}   /* the pictures face right; walking left mirrors them */
+:root[data-sky="night"] .pet{filter:brightness(.85)}
+.petsay{position:absolute;left:50%;bottom:calc(100% + 8px);translate:-50% 0;z-index:3;white-space:nowrap;pointer-events:none;
+  background:var(--surface);color:var(--ink);border:2px solid var(--ink);box-shadow:0 3px 0 var(--side);font-family:var(--f-pixel);font-weight:600;font-size:13px;line-height:1.2;padding:3px 8px}
+.petsay::after{content:"";position:absolute;left:50%;top:100%;width:7px;height:7px;margin-left:-4px;background:inherit;border:2px solid var(--ink);border-top:0;border-left:0;rotate:45deg;translate:0 -4px}
+:root[data-sky="night"] .petsay{--surface:var(--cream);--ink:var(--px-k);--side:var(--px-k);color:var(--cream-ink)}
+/* "z z": cream letters with an ink edge, easy to read on the night sky and on the grass (4.5:1, test36) */
+.petzz{position:absolute;right:-4px;top:-12px;font-family:var(--f-pixel);font-weight:700;color:#fff6dc;text-shadow:1px 0 var(--px-k),-1px 0 var(--px-k),0 1px var(--px-k),0 -1px var(--px-k);font-size:12px;line-height:1;pointer-events:none;animation:pet-zz 3s ease-in-out infinite}
+@keyframes pet-zz{0%,100%{translate:0 0;opacity:.5}50%{translate:4px -5px;opacity:1}}
+/* the writing pages: one animal with its paws on the top edge of the box, near its right end */
+.pethang{position:absolute;z-index:2;line-height:0}
+.pethang .pet{position:relative;bottom:auto}
+/* birds: a strip of open sky above the page's words, as wide as the window; they fly behind the words, like the clouds */
+.birds{position:absolute;top:0;overflow:hidden;pointer-events:none;z-index:-1}
+.bird{position:absolute;left:0;animation:bird-fly linear forwards}
+.bird svg{display:block}
+.bird .wing2,.birds.flap .bird .wing1{display:none}
+.birds.flap .bird .wing2{display:block}
+@keyframes bird-fly{from{translate:-40px 0}to{translate:var(--to) var(--dy)}}
+@media (prefers-reduced-motion: reduce){ .cloud,.petzz{animation:none !important} }
 </style>
 
 <script>
@@ -1265,14 +1310,14 @@ var PX={
   face_them:"....kkkkkkkk....|...kkkkkkkkkk...|..kkkkkkkkkkkk..|..kkffffffffkk..|..kffffffffffk..|..kffffffffffk..|..kffkffffkffk..|..kffkffffkffk..|..kffffffffffk..|..kfffkkkkfffk..|..kffffffffffk..|...kffffffffk...|....kkffffkk....|..kkkwrrrrwkkk..|.kBBkwwrrwwkBBk.|.kBBBkwwwwkBBBk."
 };
 var PXC={k:"px-k",w:"px-w",b:"px-b",c:"px-c",y:"px-y",o:"px-o",r:"px-r",p:"px-p",v:"px-v",g:"px-g",G:"px-gd",t:"px-t",s:"px-s",B:"px-bd",f:"px-f",m:"px-m",l:"px-l",a:"px-a",n:"px-n",u:"px-u"};   /* G and B get two-letter class names: CSS class names should not differ only by capital letters */
-function pixArt(name,scale,cls){
+function pixArt(name,scale,cls,map){   /* v39: map = which colour each letter is (the animals bring their own); default PXC */
   var rows=String(PX[name]||"").split("|"), NS="http://www.w3.org/2000/svg", svg=document.createElementNS(NS,"svg");
   var h=rows.length, w=rows[0].length, d={};
   rows.forEach(function(r,y){ var x=0; while(x<w){ var c=r.charAt(x); if(c==="."){ x++; continue; } var s0=x; while(x<w&&r.charAt(x)===c) x++; (d[c]=d[c]||[]).push("M"+s0+" "+y+"h"+(x-s0)+"v1h-"+(x-s0)+"z"); } });
   svg.setAttribute("viewBox","0 0 "+w+" "+h); svg.setAttribute("width",String(w*scale)); svg.setAttribute("height",String(h*scale));
   svg.setAttribute("shape-rendering","crispEdges"); svg.setAttribute("aria-hidden","true"); svg.setAttribute("focusable","false");
   svg.setAttribute("class","px"+(cls?" "+cls:""));
-  Object.keys(d).forEach(function(c){ var p=document.createElementNS(NS,"path"); p.setAttribute("class",PXC[c]||"px-k"); p.setAttribute("d",d[c].join("")); svg.appendChild(p); });
+  Object.keys(d).forEach(function(c){ var p=document.createElementNS(NS,"path"); p.setAttribute("class",(map||PXC)[c]||"px-k"); p.setAttribute("d",d[c].join("")); svg.appendChild(p); });
   return svg;
 }
 /* v32: one building per theme (34x30 art pixels), so the Practice page is a street and each theme is a place on it.
@@ -5340,6 +5385,256 @@ try{ new MutationObserver(followDevice).observe(document.documentElement,{attrib
 
 Array.prototype.forEach.call(document.querySelectorAll("[data-px]"),function(n){ n.appendChild(pixArt(n.getAttribute("data-px"),Number(n.getAttribute("data-scale"))||2)); });
 renderLevels(); renderThemes(); renderCustom(); renderReadout(); renderCards(); renderWords(); renderNoteBox(); renderDiag();
+
+/* ---------- v39: a livelier town (Siyy, 21 Oct) ----------
+   Decoration only: nothing here is stored, and nothing is asked of Claude. Everything lives in its own function scope,
+   so none of its names can clash with the rest of the app.
+   - The four main pages (Practice, Words, Cards, Compare): a cat and a dog on the grass (one on a phone). They lie, flick
+     their tails, blink, and now and then stroll a little and lie down again. Point at one (or tap it) and it says hi.
+   - The pages where you write (Tell the story, Act it out, Spot it, Compare practice): one cat or dog with its paws on the
+     top edge of the box. It blinks now and then.
+   - Every 20–40 seconds, 1 to 5 little birds fly across the open sky above the words (by day only).
+   - Coats: picked at random each time a page opens. At night the animals sleep and no birds fly.
+   - "Reduce motion" on the device: nothing moves, but the animals still say hi.
+   - To add an animal later: draw its pictures in PETART, list its coats in COATS and its lines in SAYS. */
+(function(){
+  var PETART={
+    "cat-patch_lie":".............KWK...KWK..|.............KPWKKKWPK..|.............KTTTWWWK...|.............KTTTWWWWK..|..K.........KTTTTWWWWWK.|.KTK........KWWWWWWWWWK.|KTK..KKKKKKKKWWEWWWEWWK.|KTK.KWTTTTTWWWWEWWWEWWK.|KTKKWWTTTTTWWWPWWNWWPWK.|.KTWTTWWWWWWWWWWWWWWWK..|.KTWTTWWWWWWWWWWWWWWK...|..KWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-patch_lie2":".............KWK...KWK..|.............KPWKKKWPK..|.............KTTTWWWK...|.............KTTTWWWWK..|............KTTTTWWWWWK.|............KWWWWWWWWWK.|.....KKKKKKKKWWEWWWEWWK.|....KWTTTTTWWWWEWWWEWWK.|K..KWWTTTTTWWWPWWNWWPWK.|TKKWTTWWWWWWWWWWWWWWWK..|TTTWTTWWWWWWWWWWWWWWK...|KKKWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-patch_blink":".............KWK...KWK..|.............KPWKKKWPK..|.............KTTTWWWK...|.............KTTTWWWWK..|..K.........KTTTTWWWWWK.|.KTK........KWWWWWWWWWK.|KTK..KKKKKKKKWWWWWWWWWK.|KTK.KWTTTTTWWWKKWWWKKWK.|KTKKWWTTTTTWWWPWWNWWPWK.|.KTWTTWWWWWWWWWWWWWWWK..|.KTWTTWWWWWWWWWWWWWWK...|..KWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-patch_sleep":".............KWK...KWK..|.............KPWKKKWPK..|.............KTTTWWWK...|.............KTTTWWWWK..|............KTTTTWWWWWK.|............KWWWWWWWWWK.|.....KKKKKKKKWWWWWWWWWK.|....KWTTTTTWWWKKWWWKKWK.|K..KWWTTTTTWWWPWWNWWPWK.|TKKWTTWWWWWWWWWWWWWWWK..|TTTWTTWWWWWWWWWWWWWWK...|KKKWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-patch_walk1":".............KWKKKKKWK..|...K.........KTTTWWWK...|..KTK........KTTTWWWWK..|.KTK........KWTTTWWWWWK.|.KTK........KWWWWWWWWWK.|.KTK.KKKKKKKKWWEWWWEWWK.|..KTKWTTTTTWWWWEWWWEWWK.|..KTWWTTTTTWWWPWWNWWPWK.|...KTTWWWWWWWWWWWWWWWK..|...KTTWWWWWWWWWWWWWWK...|....KWWKKKKKKWWKKKKK....|....KWWK....KWWK........|.....KK......KK.........|........................|........................",
+    "cat-patch_walk2":".............KWKKKKKWK..|...K.........KTTTWWWK...|..KTK........KTTTWWWWK..|.KTK........KWTTTWWWWWK.|.KTK........KWWWWWWWWWK.|.KTK.KKKKKKKKWWEWWWEWWK.|..KTKWTTTTTWWWWEWWWEWWK.|..KTWWTTTTTWWWPWWNWWPWK.|...KTTWWWWWWWWWWWWWWWK..|...KTTWWWWWWWWWWWWWWK...|....KKKWWKKWWKKKKKKK....|......KWWKKWWK..........|.......KK..KK...........|........................|........................",
+    "cat-patch_hang":"..KWK.....KWK..|..KPWKKKKKWPK..|..KTTTTWWWWWK..|.KWTTTTWWWWWWK.|.KTTTTTWWWWWWK.|.KWWWEWWWEWWWK.|.KWWWEWWWEWWWK.|.KWWPWWNWWPWWK.|..KWWWWWWWWWK..|..KKWWWWWWWKK..|.KWWWKKKKKWWWK.|.KWWWK...KWWWK.|..KKK.....KKK..",
+    "cat-patch_hang2":"..KWK.....KWK..|..KPWKKKKKWPK..|..KTTTTWWWWWK..|.KWTTTTWWWWWWK.|.KTTTTTWWWWWWK.|.KWWWWWWWWWWWK.|.KWWKKWWWKKWWK.|.KWWPWWNWWPWWK.|..KWWWWWWWWWK..|..KKWWWWWWWKK..|.KWWWKKKKKWWWK.|.KWWWK...KWWWK.|..KKK.....KKK..",
+    "cat-stripe_lie":".............KWK...KWK..|.............KPWKKKWPK..|..............KWRRRWK...|.............KWWRWRWWK..|..K.........KWWWWWWWWWK.|.KRK........KWWWWWWWWWK.|KWK..KKKKKKKKRWEWWWEWRK.|KRK.KWRWWRWWRWWEWWWEWWK.|KWKKWWRWWRWWRWPWWNWWPWK.|.KRWWWWWWWWWWWWWWWWWWK..|.KWWWWWWWWWWWWWWWWWWK...|..KWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-stripe_lie2":".............KWK...KWK..|.............KPWKKKWPK..|..............KWRRRWK...|.............KWWRWRWWK..|............KWWWWWWWWWK.|............KWWWWWWWWWK.|.....KKKKKKKKRWEWWWEWRK.|....KWRWWRWWRWWEWWWEWWK.|K..KWWRWWRWWRWPWWNWWPWK.|RKKWWWWWWWWWWWWWWWWWWK..|WRWWWWWWWWWWWWWWWWWWK...|KKKWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-stripe_blink":".............KWK...KWK..|.............KPWKKKWPK..|..............KWRRRWK...|.............KWWRWRWWK..|..K.........KWWWWWWWWWK.|.KRK........KWWWWWWWWWK.|KWK..KKKKKKKKRWWWWWWWRK.|KRK.KWRWWRWWRWKKWWWKKWK.|KWKKWWRWWRWWRWPWWNWWPWK.|.KRWWWWWWWWWWWWWWWWWWK..|.KWWWWWWWWWWWWWWWWWWK...|..KWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-stripe_sleep":".............KWK...KWK..|.............KPWKKKWPK..|..............KWRRRWK...|.............KWWRWRWWK..|............KWWWWWWWWWK.|............KWWWWWWWWWK.|.....KKKKKKKKRWWWWWWWRK.|....KWRWWRWWRWKKWWWKKWK.|K..KWWRWWRWWRWPWWNWWPWK.|RKKWWWWWWWWWWWWWWWWWWK..|WRWWWWWWWWWWWWWWWWWWK...|KKKWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-stripe_walk1":".............KWKKKKKWK..|...K..........KWRRRWK...|..KRK........KWWRWRWWK..|.KWK........KWWWWWWWWWK.|.KRK........KWWWWWWWWWK.|.KWK.KKKKKKKKWWEWWWEWWK.|..KRKWRWWRWWRWWEWWWEWWK.|..KWWWRWWRWWRWPWWNWWPWK.|...KWWWWWWWWWWWWWWWWWK..|...KWWWWWWWWWWWWWWWWK...|....KWWKKKKKKWWKKKKK....|....KWWK....KWWK........|.....KK......KK.........|........................|........................",
+    "cat-stripe_walk2":".............KWKKKKKWK..|...K..........KWRRRWK...|..KRK........KWWRWRWWK..|.KWK........KWWWWWWWWWK.|.KRK........KWWWWWWWWWK.|.KWK.KKKKKKKKWWEWWWEWWK.|..KRKWRWWRWWRWWEWWWEWWK.|..KWWWRWWRWWRWPWWNWWPWK.|...KWWWWWWWWWWWWWWWWWK..|...KWWWWWWWWWWWWWWWWK...|....KKKWWKKWWKKKKKKK....|......KWWKKWWK..........|.......KK..KK...........|........................|........................",
+    "cat-stripe_hang":"..KWK.....KWK..|..KPWKKKKKWPK..|..KWWWRRRWWWK..|.KWWWWRWRWWWWK.|.KWWWWWWWWWWWK.|.KRWWEWWWEWWRK.|.KWWWEWWWEWWWK.|.KWWPWWNWWPWWK.|..KWWWWWWWWWK..|..KKWWWWWWWKK..|.KWWWKKKKKWWWK.|.KWWWK...KWWWK.|..KKK.....KKK..",
+    "cat-stripe_hang2":"..KWK.....KWK..|..KPWKKKKKWPK..|..KWWWRRRWWWK..|.KWWWWRWRWWWWK.|.KWWWWWWWWWWWK.|.KRWWWWWWWWWRK.|.KWWKKWWWKKWWK.|.KWWPWWNWWPWWK.|..KWWWWWWWWWK..|..KKWWWWWWWKK..|.KWWWKKKKKWWWK.|.KWWWK...KWWWK.|..KKK.....KKK..",
+    "cat-plain_lie":".............KWK...KWK..|.............KPWKKKWPK..|..............KWWWWWK...|.............KWWWWWWWK..|..K.........KWWWWWWWWWK.|.KWK........KWWWWWWWWWK.|KWK..KKKKKKKKWWEWWWEWWK.|KWK.KWWWWWWWWWWEWWWEWWK.|KWKKWWWWWWWWWWPWWNWWPWK.|.KWWWWWWWWWWWWWWWWWWWK..|.KWWWWWWWWWWWWWWWWWWK...|..KWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-plain_lie2":".............KWK...KWK..|.............KPWKKKWPK..|..............KWWWWWK...|.............KWWWWWWWK..|............KWWWWWWWWWK.|............KWWWWWWWWWK.|.....KKKKKKKKWWEWWWEWWK.|....KWWWWWWWWWWEWWWEWWK.|K..KWWWWWWWWWWPWWNWWPWK.|WKKWWWWWWWWWWWWWWWWWWK..|WWWWWWWWWWWWWWWWWWWWK...|KKKWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-plain_blink":".............KWK...KWK..|.............KPWKKKWPK..|..............KWWWWWK...|.............KWWWWWWWK..|..K.........KWWWWWWWWWK.|.KWK........KWWWWWWWWWK.|KWK..KKKKKKKKWWWWWWWWWK.|KWK.KWWWWWWWWWKKWWWKKWK.|KWKKWWWWWWWWWWPWWNWWPWK.|.KWWWWWWWWWWWWWWWWWWWK..|.KWWWWWWWWWWWWWWWWWWK...|..KWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-plain_sleep":".............KWK...KWK..|.............KPWKKKWPK..|..............KWWWWWK...|.............KWWWWWWWK..|............KWWWWWWWWWK.|............KWWWWWWWWWK.|.....KKKKKKKKWWWWWWWWWK.|....KWWWWWWWWWKKWWWKKWK.|K..KWWWWWWWWWWPWWNWWPWK.|WKKWWWWWWWWWWWWWWWWWWK..|WWWWWWWWWWWWWWWWWWWWK...|KKKWWWWWWWWWWWWWWWWWK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "cat-plain_walk1":".............KWKKKKKWK..|...K..........KWWWWWK...|..KWK........KWWWWWWWK..|.KWK........KWWWWWWWWWK.|.KWK........KWWWWWWWWWK.|.KWK.KKKKKKKKWWEWWWEWWK.|..KWKWWWWWWWWWWEWWWEWWK.|..KWWWWWWWWWWWPWWNWWPWK.|...KWWWWWWWWWWWWWWWWWK..|...KWWWWWWWWWWWWWWWWK...|....KWWKKKKKKWWKKKKK....|....KWWK....KWWK........|.....KK......KK.........|........................|........................",
+    "cat-plain_walk2":".............KWKKKKKWK..|...K..........KWWWWWK...|..KWK........KWWWWWWWK..|.KWK........KWWWWWWWWWK.|.KWK........KWWWWWWWWWK.|.KWK.KKKKKKKKWWEWWWEWWK.|..KWKWWWWWWWWWWEWWWEWWK.|..KWWWWWWWWWWWPWWNWWPWK.|...KWWWWWWWWWWWWWWWWWK..|...KWWWWWWWWWWWWWWWWK...|....KKKWWKKWWKKKKKKK....|......KWWKKWWK..........|.......KK..KK...........|........................|........................",
+    "cat-plain_hang":"..KWK.....KWK..|..KPWKKKKKWPK..|..KWWWWWWWWWK..|.KWWWWWWWWWWWK.|.KWWWWWWWWWWWK.|.KWWWEWWWEWWWK.|.KWWWEWWWEWWWK.|.KWWPWWNWWPWWK.|..KWWWWWWWWWK..|..KKWWWWWWWKK..|.KWWWKKKKKWWWK.|.KWWWK...KWWWK.|..KKK.....KKK..",
+    "cat-plain_hang2":"..KWK.....KWK..|..KPWKKKKKWPK..|..KWWWWWWWWWK..|.KWWWWWWWWWWWK.|.KWWWWWWWWWWWK.|.KWWWWWWWWWWWK.|.KWWKKWWWKKWWK.|.KWWPWWNWWPWWK.|..KWWWWWWWWWK..|..KKWWWWWWWKK..|.KWWWKKKKKWWWK.|.KWWWK...KWWWK.|..KKK.....KKK..",
+    "dog-plain_lie":"........................|...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCCCCBBK|...........KBBCCCCCCCBBK|...........KBBCECCCECBBK|.K...KKKKKKKBBCECCCECBBK|KCK.KCCCCCCCCBCCWNWCCBK.|KCKKCCCCCCCCCCCPWWWPCK..|.KCCCCCCCCCCCCCCWWWCK...|..KCCCCCCCCCCCCCCCCCK...|..KCCCCCCCCCCCCCCCCCK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "dog-plain_lie2":"........................|...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCCCCBBK|...........KBBCCCCCCCBBK|...........KBBCECCCECBBK|.....KKKKKKKBBCECCCECBBK|....KCCCCCCCCBCCWNWCCBK.|...KCCCCCCCCCCCPWWWPCK..|KKKCCCCCCCCCCCCCWWWCK...|CCCCCCCCCCCCCCCCCCCCK...|KKKCCCCCCCCCCCCCCCCCK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "dog-plain_blink":"........................|...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCCCCBBK|...........KBBCCCCCCCBBK|...........KBBCCCCCCCBBK|.K...KKKKKKKBBCKKCKKCBBK|KCK.KCCCCCCCCBCCWNWCCBK.|KCKKCCCCCCCCCCCPWWWPCK..|.KCCCCCCCCCCCCCCWWWCK...|..KCCCCCCCCCCCCCCCCCK...|..KCCCCCCCCCCCCCCCCCK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "dog-plain_sleep":"........................|...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCCCCBBK|...........KBBCCCCCCCBBK|...........KBBCCCCCCCBBK|.....KKKKKKKBBCKKCKKCBBK|....KCCCCCCCCBCCWNWCCBK.|...KCCCCCCCCCCCPWWWPCK..|KKKCCCCCCCCCCCCCWWWCK...|CCCCCCCCCCCCCCCCCCCCK...|KKKCCCCCCCCCCCCCCCCCK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "dog-plain_walk1":"...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCCCCBBK|...........KBBCCCCCCCBBK|..K........KBBCECCCECBBK|.KCK.KKKKKKKBBCECCCECBBK|.KCKKCCCCCCCCBCCWNWCCBK.|..KCCCCCCCCCCCCPWWWPCK..|...KCCCCCCCCCCCCWWWCK...|...KCCCCCCCCCCCCCCCCK...|....KCCKKKKKKCCKKKKK....|....KCCK....KCCK........|.....KK......KK.........|........................|........................",
+    "dog-plain_walk2":"...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCCCCBBK|...........KBBCCCCCCCBBK|...........KBBCECCCECBBK|.KK..KKKKKKKBBCECCCECBBK|KCCKKCCCCCCCCBCCWNWCCBK.|.KKCCCCCCCCCCCCPWWWPCK..|...KCCCCCCCCCCCCWWWCK...|...KCCCCCCCCCCCCCCCCK...|....KKKCCKKCCKKKKKKK....|......KCCKKCCK..........|.......KK..KK...........|........................|........................",
+    "dog-plain_hang":"....KKKKKKK....|.KKKCCCCCCCKKK.|KBBCCCCCCCCCBBK|KBBCCCCCCCCCBBK|KBBCCECCCECCBBK|KBBCCECCCECCBBK|.KBCCWWNWWCCBK.|..KCPWWWWWPCK..|...KCWWPWWCK...|..KKCCCCCCCKK..|.KCCCKKKKKCCCK.|.KCCCK...KCCCK.|..KKK.....KKK..",
+    "dog-plain_hang2":"....KKKKKKK....|.KKKCCCCCCCKKK.|KBBCCCCCCCCCBBK|KBBCCCCCCCCCBBK|KBBCCCCCCCCCBBK|KBBCKKCCCKKCBBK|.KBCCWWNWWCCBK.|..KCPWWWWWPCK..|...KCWWPWWCK...|..KKCCCCCCCKK..|.KCCCKKKKKCCCK.|.KCCCK...KCCCK.|..KKK.....KKK..",
+    "dog-patch_lie":"........................|...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCTTTBBK|...........KBBCCCCTTTBBK|...........KBBCECCTETBBK|.K...KKKKKKKBBCECCTETBBK|KCK.KCCTTTTTCBCCWNWCCBK.|KCKKCCTTTTTTTCCPWWWPCK..|.KCCCCCTTTTTCCCCWWWCK...|..KCCCCCCCCCCCCCCCCCK...|..KCCCCCCCCCCCCCCCCCK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "dog-patch_lie2":"........................|...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCTTTBBK|...........KBBCCCCTTTBBK|...........KBBCECCTETBBK|.....KKKKKKKBBCECCTETBBK|....KCCTTTTTCBCCWNWCCBK.|...KCCTTTTTTTCCPWWWPCK..|KKKCCCCTTTTTCCCCWWWCK...|CCCCCCCCCCCCCCCCCCCCK...|KKKCCCCCCCCCCCCCCCCCK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "dog-patch_blink":"........................|...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCTTTBBK|...........KBBCCCCTTTBBK|...........KBBCCCCTTTBBK|.K...KKKKKKKBBCKKCKKTBBK|KCK.KCCTTTTTCBCCWNWCCBK.|KCKKCCTTTTTTTCCPWWWPCK..|.KCCCCCTTTTTCCCCWWWCK...|..KCCCCCCCCCCCCCCCCCK...|..KCCCCCCCCCCCCCCCCCK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "dog-patch_sleep":"........................|...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCTTTBBK|...........KBBCCCCTTTBBK|...........KBBCCCCTTTBBK|.....KKKKKKKBBCKKCKKTBBK|....KCCTTTTTCBCCWNWCCBK.|...KCCTTTTTTTCCPWWWPCK..|KKKCCCCTTTTTCCCCWWWCK...|CCCCCCCCCCCCCCCCCCCCK...|KKKCCCCCCCCCCCCCCCCCK...|...KKKKKKKKKKKKKKKKK....|........................",
+    "dog-patch_walk1":"...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCTTTBBK|...........KBBCCCCTTTBBK|..K........KBBCECCTETBBK|.KCK.KKKKKKKBBCECCTETBBK|.KCKKCCTTTTTCBCCWNWCCBK.|..KCCCTTTTTTTCCPWWWPCK..|...KCCCTTTTTCCCCWWWCK...|...KCCCCCCCCCCCCCCCCK...|....KCCKKKKKKCCKKKKK....|....KCCK....KCCK........|.....KK......KK.........|........................|........................",
+    "dog-patch_walk2":"...............KKKKK....|............KKKCCCCCKKK.|...........KBBCCCCTTTBBK|...........KBBCCCCTTTBBK|...........KBBCECCTETBBK|.KK..KKKKKKKBBCECCTETBBK|KCCKKCCTTTTTCBCCWNWCCBK.|.KKCCCTTTTTTTCCPWWWPCK..|...KCCCTTTTTCCCCWWWCK...|...KCCCCCCCCCCCCCCCCK...|....KKKCCKKCCKKKKKKK....|......KCCKKCCK..........|.......KK..KK...........|........................|........................",
+    "dog-patch_hang":"....KKKKKKK....|.KKKCCCCCCCKKK.|KBBCCCCCTTTCBBK|KBBCCCCCTTTCBBK|KBBCCECCTETCBBK|KBBCCECCTETCBBK|.KBCCWWNWWCCBK.|..KCPWWWWWPCK..|...KCWWPWWCK...|..KKCCCCCCCKK..|.KCCCKKKKKCCCK.|.KCCCK...KCCCK.|..KKK.....KKK..",
+    "dog-patch_hang2":"....KKKKKKK....|.KKKCCCCCCCKKK.|KBBCCCCCTTTCBBK|KBBCCCCCTTTCBBK|KBBCCCCCTTTCBBK|KBBCKKCCTKKCBBK|.KBCCWWNWWCCBK.|..KCPWWWWWPCK..|...KCWWPWWCK...|..KKCCCCCCCKK..|.KCCCKKKKKCCCK.|.KCCCK...KCCCK.|..KKK.....KKK..",
+    "bird1":"....KK.......|...KAAK......|...KAAAKK....|.K..KAAAYK...|KYKKYYYYKYKK.|KYYYYYYYYYOOK|.KKYYYYYYYKK.|...KYYYYYK...|....KKKKK....|.............|.............",
+    "bird2":".............|.............|.....KKKK....|.K..KYYYYK...|KYKKYYYYKYKK.|KYYYYYYYYYOOK|.KKYAAAYYYKK.|..KAAAYYYK...|..KAAKKKK....|...KK........|............."
+  };
+  var COATS={
+    cat:[
+      {"name": "calico", "pat": "patch", "W": "#fffaf0", "T": "#e0a062"},
+      {"name": "ginger tabby", "pat": "stripe", "W": "#f6a65e", "R": "#d0692c"},
+      {"name": "grey tabby", "pat": "stripe", "W": "#bdbacb", "R": "#7f7c95"},
+      {"name": "black", "pat": "plain", "W": "#433f57", "E": "#ffcd3c", "N": "#ff9fc2"},
+      {"name": "white", "pat": "plain", "W": "#ffffff", "E": "#3d7bff"}],
+    dog:[
+      {"name": "golden", "pat": "plain", "C": "#f2cf95", "B": "#a8673f", "W": "#fffaf0"},
+      {"name": "beagle", "pat": "patch", "C": "#fffaf0", "B": "#9c5b35", "T": "#c98a55", "W": "#fffaf0"},
+      {"name": "chocolate", "pat": "plain", "C": "#a06a48", "B": "#6b412c", "W": "#e0b48f"},
+      {"name": "grey", "pat": "plain", "C": "#c3c6d4", "B": "#73778d", "W": "#ffffff"},
+      {"name": "black and white", "pat": "patch", "C": "#fffaf0", "B": "#433f57", "T": "#6d6982", "W": "#fffaf0"}]
+  };
+  var SAYS={cat:["Hi!","Meow!","Hey there!","How's it going?","Long time no see!","Nice to see you!","Purr…"],
+            dog:["Woof!","Hi!","Hey there!","How's it going?","Good to see you!","Fancy a walk?"]};
+  var SLEEPY=["Zzz…","Night night!","Sweet dreams…","*yawn* Oh, hi…"];
+  var PETC={K:"px-k",W:"pt-w",T:"pt-t",C:"pt-c",B:"pt-b",P:"pt-p",N:"pt-n",E:"pt-e",R:"pt-r",Y:"pt-y",A:"pt-a",O:"px-o"};
+  var SCALE=2;   /* 2 screen pixels per art pixel: tiny, and still a whole number (pitfall 37) */
+  Object.keys(PETART).forEach(function(k){ PX["pet_"+k]=PETART[k]; });
+  var calm=window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+  function still(){ return !!(calm && calm.matches); }
+  function night(){ return skyNow()==="night"; }
+  function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+  function rnd(a,b){ return a+Math.random()*(b-a); }
+  function shuffled(a){ return a.slice().sort(function(){ return Math.random()-0.5; }); }
+  function alive(n){ return document.contains(n); }
+
+  /* One animal, with all its pictures drawn once. show(f) switches which one is on. */
+  function makePet(kind,frames){
+    var p=el("span","pet"), body=el("span","petbody"), coat=pick(COATS[kind]), pics={}, last="";
+    p.setAttribute("aria-hidden","true"); p.dataset.kind=kind; p.dataset.coat=coat.name;
+    Object.keys(coat).forEach(function(k){ if(k.length===1) p.style.setProperty("--pt-"+k.toLowerCase(),coat[k]); });
+    frames.forEach(function(f){ var s=pixArt("pet_"+kind+"-"+coat.pat+"_"+f,SCALE,"",PETC); s.dataset.f=f; pics[f]=s; body.appendChild(s); });
+    p.appendChild(body);
+    p.show=function(f){ for(var k in pics) pics[k].classList.toggle("on",k===f); };
+    p.show(frames[0]);
+    p.say=function(){
+      var lines=night()?SLEEPY:SAYS[kind], t;
+      do{ t=pick(lines); }while(t===last && lines.length>1);
+      last=t;
+      var old=p.querySelector(".petsay"); if(old) old.remove();
+      var b=el("span","petsay",t); p.appendChild(b);
+      clearTimeout(p.sayT); p.sayT=setTimeout(function(){ b.remove(); },2200);
+    };
+    p.addEventListener("mouseenter",function(){ p.held=true; p.say(); });
+    p.addEventListener("mouseleave",function(){ p.held=false; });
+    p.addEventListener("click",function(e){ e.stopPropagation(); p.held=true; p.say(); setTimeout(function(){ p.held=false; },2200); });
+    return p;
+  }
+
+  /* An animal on the grass, free to move between zone[0] and zone[1] (pixels from the left of its yard). */
+  function grassPet(kind,zone,yard){
+    var asleep=night(), p=makePet(kind, asleep ? ["sleep"] : ["lie","lie2","blink","walk1","walk2"]), x=rnd(zone[0],zone[1]);
+    function place(){ p.style.transform="translateX("+Math.round(x)+"px)"; }
+    place(); yard.appendChild(p);
+    if(asleep){ p.appendChild(el("span","petzz","z z")); return; }
+    if(still()) return;
+    function later(fn,ms){ setTimeout(function(){ if(alive(p)) fn(); },ms); }
+    function lie(){
+      p.show("lie");
+      var until=Date.now()+rnd(4000,9000);
+      (function tick(){
+        if(Date.now()>until && !p.held){ walk(); return; }
+        var r=Math.random();
+        if(r<0.35){ p.show("lie2"); later(function(){ p.show("lie"); later(tick,rnd(500,1400)); },220); }       /* a tail flick */
+        else if(r<0.5){ p.show("blink"); later(function(){ p.show("lie"); later(tick,rnd(600,1600)); },160); }  /* a blink */
+        else later(tick,rnd(500,1400));
+      })();
+    }
+    function walk(){
+      var to=Math.max(zone[0],Math.min(zone[1],x+rnd(30,110)*(Math.random()<0.5?-1:1)));
+      if(Math.abs(to-x)<12){ lie(); return; }
+      var dir=to>x?1:-1, step=0;
+      p.classList.toggle("goleft",dir<0);
+      (function go(){
+        if(p.held){ lie(); return; }   /* it stops to say hi */
+        x+=dir*3; step=1-step; p.show(step?"walk1":"walk2"); place();   /* 3 pixels every quarter second: a slow stroll */
+        if((dir>0 && x>=to)||(dir<0 && x<=to)) later(lie,250); else later(go,250);
+      })();
+    }
+    lie();
+  }
+
+  /* The grass of a main page: the lawn under the street on Practice, the strip under the sky on the others.
+     The animals keep to parts of it with nothing written above: the open grass beside the reading column on a wide
+     screen, or the right-hand part of the strip on a narrower one. */
+  function yardFor(sec){
+    var street=sec.querySelector("#themegrid"), host=street ? street.parentNode : sec.querySelector(".pagehead");   /* not the street itself: it is redrawn when your places change */
+    if(!host) return;
+    var y=el("div","petyard"); host.appendChild(y);
+    var vw=document.documentElement.clientWidth, r=host.getBoundingClientRect(), W=24*SCALE, phone=vw<641, zones;
+    if(street){
+      if(getComputedStyle(host).position==="static") host.style.position="relative";
+      var g=street.getBoundingClientRect();
+      y.style.top=(g.bottom-r.top-(phone?2:8))+"px";   /* on the lawn below the street signs, so they never stand in front of a place (a phone's lawn is narrower) */
+      var mid=vw/2-r.left;
+      zones = phone ? [[16-r.left,vw-W-16-r.left]] : [[16-r.left,mid-W-20],[mid+20,vw-r.left-W-16]];
+    } else {
+      y.style.bottom=phone ? "4px" : "22px";   /* a phone's words reach close to the grass, so there they lie in the grass, not on it */
+      var art=host.querySelector(".pagehead-art"), a=art ? art.getBoundingClientRect() : null;
+      if(vw>=1100) zones=[[16-r.left,-W-24],[r.width+24,vw-r.left-W-16]];
+      else if(a && !phone) zones=[[a.right-r.left+8,r.width-W],[a.left-r.left-W-8-80,a.left-r.left-W-8]];
+      else zones=[[r.width*0.5,r.width-W]];
+    }
+    if(phone) zones=[zones[zones.length-1]];
+    var kinds=shuffled(Object.keys(COATS));
+    zones.forEach(function(z,i){ if(z[1]>z[0]) grassPet(kinds[i%kinds.length],z,y); });
+  }
+
+  /* The pages where you write: the box, and where the animal hangs on it. Spot it and Compare practice redraw their
+     box as you go, so the animal is put back on the new box (the same animal, not a new one). */
+  var BOX={"v-story":"#story-text","v-chat":".composer","v-spot":"#spot-host > *","v-cround":"#cr-host > *"};
+  function hangOn(sec){
+    var kind=pick(Object.keys(COATS)), p=makePet(kind,["hang","hang2"]), h=el("span","pethang");
+    h.appendChild(p);
+    function put(){
+      var box=sec.querySelector(BOX[sec.id]); if(!box || !alive(sec) || sec.hidden) return;
+      var holder=box.parentNode;
+      if(getComputedStyle(holder).position==="static") holder.style.position="relative";
+      if(h.parentNode!==holder) holder.appendChild(h);
+      var hb=holder.getBoundingClientRect(), bb=box.getBoundingClientRect(), H=13*SCALE;
+      h.style.top=Math.round(bb.top-hb.top-H+4)+"px";
+      h.style.left=Math.round(bb.right-hb.left-15*SCALE-28)+"px";
+    }
+    put();
+    sec.petWatch=new MutationObserver(function(){ if(!alive(h) || h.parentNode!==(sec.querySelector(BOX[sec.id])||{}).parentNode) put(); });
+    sec.petWatch.observe(sec,{childList:true,subtree:true});
+    sec.petPut=put;
+    if(night()){ p.show("hang2"); return; }
+    if(still()) return;
+    (function blink(){ setTimeout(function(){ if(!alive(p)) return; p.show("hang2"); setTimeout(function(){ p.show("hang"); blink(); },170); },rnd(2500,6000)); })();
+  }
+
+  function undress(sec){
+    if(sec.petWatch){ sec.petWatch.disconnect(); sec.petWatch=null; sec.petPut=null; }
+    Array.prototype.forEach.call(sec.querySelectorAll(".petyard,.pethang"),function(n){ n.remove(); });   /* removed animals stop their timers */
+  }
+  function dress(sec){
+    if(!sec || sec.hidden) return;
+    undress(sec);
+    if(BOX[sec.id]) hangOn(sec);
+    else if(sec.querySelector("#themegrid,.pagehead")) yardFor(sec);
+  }
+  function current(){ return document.querySelector("main > section:not([hidden])"); }
+
+  /* Birds: 1 to 5, across the open sky above the words of the page you are on. */
+  function birds(){
+    if(still() || night() || document.hidden) return;
+    var sec=current(); if(!sec) return;
+    var sky=sec.querySelector(".town")||sec.querySelector(".pagehead")||sec.querySelector(".sky"); if(!sky) return;
+    var vw=document.documentElement.clientWidth, r=sky.getBoundingClientRect();
+    var room=150;   /* how far down the sky goes before the first thing on it you can see */
+    Array.prototype.forEach.call(sky.querySelectorAll("h1,h2,p,.eyebrow,.btn"),function(e){ var q=e.getBoundingClientRect(); if(q.height>0) room=Math.min(room,q.top-r.top-4); });
+    var band=Math.max(24,Math.min(r.height,room));
+    var L=el("div","birds"); L.setAttribute("aria-hidden","true");
+    L.style.left=(-r.left)+"px"; L.style.width=vw+"px"; L.style.height=band+"px";
+    sky.appendChild(L);
+    var n=1+Math.floor(Math.random()*5), dur=vw/70+6, top=rnd(2,Math.max(2,band-40));
+    for(var i=0;i<n;i++){
+      var b=el("span","bird");
+      b.appendChild(pixArt("pet_bird1",SCALE,"wing1",PETC)); b.appendChild(pixArt("pet_bird2",SCALE,"wing2",PETC));
+      b.style.top=Math.max(0,Math.min(band-22,top+rnd(-6,24)))+"px";
+      b.style.setProperty("--to",(vw+40)+"px"); b.style.setProperty("--dy",rnd(-12,6)+"px");
+      b.style.animationDuration=(dur*rnd(0.9,1.1))+"s"; b.style.animationDelay=(i*rnd(0.3,0.9))+"s";
+      L.appendChild(b);
+    }
+    var flap=setInterval(function(){ L.classList.toggle("flap"); },170);
+    setTimeout(function(){ clearInterval(flap); L.remove(); },(dur*1.1+6)*1000);
+  }
+  (function flock(){ setTimeout(function(){ birds(); flock(); },rnd(20000,40000)); })();
+
+  /* Redraw only when a page really opens (hidden → shown) or day really turns to night; clear a page when it closes.
+     (Round 1 of the prototype redrew on every change and gave each picture its own timer: that made the animals flash.) */
+  Array.prototype.forEach.call(document.querySelectorAll("main > section"),function(sec){
+    new MutationObserver(function(ms){
+      var was=ms[0].oldValue!==null;
+      if(sec.hidden && !was) undress(sec);
+      else if(!sec.hidden && was) dress(sec);
+    }).observe(sec,{attributes:true,attributeFilter:["hidden"],attributeOldValue:true});
+  });
+  var dark=night();
+  new MutationObserver(function(){ if(night()!==dark){ dark=night(); dress(current()); } }).observe(document.documentElement,{attributes:true,attributeFilter:["data-sky"]});
+  var resizeT=null;
+  window.addEventListener("resize",function(){
+    /* clear at once: animals and birds placed for the old width could stick out of a narrower window and let the page scroll sideways */
+    var sec=current(); if(sec) undress(sec);
+    Array.prototype.forEach.call(document.querySelectorAll(".birds"),function(n){ n.remove(); });
+    clearTimeout(resizeT); resizeT=setTimeout(function(){ dress(current()); },300);
+  });
+  dress(current());
+})();
+
 
 if(TTS){
   refreshVoices(); renderVoice();

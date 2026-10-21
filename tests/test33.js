@@ -12,6 +12,8 @@ DB[P+"cards/c1"]={createdAt:NOW-D,updatedAt:NOW-D,title:"Cold soup at the bistro
 DB[P+"sets/s1"]={createdAt:NOW-D,updatedAt:NOW-D,words:["for","since"],kind:"prepositions",topic:"",source:"suggested",explain:{core:"c",uses:[]}};
 /* the fixed palette: every colour a drawing may use */
 const PALETTE=["#26235a","#ffffff","#8fd3ff","#cdeeff","#ffcd3c","#ff9f43","#ff5d5d","#ff9fc2","#9b7bff","#6ccd5c","#3f9e48","#c98a55","#e3e8f5","#3d7bff","#ffd2a8"];
+/* v39 (Siyy's choice, 21 Oct): the cats, dogs and birds may also use their own fixed list of fur and feather colours; the town never does */
+const FUR=["#433f57","#5a3a2e","#6b412c","#6d6982","#73778d","#7f7c95","#9c5b35","#a06a48","#a8673f","#bdbacb","#c3c6d4","#d0692c","#e0a062","#e0b48f","#f2cf95","#f5b942","#f6a65e","#ffe58a","#fffaf0"];
 (async()=>{
   const b=await chromium.launch(process.env.CHROMIUM?{executablePath:process.env.CHROMIUM}:{});
   const errs=[];
@@ -35,12 +37,16 @@ const PALETTE=["#26235a","#ffffff","#8fd3ff","#cdeeff","#ffcd3c","#ff9f43","#ff5
 
   await section("One fixed palette", async()=>{
     const p=await open(1280,900);
-    const fills=async()=>p.$$eval('svg.px path',ps=>[...new Set(ps.filter(x=>x.closest('svg').getBoundingClientRect().width>0).map(x=>window.__hexOf(getComputedStyle(x).fill)))]);
-    let used=await fills();
-    await p.click('#nav-words'); await p.waitForTimeout(300); used=used.concat(await fills());
-    await p.click('#nav-cards'); await p.waitForTimeout(300); used=used.concat(await fills());
+    const fills=async(pets)=>p.$$eval('svg.px path',(ps,pets)=>[...new Set(ps.filter(x=>x.closest('svg').getBoundingClientRect().width>0 && !!x.closest('.pet,.bird')===pets).map(x=>window.__hexOf(getComputedStyle(x).fill)))],pets);
+    let used=[], fur=[];
+    for(const tab of [null,'words','cards']){
+      if(tab){ await p.click('#nav-'+tab); await p.waitForTimeout(300); }
+      used=used.concat(await fills(false)); fur=fur.concat(await fills(true));
+    }
     const off=[...new Set(used)].filter(c=>!PALETTE.includes(c));
-    ok("every pixel drawing uses only the 15 palette colours"+(off.length?" (off: "+off.join(", ")+")":""), used.length>0 && off.length===0);
+    ok("every pixel drawing of the town uses only the 15 palette colours"+(off.length?" (off: "+off.join(", ")+")":""), used.length>0 && off.length===0);
+    const offFur=[...new Set(fur)].filter(c=>!PALETTE.includes(c) && !FUR.includes(c));
+    ok("the animals use only the 15 colours and their own fur list"+(offFur.length?" (off: "+offFur.join(", ")+")":""), fur.length>0 && offFur.length===0);
     ok("the main colours are the town's: ink, sky, grass, sun", await p.evaluate(()=>['--ink','--sky','--grass','--sun'].map(k=>getComputedStyle(document.documentElement).getPropertyValue(k).trim()).join()==="#26235a,#8fd3ff,#6ccd5c,#ffcd3c"));
     ok("the page is warm white, not grey or beige", await p.evaluate(()=>window.__hexOf(getComputedStyle(document.body).backgroundColor))==="#fffdf8");
     await p.close();
@@ -86,7 +92,7 @@ const PALETTE=["#26235a","#ffffff","#8fd3ff","#cdeeff","#ffcd3c","#ff9f43","#ff5
     ok("the header is sky blue", await p.$eval('header.top',h=>window.__hexOf(getComputedStyle(h).backgroundColor))==="#8fd3ff");
     for(const tab of ['words','cards','compare']){
       await p.click('#nav-'+tab); await p.waitForTimeout(250);
-      ok(tab+": the page top is sky, with grass under it", await p.$eval('#v-'+tab+' .pagehead',h=>window.__hexOf(getComputedStyle(h).backgroundColor)==="#8fd3ff" && getComputedStyle(h,'::after').borderImageSource.includes("gradient")));
+      ok(tab+": the page top is sky, with grass under it", await p.$eval('#v-'+tab+' .pagehead',h=>window.__hexOf(getComputedStyle(h).backgroundColor)==="#8fd3ff" && getComputedStyle(h,'::after').borderImageSource.includes("pattern id='g'")));   /* v39: the grass is the tufts-and-flowers picture (it was a plain gradient) */
     }
     await p.click('#nav-words'); await p.waitForTimeout(250);
     ok("Words: the page top shows the treasure chest", await p.$eval('#v-words .pagehead-art svg',s=>s.getAttribute('viewBox')==="0 0 30 22" && s.getBoundingClientRect().width===120));

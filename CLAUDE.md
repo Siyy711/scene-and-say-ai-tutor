@@ -40,7 +40,7 @@ cd tests && ./run-all.sh
 
 - First time on a new computer: `cd tests && npm install && npx playwright install chromium`.
 - In a Claude cloud session, Playwright is preinstalled: `NODE_PATH=$(npm root -g) ./run-all.sh`.
-- **Expected result at v38: 35 files, TOTAL PASS: 1016.** Any FAIL means stop and fix before going on.
+- **Expected result at v39: 36 files, TOTAL PASS: 1153.** Any FAIL means stop and fix before going on.
 - `run-all.sh` ends with a docs check (`tests/check_docs.py`): every line that names the current version must agree, and the run must match the expected result above. "DOCS FAIL" counts as a FAIL. So the expected result lives only here; other docs point to it.
 - Test rules (details in `tests/README.md`): tests only get stricter; a new test must fail on the previous version first; the stand-in must behave like the real platform (it freezes stored data); find items by content, not position.
 - The tests use a fake Claude. They can't judge the quality of real Claude replies. When a prompt to Claude changes, give the person a short "Try this first" list to check by hand.
