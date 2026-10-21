@@ -60,7 +60,7 @@ npx playwright install chromium
 ./run-all.sh
 ```
 
-Expected: every file passes, **TOTAL PASS: 1016**. More in [`tests/README.md`](tests/README.md).
+Expected: every file passes, and the total matches the expected result in [`CLAUDE.md`](CLAUDE.md) (Testing). The last line, "DOCS OK", says the docs agree with the run. More in [`tests/README.md`](tests/README.md).
 
 ## Working on it with an AI coding tool
 
