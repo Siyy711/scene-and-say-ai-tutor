@@ -1,6 +1,6 @@
 # SS test suite: how to run it
 
-These are the automated checks for Scene & Say, v5 to v38: 35 files and 1016 checks. They run the real app in a browser against a **stand-in** for Claude and the database (`mock-head.html`). They test the app's logic and screens. They **can't** judge the quality of real Claude replies, so for that, try the app by hand after changing a request to Claude.
+These are the automated checks for Scene & Say, from v5 on. The expected number of files and checks lives in one place, `CLAUDE.md` (Testing). They run the real app in a browser against a **stand-in** for Claude and the database (`mock-head.html`). They test the app's logic and screens. They **can't** judge the quality of real Claude replies, so for that, try the app by hand after changing a request to Claude.
 
 ## Files
 
@@ -35,7 +35,7 @@ npx playwright install chromium  # once: downloads the browser it drives
 ./run-all.sh
 ```
 
-`run-all.sh` first builds `preview-mock.html` from `../app/scene-and-say.html`, then runs every file. Every file should show "pass", and the total should match the last known number (1016 at v38).
+`run-all.sh` first builds `preview-mock.html` from `../app/scene-and-say.html`, then runs every file. Every file should show "pass", and the total should match the expected result in `CLAUDE.md`. At the end, `check_docs.py` compares them for you and prints "DOCS OK" or "DOCS FAIL". It also checks that every doc names the same current version.
 
 In a Claude cloud session, Playwright and Chromium are already installed, so you can skip `npm install` and run:
 
