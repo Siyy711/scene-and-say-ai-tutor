@@ -21,7 +21,11 @@ const GRASS="#6ccd5c", SKY="#8fd3ff";
   /* Read real pixels: take a screenshot, decode it in the page, and return the colour at each point (pitfall: the grass is a
      border-image painted outside its box, so no element's style can tell where it shows). */
   const colours=async(points)=>{
+    /* v40: this reads the ground, so the cats and dogs (v39) step out of the picture for a moment: one lying on a sample
+       point made the check fail now and then, though the grass under it was fine (test40 checks the animals themselves) */
+    await p.evaluate(()=>document.querySelectorAll('.petyard').forEach(y=>y.style.visibility='hidden'));
     const png=(await p.screenshot()).toString('base64');
+    await p.evaluate(()=>document.querySelectorAll('.petyard').forEach(y=>y.style.visibility=''));
     return p.evaluate(async([png,points])=>{
       const img=new Image(); img.src='data:image/png;base64,'+png; await img.decode();
       const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; const x=c.getContext('2d'); x.drawImage(img,0,0);

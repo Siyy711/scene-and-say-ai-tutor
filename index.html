@@ -929,7 +929,18 @@ input[type="checkbox"]{border:3px solid var(--ink)}
 .bird .wing2,.birds.flap .bird .wing1{display:none}
 .birds.flap .bird .wing2{display:block}
 @keyframes bird-fly{from{translate:-40px 0}to{translate:var(--to) var(--dy)}}
-@media (prefers-reduced-motion: reduce){ .cloud,.petzz{animation:none !important} }
+/* v40: the back flip. It jumps up, turns over backwards once and lands where it was. The pictures face right, so a
+   back flip turns them anticlockwise; one walking left is mirrored, so it turns the other way.
+   v41 (Siyy: "a bit higher and smoother"): two animations at once, so each can move at its own pace. pet-hop is the jump:
+   a little crouch, up 44px slowing down at the top like a thrown ball, then faster down, and a soft landing. pet-flip is
+   the turn: one smooth turn from start to finish, with no stops on the way (v40 turned in three steps). */
+.pet.flip .petbody{animation:pet-hop 1s linear,pet-flip 1s linear}
+.pet.flip.goleft .petbody{animation-name:pet-hop,pet-flip-left}
+.pet.flip .petsay{bottom:calc(100% + 64px)}   /* the bubble moves up out of the way while it turns over */
+@keyframes pet-hop{0%{translate:0 0;animation-timing-function:ease-out}12%{translate:0 3px;animation-timing-function:cubic-bezier(.3,.7,.45,1)}50%{translate:0 -44px;animation-timing-function:cubic-bezier(.55,0,.7,.3)}88%{translate:0 0;animation-timing-function:ease-out}94%{translate:0 2px;animation-timing-function:ease-in-out}100%{translate:0 0}}
+@keyframes pet-flip{0%,12%{rotate:0deg;animation-timing-function:cubic-bezier(.45,.05,.55,.95)}88%,100%{rotate:-360deg}}
+@keyframes pet-flip-left{0%,12%{rotate:0deg;animation-timing-function:cubic-bezier(.45,.05,.55,.95)}88%,100%{rotate:360deg}}
+@media (prefers-reduced-motion: reduce){ .cloud,.petzz,.pet.flip .petbody{animation:none !important} }
 </style>
 
 <script>
@@ -5456,9 +5467,10 @@ renderLevels(); renderThemes(); renderCustom(); renderReadout(); renderCards(); 
       {"name": "grey", "pat": "plain", "C": "#c3c6d4", "B": "#73778d", "W": "#ffffff"},
       {"name": "black and white", "pat": "patch", "C": "#fffaf0", "B": "#433f57", "T": "#6d6982", "W": "#fffaf0"}]
   };
-  var SAYS={cat:["Hi!","Meow!","Hey there!","How's it going?","Long time no see!","Nice to see you!","Purr…"],
-            dog:["Woof!","Hi!","Hey there!","How's it going?","Good to see you!","Fancy a walk?"]};
-  var SLEEPY=["Zzz…","Night night!","Sweet dreams…","*yawn* Oh, hi…"];
+  /* v40 (Siyy, 21 Oct): only their own voices. Words like "Nice to see you!" felt off coming from a cat. */
+  var SAYS={cat:["Meow!","Mew!","Purr…","Mrrp?","Meow meow!"],
+            dog:["Woof!","Arf!","Ruff!","Woof woof!","Yip!"]};
+  var SLEEPY=["Zzz…","*yawn*","Mm… zzz"];
   var PETC={K:"px-k",W:"pt-w",T:"pt-t",C:"pt-c",B:"pt-b",P:"pt-p",N:"pt-n",E:"pt-e",R:"pt-r",Y:"pt-y",A:"pt-a",O:"px-o"};
   var SCALE=2;   /* 2 screen pixels per art pixel: tiny, and still a whole number (pitfall 37) */
   Object.keys(PETART).forEach(function(k){ PX["pet_"+k]=PETART[k]; });
@@ -5489,7 +5501,13 @@ renderLevels(); renderThemes(); renderCustom(); renderReadout(); renderCards(); 
     };
     p.addEventListener("mouseenter",function(){ p.held=true; p.say(); });
     p.addEventListener("mouseleave",function(){ p.held=false; });
-    p.addEventListener("click",function(e){ e.stopPropagation(); p.held=true; p.say(); setTimeout(function(){ p.held=false; },2200); });
+    /* v40: a click (or a tap) also makes it do a back flip. Not when it is asleep, and not with "reduce motion" on. */
+    p.flip=function(){
+      if(still() || night() || p.classList.contains("flip")) return;
+      p.classList.add("flip");
+      setTimeout(function(){ p.classList.remove("flip"); },1050);
+    };
+    p.addEventListener("click",function(e){ e.stopPropagation(); p.held=true; p.say(); p.flip(); setTimeout(function(){ p.held=false; },2200); });
     return p;
   }
 

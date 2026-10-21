@@ -12,8 +12,9 @@ const W=(term,theme,extra)=>Object.assign({createdAt:NOW-3600000,term,kind:"phra
 const DB={"terms/a":W("touch base","At Work"),"terms/b":W("split the bill","Food & Eating Out"),"terms/c":W("mix-up","At Work",{kind:"word"}),
   "cards/c1":{createdAt:NOW-60000,updatedAt:NOW-60000,title:"Cold soup at the bistro",theme:"Food & Eating Out",setting:"A busy Friday night.",attempts:[{n:1,at:NOW-60000,mode:"story",level:"B1",userText:"I said it.",strengths:[],corrections:[],highlights:[],modelStory:"m",nextTip:"Say what you want first."}]},
   "sets/s1":{createdAt:NOW-20*D,updatedAt:NOW,words:["postpone","put off"],kind:"words",topic:"",source:"own",explain:{core:"core difference",uses:[]}}};
-const GREET=["Hi!","Meow!","Hey there!","How's it going?","Long time no see!","Nice to see you!","Purr…","Woof!","Good to see you!","Fancy a walk?"];
-const NIGHTSAY=["Zzz…","Night night!","Sweet dreams…","*yawn* Oh, hi…"];
+/* v40: only their own sounds (the people's words like "Hi!" went) */
+const GREET=["Meow!","Mew!","Purr…","Mrrp?","Meow meow!","Woof!","Arf!","Ruff!","Woof woof!","Yip!"];
+const NIGHTSAY=["Zzz…","*yawn*","Mm… zzz"];
 (async()=>{
   const b=await chromium.launch(process.env.CHROMIUM?{executablePath:process.env.CHROMIUM}:{});
   const errs=[];
