@@ -58,7 +58,11 @@ const NIGHT={sky:"#2b2873",paper:"#17153f",grass:"#3c9a4c",wood:"#966236",sign:"
     await p.waitForTimeout(600); await p.evaluate(()=>window.scrollTo(0,0)); await p.mouse.move(0,0); await p.waitForTimeout(100);
   };
   /* Read real pixels from a screenshot (stars and the moon are drawn, not text, so only the picture can tell) */
-  const shot=async()=>{ const png=(await p.screenshot()).toString('base64'); await p.evaluate(async png=>{ const img=new Image(); img.src='data:image/png;base64,'+png; await img.decode();
+  /* v40: the animals and birds (v39) step out of the picture while it is taken: they move at random, so one could sit on a
+     point this test reads (test40 checks them; this test checks the sky, the stars and the moon) */
+  const shot=async()=>{ await p.evaluate(()=>document.querySelectorAll('.petyard,.pethang,.birds').forEach(y=>y.style.visibility='hidden'));
+    const png=(await p.screenshot()).toString('base64');
+    await p.evaluate(()=>document.querySelectorAll('.petyard,.pethang,.birds').forEach(y=>y.style.visibility='')); await p.evaluate(async png=>{ const img=new Image(); img.src='data:image/png;base64,'+png; await img.decode();
     const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; const x=c.getContext('2d'); x.drawImage(img,0,0); window.__px=x; },png); };
   const colourAt=pts=>p.evaluate(pts=>pts.map(([a,b])=>{ const d=window.__px.getImageData(Math.round(a),Math.round(b),1,1).data; return '#'+[d[0],d[1],d[2]].map(v=>v.toString(16).padStart(2,'0')).join(''); }),pts);
   const countIn=(x0,y0,x1,y1,hex)=>p.evaluate(([x0,y0,x1,y1,hex])=>{ const d=window.__px.getImageData(x0,y0,x1-x0,y1-y0).data; let n=0; const t=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16));
