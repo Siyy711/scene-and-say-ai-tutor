@@ -100,9 +100,12 @@ const W=(term,extra)=>Object.assign({createdAt:NOW-3600000,term,kind:"phrase",me
   await p.click('#spot-stuck'); await p.waitForTimeout(400);
   const h2=await p.textContent('#spot-hint');
   ok("hint hides a multi-word phrase too ('fire away' → ____)", h2.includes("Harvey says ____ to a client") && !/fire away/i.test(h2));
-  ok("hint shows your picture", await p.isVisible('#spot-hint img'));
-  await p.click('#spot-stuck'); await p.waitForTimeout(150);
+  /* changed on purpose in v43 (Siyy, 23 Oct): the hint showed your picture (v13), but a saved picture is often a screenshot
+     with the word in it, so it gave the answer away. Now the picture is never on the page before the bridge, and shows there. */
+  ok("hint does not show your picture (it can show the word)", (await p.$$('#v-spot img')).length===0 && !(await p.evaluate(()=>document.querySelector('#v-spot').innerHTML.includes('data:image'))));
+  await p.click('#spot-stuck'); await p.waitForTimeout(400);
   ok("'Still stuck' goes to the bridge", await p.isVisible('#spot-bridge'));
+  ok("…and the bridge shows your picture, under where you met it", await p.isVisible('#spot-bridge .spot-col .word-pic img'));
   await start({"tPlain":W("loop in")});
   await p.click('#spot-open'); await p.click('#spot-start'); await p.waitForTimeout(500); await p.click('#spot-stuck'); await p.waitForTimeout(150);
   ok("no hint from Claude → your own sentence, word hidden (v15; the meaning fallback is tested in test15)", (await p.textContent('#spot-hint')).includes("Your sentence:") && (await p.textContent('#spot-hint')).includes("An example with ____."));
