@@ -3687,8 +3687,8 @@ function renderSpotItem(){
     } else {
       hb.appendChild(el("div",null,"You saved a word for this. It means: "+str(it.t.meaning)));
     }
-    if(it.t.pic){ var ph=el("div","word-pic"); hb.appendChild(ph);
-      loadPicture(str(it.t.pic)).then(function(u){ if(u){ var im=document.createElement("img"); im.src=u; im.alt="Your picture for this word"; ph.appendChild(im); } }); }
+    /* v43 (Siyy, 23 Oct): no picture here. A saved picture is often a screenshot with the word in it, so it gave the answer away.
+       It shows on the bridge instead, where the word is shown anyway. */
     c.appendChild(hb);
   }
   if(it.stage==="bridge"){
@@ -3700,6 +3700,8 @@ function renderSpotItem(){
     var w2=whereMet(it.t); a.appendChild(el("div",null, w2.text || str(it.t.example) || "—"));
     var bare=function(x){ return str(x).toLowerCase().replace(/[^a-z0-9 ]/g,"").trim(); };
     if(it.t.example && bare(w2.text).indexOf(bare(it.t.example))<0) a.appendChild(el("div","term-eg",str(it.t.example)));
+    if(it.t.pic){ var ph=el("div","word-pic"); a.appendChild(ph);
+      loadPicture(str(it.t.pic)).then(function(u){ if(u){ var im=document.createElement("img"); im.src=u; im.alt="Your picture for this word"; ph.appendChild(im); } }); }
     var b2=el("div","spot-col"); b2.appendChild(el("div","eyebrow","This situation")); b2.appendChild(el("div",null,it.sit));
     two.appendChild(a); two.appendChild(b2); bb.appendChild(two);
     if(it.bridge) bb.appendChild(el("p","spot-why",it.bridge));
