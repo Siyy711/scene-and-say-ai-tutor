@@ -3532,13 +3532,17 @@ function spotSituationPrompt(items){
   lines.push("- If the expression is ABOUT language itself (e.g. synonym, paraphrase, redundant wording), use a situation where people really talk about words: editing a draft, giving feedback on a report, helping a colleague with their English.");
   lines.push("- Use the SETTING given for each item, and make it DIFFERENT from where they met it and from any AVOID list.");
   lines.push("- MATCH THE REGISTER. Read REGISTER and \"How it's used\". The SETTING was chosen to fit them, so keep it, and fill it with people who would really say or write this expression there. Jargon stays with people who share that field: a tech word comes up among people who work in tech, never with neighbours, family or a shop assistant. A casual phrase stays in a relaxed moment, not a formal email; a formal word goes where people speak or write formally.");
+  /* v42 (Siyy, 23 Oct): "pull someone aside" came out as a chat message, because the SETTING was "an email or chat message at work".
+     Some expressions only work face to face, some only in writing: the moment and the reply must fit how the expression is really used. */
+  lines.push("- MATCH HOW IT'S DONE. Some expressions describe something people do face to face (e.g. pull someone aside, catch someone's eye, shake on it): put them in a spoken moment, in person. Some only work in writing (e.g. please find attached, per my last email): use a written reply. The SETTING decides the people and the place; if it is an email or chat but the expression only works face to face, keep the same people and move to a spoken moment there, e.g. in the corridor right after the meeting. Never squeeze an expression into a reply where a native speaker would not use it.");
   lines.push("- 2-3 short sentences in the second person (\"You…\"), at about their level.");
   lines.push("- \"replyType\": the most natural way to respond here — \"say\" (speak to someone), \"message\" (write a short email or chat message) or \"feedback\" (comment on a draft or someone's work). End the situation so that this reply is clearly what's needed.");
   lines.push("- \"hint\": ONE line that points them back to something they will remember, WITHOUT naming the expression or any form of it. Best: their own sentence with the expression replaced by ____. Otherwise a specific memory from where they met it. Never a generic line such as \"you saved this from a chat\".");
   lines.push("- \"bridge\": ONE line explaining why the same expression fits both where they met it and this new situation.");
+  lines.push("- CHECK IT BEFORE THE LEARNER SEES IT. Write the fields in this order. \"draft\": your first version of the situation. \"nativeLine\": ONE reply a native speaker would really say or write in that draft, using the expression in THIS meaning. \"feelsRight\": true only if a native speaker would really use the expression like that, in that moment, spoken or written as the draft needs; otherwise false. \"situation\": the final version the learner sees: the draft unchanged if feelsRight is true, or a fixed situation where the line would feel right if it is false. The learner never sees draft or nativeLine.");
   lines.push("- \"summary\": the new situation in under 8 words (e.g. \"client call about late delivery\"), so it can be avoided next time.");
   lines.push("");
-  lines.push('JSON shape: {"items":[{"situation":"…","replyType":"say|message|feedback","hint":"…","bridge":"…","summary":"…"}]} — exactly '+items.length+' items, in the same order.');
+  lines.push('JSON shape: {"items":[{"draft":"…","nativeLine":"…","feelsRight":true|false,"situation":"…","replyType":"say|message|feedback","hint":"…","bridge":"…","summary":"…"}]} — exactly '+items.length+' items, in the same order.');
   return lines.join("\n");
 }
 function spotCheckPrompt(it,reply){
@@ -3556,6 +3560,8 @@ function spotCheckPrompt(it,reply){
   lines.push("Did they use the target expression (any natural form) with this meaning? If not, did they use a DIFFERENT expression that is equally natural and precise here? Be honest: a vaguer, plainer word does not count as equally good.");
   /* v34 (Siyy, 19 Oct): "mix-up" was saved as a noun; "I mixed up the time" didn't count. The same word in another word class counts. */
   lines.push("ANY FORM COUNTS as \"used\": another tense or number, and the same word in another word class (noun, verb or adjective), as long as the meaning is the same. For example \"I mixed up the times\" or \"I got the times mixed up\" counts for \"a mix-up\"; \"bolt on\" counts for \"bolt-on\". If they used another word class, set \"used\" to true and add a few words to \"feedback\" showing the saved form, e.g. \"…or as a noun: there was a mix-up with the time.\"");
+  /* v42: the model answer once read "could I pull you aside for a quick chat later?" in a chat message: correct, but not how people say it. */
+  lines.push("MODEL REPLY: \"modelReply\" must be what a native speaker would really say or write in this kind of reply, not just a correct sentence. If the expression is about something done face to face (e.g. pull someone aside), use it the way people really do: said in person, in the moment.");
   if(it.stage!=="bridge") lines.push("If they did NOT use it: \"feedback\" must NOT name or hint at the target expression or any form of it — they are still trying to recall it.");
   lines.push("");
   lines.push('JSON shape: {"used": true|false, "equivalent": "the equally good expression they used, or an empty string", "feedback": "ONE short line: what worked, or the one thing to fix in how they used it", "modelReply": "a natural 1-2 sentence reply to the situation, using the target expression"}');
@@ -3613,6 +3619,9 @@ function loadItem(it){
   if(it.loading) return it.loading;
   it.loading=SAMPLE.json(spotSituationPrompt([it]),{modelTier:"default",cache:false}).then(function(r){
     var g=(r&&arr(r.items)[0])||null;
+    /* v42: Claude writes a draft, checks it with one native sentence, then gives the final situation. You only see the final one.
+       If the final one is missing, the draft will do, but only when the check said it felt right. */
+    if(g && !str(g.situation).trim() && g.feelsRight!==false && str(g.draft).trim()) g.situation=g.draft;
     if(!g||!str(g.situation).trim()) throw {code:"invalid_json"};
     var t=it.t, rt=str(g.replyType).toLowerCase();
     it.sit=maskWord(str(g.situation),t.term); it.bridge=str(g.bridge);
