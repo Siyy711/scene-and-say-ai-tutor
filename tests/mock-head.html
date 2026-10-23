@@ -119,9 +119,24 @@ window.claude={use:function(name){
         var hint = term==="bolt" ? "Your sentence: Existing factories do bolt AI onto old layouts."
                  : term==="synonym" ? "You saved this from a chat."
                  : term==="loop in" ? "" : term==="fire away" ? "In Suits, Harvey says fire away to a client." : "Think of the time you met it.";
-        return {situation:sit, replyType: term==="synonym"?"feedback":(term==="loop in"?"message":"say"), hint:hint,
+        var out={situation:sit, replyType: term==="synonym"?"feedback":(term==="loop in"?"message":"say"), hint:hint,
                 bridge:"Both situations are about adding something on top instead of rebuilding.",
                 summary: avoid ? "scene in "+setting : "Mei asks about the planning tool"};
+        /* v42: like the real Claude, a face-to-face expression lands in a chat message unless the request says to match how it's done.
+           Only when the request asks for the check does the reply carry a draft, one native line and "feelsRight"; the draft is fixed
+           only when the request also has the how-it's-done rule. */
+        var how=s.indexOf("MATCH HOW IT'S DONE")>=0, check=s.indexOf("CHECK IT BEFORE THE LEARNER SEES IT")>=0;
+        var CHAT="DRAFTCHAT: After stand-up, Wei Ling looked upset about the new schedule. You message her in the team chat to suggest a one-to-one.";
+        if(term==="pull someone aside"){
+          out.situation=CHAT; out.replyType="message"; out.summary="chat to Wei Ling after stand-up";
+          if(check){ out.draft=CHAT; out.nativeLine="NATIVELINE: Hi Wei Ling, could I pull you aside for a quick chat later?"; out.feelsRight=!how;
+            if(how){ out.situation="Stand-up has just ended. Wei Ling looked upset about the new schedule, and she is walking back to her desk. You catch up with her in the corridor."; out.replyType="say"; out.summary="corridor after stand-up"; } }
+        } else if(check){
+          out.draft=out.situation; out.nativeLine="NATIVELINE: a reply that uses "+term+"."; out.feelsRight=true;
+          if(term==="only a draft"){ out.draft="DRAFTONLY: Your manager asks how the week went."; delete out.situation; }
+          if(term==="no fix given"){ out.draft="DRAFTBAD: a scene that does not fit."; out.feelsRight=false; delete out.situation; }
+        }
+        return out;
       })});
     }
     if(s.indexOf("SPOT IT — CHECK")>=0){
